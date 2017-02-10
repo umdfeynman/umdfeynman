@@ -1,0 +1,85 @@
+*** /etc/httpd/conf/httpd.conf: ***
+
+#
+# ScriptAlias: This controls which directories contain server scripts.
+# ScriptAliases are essentially the same as Aliases, except that
+# documents in the realname directory are treated as applications and
+# run by the server when requested rather than as documents sent to the client.
+# The same rules about trailing "/" apply to ScriptAlias directives as to
+# Alias.
+#
+ScriptAlias /cgi-bin/ "/var/www/cgi-bin/"
+ScriptAlias /cgi-bin/ "192.168.0.1/"
+ScriptAlias /cgi-bin/ "192.168.0.4/"
+#
+# "/var/www/cgi-bin" should be changed to whatever your ScriptAliased
+# CGI directory exists, if you have that configured.
+#
+<Directory "/var/www/cgi-bin">
+    AllowOverride None
+    Options ExecCGI
+    Order allow,deny
+    Allow from all
+</Directory>
+
+<Directory "192.168.0.1/">
+    AllowOverride None
+    Options ExecCGI
+    Order allow,deny
+    Allow from all
+</Directory>
+
+<Directory "192.168.0.4/">
+    AllowOverride None
+    Options ExecCGI
+    Order allow,deny
+    Allow from all
+</Directory>
+
+#
+# If you want to use name-based virtual hosts you need to define atleast one IP address (and port number) for them.
+#
+#NameVirtualHost 12.34.56.78:80
+#NameVirtualHost 207.91.250.70:80
+NameVirtualHost 66.238.168.66:80
+
+#
+# VirtualHost example:
+# Almost any Apache directive may go into a VirtualHost container.
+#
+<VirtualHost 66.238.168.66>
+    ServerAdmin webmaster@avantipress.com
+    ServerName mail.avantipress.com
+    Options FollowSymLinks Includes FollowSymLinks ExecCGI
+    ProxyPass /brutus http://192.168.0.1
+    ProxyPass /sweetpea http://192.168.0.4
+    DocumentRoot "/var/www/html"
+</VirtualHost>
+    
+#<VirtualHost _default_:*>
+#</VirtualHost>
+
+<IfDefine HAVE_SSL>
+Listen 443
+SSLSessionCache shm:/var/cache/ssl_gcache_data(524288)
+NameVirtualHost 66.238.168.66:443
+<VirtualHost 66.238.168.66:443>
+DocumentRoot "/var/www/mail"
+Servername mail.avantipress.com
+SSLEngine on
+
+
+*** /etc/sysctl.conf: ***
+# Disables packet forwarding
+net.ipv4.ip_forward = 0
+# Enables source route verification
+net.ipv4.conf.default.rp_filter = 1
+# Disables the magic-sysrq key
+kernel.sysrq = 0
+
+*** /etc/resolv.conf ***
+search avantipress.com
+nameserver 65.106.1.196
+nameserver 65.106.7.196
+
+*** 

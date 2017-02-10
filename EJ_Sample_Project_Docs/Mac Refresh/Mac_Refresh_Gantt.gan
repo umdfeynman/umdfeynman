@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Mac Refresh Project" company="Avanti Press" webLink="http://" view-date="2013-05-26" view-index="0" gantt-divider-location="581" resource-divider-location="300" version="2.0" locale="en">
+    <description/>
+    <view zooming-state="default:4" id="gantt-chart">
+        <field id="tpd3" name="Name" width="75" order="0"/>
+        <field id="tpd4" name="Begin date" width="12" order="1"/>
+        <field id="tpd5" name="End date" width="11" order="2"/>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Name" width="50" order="0"/>
+        <field id="1" name="Default role" width="50" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <calendar id="1" name="default">
+                <default-week sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+                <only-show-weekends value="false"/>
+                <overriden-day-types/>
+                <days/>
+            </calendar>
+        </day-types>
+        <date year="1" month="1" date="1"/>
+        <date year="2012" month="1" date="2"/>
+        <date year="1" month="7" date="4"/>
+        <date year="1" month="11" date="11"/>
+        <date year="1" month="11" date="12"/>
+        <date year="1" month="12" date="25"/>
+        <date year="2012" month="1" date="16"/>
+        <date year="2013" month="1" date="21"/>
+        <date year="2014" month="1" date="20"/>
+        <date year="2015" month="1" date="19"/>
+        <date year="2016" month="1" date="18"/>
+        <date year="2017" month="1" date="16"/>
+        <date year="2018" month="1" date="15"/>
+        <date year="2019" month="1" date="21"/>
+        <date year="2020" month="1" date="20"/>
+        <date year="2021" month="1" date="18"/>
+        <date year="2012" month="2" date="20"/>
+        <date year="2013" month="2" date="18"/>
+        <date year="2014" month="2" date="17"/>
+        <date year="2015" month="2" date="16"/>
+        <date year="2016" month="2" date="15"/>
+        <date year="2017" month="2" date="20"/>
+        <date year="2018" month="2" date="19"/>
+        <date year="2019" month="2" date="18"/>
+        <date year="2020" month="2" date="17"/>
+        <date year="2021" month="2" date="15"/>
+        <date year="2012" month="5" date="28"/>
+        <date year="2013" month="5" date="27"/>
+        <date year="2014" month="5" date="26"/>
+        <date year="2015" month="5" date="25"/>
+        <date year="2016" month="5" date="30"/>
+        <date year="2017" month="5" date="29"/>
+        <date year="2018" month="5" date="28"/>
+        <date year="2019" month="5" date="27"/>
+        <date year="2020" month="5" date="25"/>
+        <date year="2021" month="5" date="31"/>
+        <date year="2012" month="9" date="3"/>
+        <date year="2013" month="9" date="2"/>
+        <date year="2014" month="9" date="1"/>
+        <date year="2015" month="9" date="7"/>
+        <date year="2016" month="9" date="5"/>
+        <date year="2017" month="9" date="4"/>
+        <date year="2018" month="9" date="3"/>
+        <date year="2019" month="9" date="2"/>
+        <date year="2020" month="9" date="7"/>
+        <date year="2021" month="9" date="6"/>
+        <date year="2012" month="10" date="8"/>
+        <date year="2013" month="10" date="14"/>
+        <date year="2014" month="10" date="13"/>
+        <date year="2015" month="10" date="12"/>
+        <date year="2016" month="10" date="10"/>
+        <date year="2017" month="10" date="9"/>
+        <date year="2018" month="10" date="15"/>
+        <date year="2019" month="10" date="14"/>
+        <date year="2020" month="10" date="12"/>
+        <date year="2021" month="10" date="11"/>
+        <date year="2012" month="11" date="22"/>
+        <date year="2013" month="11" date="28"/>
+        <date year="2014" month="11" date="27"/>
+        <date year="2015" month="11" date="26"/>
+        <date year="2016" month="11" date="24"/>
+        <date year="2017" month="11" date="23"/>
+        <date year="2018" month="11" date="22"/>
+        <date year="2019" month="11" date="28"/>
+        <date year="2020" month="11" date="26"/>
+        <date year="2021" month="11" date="25"/>
+        <date year="" month="1" date="1"/>
+        <date year="" month="7" date="4"/>
+        <date year="" month="11" date="11"/>
+        <date year="" month="11" date="12"/>
+        <date year="" month="12" date="25"/>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="174" name="Mac Refresh Project" color="#8cb6ce" meeting="false" project="true" start="2013-02-11" duration="122" complete="6" expand="true">
+            <task id="0" name="Planning" color="#000000" shape="1,0,1,0,0,1,0,1,1,0,1,0,0,1,0,1" meeting="false" start="2013-02-11" duration="70" complete="22" expand="true">
+                <task id="1" name="Project Planning" meeting="false" start="2013-02-11" duration="26" complete="26" expand="false">
+                    <task id="2" name="Complete Project Plan" color="#8cb6ce" meeting="false" start="2013-02-11" duration="6" complete="100" thirdDate="2013-02-20" thirdDate-constraint="0" expand="true">
+                        <depend id="3" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="3" name="Review Project Plan with IT Manager" color="#8cb6ce" meeting="false" start="2013-02-20" duration="1" complete="100" expand="true">
+                        <depend id="232" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="232" name="Review updated Project Plan with Systems team" color="#8cb6ce" meeting="false" start="2013-02-21" duration="8" complete="0" expand="true">
+                        <depend id="7" type="2" difference="0" hardness="Strong"/>
+                        <depend id="231" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="231" name="Revise Project Plan based on discussion with Systems Team" color="#8cb6ce" meeting="false" start="2013-03-05" duration="4" complete="0" expand="true"/>
+                    <task id="255" name="Provide project plan and deployment checklist to department heads of Creative, Design and Production.  Establish recurring project plan update frequency." color="#8cb6ce" meeting="false" start="2013-03-08" duration="1" complete="0" expand="true"/>
+                    <task id="7" name="Once Project Plan approved by IT Manager, create and provide Mac Pros with document that clearly defines where we will need their help to enable them to provide accurate Scope of Work; and provide updated Application List and desired scheduling." color="#8cb6ce" meeting="false" start="2013-03-05" duration="1" complete="0" expand="true">
+                        <depend id="4" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="4" name="Once Project Plan approved by IT Manager, speak to Mac Professionals regarding scheduling" color="#8cb6ce" meeting="false" start="2013-03-06" duration="1" complete="0" expand="true">
+                        <depend id="5" type="2" difference="2" hardness="Strong"/>
+                    </task>
+                    <task id="5" name="Once Mac Professionals hss confirmed scheduling availability, speak with Department heads, see if there is any issue with tentative deployment dates" color="#8cb6ce" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true">
+                        <depend id="8" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="8" name="Request quote and scope of work documentation from Mac Professionals" meeting="false" start="2013-03-12" duration="1" complete="0" expand="true">
+                        <depend id="208" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="208" name="Review quote and scope of work with IT Manager" color="#8cb6ce" meeting="false" start="2013-03-13" duration="1" complete="0" expand="true">
+                        <depend id="209" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="209" name="Cut PO and approve quote with Mac Professionals" color="#8cb6ce" meeting="false" start="2013-03-14" duration="1" complete="0" expand="true">
+                        <depend id="6" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="6" name="Schedule image development with Mac Pros" color="#8cb6ce" meeting="false" start="2013-03-15" duration="1" complete="0" expand="true">
+                        <depend id="9" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="9" name="Divide users into 4 groups" meeting="false" start="2013-03-18" duration="1" complete="0" expand="true">
+                        <depend id="10" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="10" name="Schedule testing with 1-2 users and the department head from each department of Creative, Design and Production" meeting="false" start="2013-03-19" duration="1" complete="0" expand="true"/>
+                </task>
+                <task id="13" name="Software Licensing" meeting="false" start="2013-02-19" duration="32" complete="40" expand="false">
+                    <task id="14" name="Determine # of Mac OS X Mountain Lion Upgrades Needed" meeting="false" start="2013-03-11" duration="9" complete="0" expand="true">
+                        <depend id="23" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="15" name="Determine # of Microsoft Office 2011 licenses needed" meeting="false" start="2013-02-25" duration="10" complete="0" expand="true">
+                        <depend id="23" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="16" name="Determine # of Centrify DirectControl Licenses Needed" color="#8cb6ce" meeting="false" start="2013-02-19" duration="1" complete="100" expand="true">
+                        <depend id="23" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="17" name="Determine # of Adobe CS DS/MC licenses needed" color="#8cb6ce" meeting="false" start="2013-02-19" duration="1" complete="100" expand="true">
+                        <depend id="23" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="18" name="Determine # of FileMaker Pro 11 licenses needed" color="#8cb6ce" meeting="false" start="2013-02-19" duration="1" complete="100" expand="true">
+                        <depend id="23" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="19" name="Determine # of Sophos Anti-Virus licenses needed" meeting="false" start="2013-02-25" duration="10" complete="0" expand="true">
+                        <depend id="23" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="20" name="Determine # of Extensis UTS client access licenses needed" color="#8cb6ce" meeting="false" start="2013-02-19" duration="1" complete="100" expand="true">
+                        <depend id="23" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="21" name="Determine # of Absolute Manage clients" meeting="false" start="2013-02-25" duration="10" complete="0" expand="true">
+                        <depend id="23" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="22" name="Determine if we need to purchase any additional licenses for Presence/CUPC/Jabber" color="#8cb6ce" meeting="false" start="2013-02-25" duration="10" complete="0" expand="true">
+                        <depend id="23" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="23" name="Confirm license procurement complete" meeting="false" start="2013-03-22" duration="9" complete="0" expand="true"/>
+                </task>
+                <task id="24" name="Software Prerequisites" meeting="false" start="2013-02-19" duration="29" complete="29" expand="true">
+                    <task id="25" name="Determine FTP Client" meeting="false" start="2013-02-19" duration="1" complete="100" expand="true"/>
+                    <task id="26" name="Speak to Lee Land about Photoshop configuration settings for Retouchers vs Art Director -- where is this at?" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="27" name="Determine if any Photoshop Plugins are incompatible with Mountain Lion or if any will need upgrades to be compatible" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="28" name="Determine if Depthstar RIP can still be accessed" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="29" name="Determine if RIP software is compatible (EFI XF)" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="30" name="Determine if RIP software is compatible (Xerox/EFI Fiery Command Workstation)" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="31" name="Determine if NEC ImageExpress will need a new version for Mountain Lion" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="32" name="Determine if Xerox EFI Fiery drivers will need a new version for Mountain Lion" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="33" name="Determine Cisco's recommended version of CUPC/Jabber for Mountain Lion" meeting="false" start="2013-02-27" duration="1" complete="100" expand="true"/>
+                    <task id="34" name="Determine if we will need to upgrade VPN client for Mountain Lion -- Call Cisco, what is version of client that supports Mountain Lion?" color="#8cb6ce" meeting="false" start="2013-02-27" duration="1" complete="0" expand="true"/>
+                    <task id="35" name="When reimaging an existing system to a newer OS &amp; Centrify version, does anything need to be done with the AD user object?  Call Centrify." meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="36" name="Rename/Create Centrify zone from test3 to Avanti, move existing users in -- Do we need to create a new zone, or can we just rename the existing one? -- Call Centrify." meeting="false" start="2013-03-06" duration="1" complete="100" expand="true">
+                        <depend id="37" type="2" difference="2" hardness="Strong"/>
+                    </task>
+                    <task id="37" name="Designate a single UNIX group for all Avanti mac users, move existing users to this group -- Can this be done without impacting file ownership on the SAN? -- Call Centrify / EMC" color="#8cb6ce" meeting="false" start="2013-03-11" duration="5" complete="0" expand="true"/>
+                    <task id="38" name="Previously Centrify had recommended against using SMB print queues post-version 4.4.0.  Is this still the case?  If not, how is it implemented?  -- Call Centrify" meeting="false" start="2013-03-06" duration="1" complete="100" expand="true"/>
+                    <task id="39" name="If we can't use SMB queues on the version of Centrify going on the image, use LPD instead -- Implement on AVANTI1 / AVANTITY1 / AVANTINY1 and test." meeting="false" start="2013-03-07" duration="7" complete="100" expand="true"/>
+                    <task id="40" name="Does anything need to be done to enable users to PHD sync when upgrading from Snow Leopard to Mountain Lion?  -- Check with Apple / Mac Pros" meeting="false" start="2013-03-11" duration="5" complete="0" expand="true"/>
+                    <task id="41" name="Does SyncCheck FTP script work on Mountain Lion?  Are XML files readable by SyncCheck?" color="#8cb6ce" meeting="false" start="2013-02-19" duration="1" complete="100" expand="true"/>
+                    <task id="42" name="Create spreadsheet list of applications, versions and updates to be deployed" meeting="false" start="2013-02-25" duration="1" complete="100" expand="true"/>
+                    <task id="43" name="Create spreadsheet list of settings packages for applications to be deployed" meeting="false" start="2013-02-25" duration="1" complete="100" expand="true"/>
+                    <task id="11" name="NY's Disk Tracker application may not work on Mountain Lion, test.  Inform David Laubach and Pete / Liza / Tom Chicoine." meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="245" name="Designate install repository on AVANTI8 for standard and nonstandard software for Mac Refresh" color="#8cb6ce" meeting="false" start="2013-02-25" duration="1" complete="100" expand="true">
+                        <depend id="244" type="2" difference="9" hardness="Strong"/>
+                    </task>
+                    <task id="244" name="Predownload all standard software for deployment and place in install repository" color="#8cb6ce" meeting="false" start="2013-03-11" duration="5" complete="0" expand="true"/>
+                    <task id="246" name="Get list of nonstandard software from all machines using AM" color="#8cb6ce" meeting="false" start="2013-03-11" duration="5" complete="0" expand="true">
+                        <depend id="247" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="247" name="Add nonstandard software to Mac_Image_Planning.xlsx, designate if license deactivation needed, which users' machines it will get installed on" color="#8cb6ce" meeting="false" start="2013-03-18" duration="1" complete="0" expand="true">
+                        <depend id="248" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="248" name="Confirm with primary user or responsible party the list of nonstandard software" color="#8cb6ce" meeting="false" start="2013-03-19" duration="4" complete="0" expand="true">
+                        <depend id="249" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="249" name="Confirm compatibility of nonstandard software with Mountain Lion; if new version needed, or if not compatible at all.  If not compatible, notify user." color="#8cb6ce" meeting="false" start="2013-03-25" duration="3" complete="0" expand="true">
+                        <depend id="250" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="250" name="Determine if we have an installer for a compatible version for each nonstandard software; if not; download and place into repository" color="#8cb6ce" meeting="false" start="2013-03-27" duration="1" complete="0" expand="true">
+                        <depend id="256" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="256" name="Determine installation procedures for nonstandard software" color="#8cb6ce" meeting="false" start="2013-03-28" duration="2" complete="0" expand="true"/>
+                    <task id="251" name="What data from standard software on a user's machine will not be transferred automatically (Entourage Tasks, Rules, Signature, Mailing Lists)?" color="#8cb6ce" meeting="false" start="2013-03-18" duration="1" complete="0" expand="true">
+                        <depend id="253" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="253" name="Convey a list of standard software with non-automated data transfer and let them know either how to transfer the data or that the data will need to be reentered" color="#8cb6ce" meeting="false" start="2013-03-19" duration="1" complete="0" expand="true"/>
+                    <task id="257" name="Confirm no issues with user for Press Check laptop setup - Tom Chicoine, Lee Land, Pete Pultz" color="#8cb6ce" meeting="false" start="2013-03-18" duration="1" complete="0" expand="true"/>
+                </task>
+                <task id="44" name="Hardware Prerequisites" meeting="false" start="2013-02-19" duration="48" complete="16" expand="false">
+                    <task id="45" name="Will AVANTI19 / 29 support Mountain Lion?" color="#8cb6ce" meeting="false" start="2013-02-19" duration="1" complete="100" expand="true"/>
+                    <task id="254" name="Generate spreadsheet of all Mac hardware specs:  CPU Cores, CPU GHz, Processor, Memory, Memory Type, HD Size, Scratch Disk Size, Display Model, Display Size" color="#8cb6ce" meeting="false" start="2013-02-22" duration="1" complete="100" expand="true">
+                        <depend id="46" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="46" name="Review Mac hardware spread sheet with IT manager to revise standard hardware specs, determine test specs for Photoshop class machines" color="#8cb6ce" meeting="false" start="2013-02-22" duration="1" complete="100" expand="true">
+                        <depend id="47" type="2" difference="9" hardness="Strong"/>
+                    </task>
+                    <task id="47" name="Determine with Mac Pros what machines will need upgrades -- Send updated list of Macs" color="#8cb6ce" meeting="false" start="2013-03-08" duration="1" complete="0" expand="true">
+                        <depend id="14" type="2" difference="0" hardness="Strong"/>
+                        <depend id="49" type="2" difference="0" hardness="Strong"/>
+                        <depend id="50" type="2" difference="9" hardness="Strong"/>
+                    </task>
+                    <task id="258" name="Order test hardware for Photoshop class machines" color="#8cb6ce" meeting="false" start="2013-03-05" duration="1" complete="100" expand="true"/>
+                    <task id="259" name="Once hardware received; install in test Mac Pro" color="#8cb6ce" meeting="false" start="2013-03-18" duration="1" complete="0" expand="true">
+                        <depend id="260" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="260" name="Prep test Mac Pro for use - Install standard software manually, configure manually" color="#8cb6ce" meeting="false" start="2013-03-18" duration="1" complete="0" expand="true">
+                        <depend id="262" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="262" name="Photoshop class test user performs test.  Based on Photoshop class machine test, revise or confirm Mac hardware specs" color="#8cb6ce" meeting="false" start="2013-03-19" duration="9" complete="0" expand="true"/>
+                    <task id="263" name="Determine with Mac Pros what machines will need upgrades -- Send updated list of Macs" color="#8cb6ce" meeting="false" start="2013-04-01" duration="1" complete="0" expand="true"/>
+                    <task id="48" name="What existing hardware that is not being used can we use to upgrade outdated Macs?" meeting="false" start="2013-02-22" duration="1" complete="100" expand="true">
+                        <depend id="49" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="50" name="Determine 1 desktop and 1 laptop that will be replaced; order these first so we have machines to test on" color="#8cb6ce" meeting="false" start="2013-03-22" duration="1" complete="0" expand="true"/>
+                    <task id="49" name="Create spreadsheet of machine upgrades and accessories needing to be purchased" meeting="false" start="2013-03-11" duration="1" complete="100" expand="true">
+                        <depend id="51" type="2" difference="6" hardness="Strong"/>
+                    </task>
+                    <task id="51" name="Put together quote request for systems, accessories and licenses necessary for upgrades and send to Mac Pros (Displays, Mice, Keyboards, BookEndz, Tablets, Scratch Disks, 32 GB memory for retouchers and color specialists, 16 GB for designers, AppleCare, extra power supplies, (Mini) DisplayPort to DVI, Thunderbolt to Ethernet), also spare mac laptop and spare mac desktop" color="#8cb6ce" meeting="false" start="2013-03-20" duration="11" complete="0" expand="true">
+                        <depend id="215" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="149" name="Designate temporary area in server room for decommissioned systems / accessories" meeting="false" start="2013-02-26" duration="1" complete="100" expand="true"/>
+                    <task id="215" name="Place order with Mac Professionals" color="#8cb6ce" meeting="false" start="2013-04-04" duration="2" complete="0" expand="true">
+                        <depend id="218" type="2" difference="12" hardness="Strong"/>
+                    </task>
+                    <task id="216" name="Designate storage area in server room for new hardware" color="#8cb6ce" meeting="false" start="2013-02-26" duration="1" complete="100" expand="true"/>
+                    <task id="217" name="Clean up server room to maximize space for received/decommissioned items" color="#8cb6ce" meeting="false" start="2013-03-18" duration="11" complete="0" expand="true"/>
+                    <task id="218" name="Confirm all items received" color="#8cb6ce" meeting="false" start="2013-04-24" duration="1" complete="0" expand="true">
+                        <depend id="264" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="264" name="Confirm all systems and attached displays entered into AppleCare" color="#8cb6ce" meeting="false" start="2013-04-25" duration="1" complete="0" expand="true"/>
+                </task>
+                <task id="397" name="Notable Dates" color="#8cb6ce" meeting="false" start="2013-03-01" duration="57" complete="0" expand="false">
+                    <task id="398" name="Shane Vacation" color="#00ffff" meeting="false" start="2013-03-01" duration="6" complete="0" expand="true"/>
+                    <task id="291" name="Erik Vacation" color="#66ff66" meeting="false" start="2013-04-26" duration="6" complete="0" priority="4" expand="true"/>
+                    <task id="392" name="Stan Vacation" color="#ff33cc" meeting="false" start="2013-05-16" duration="3" complete="0" expand="true"/>
+                </task>
+            </task>
+            <task id="52" name="Image Development" color="#8cb6ce" meeting="false" start="2013-03-05" duration="36" complete="4" expand="true">
+                <depend id="114" type="2" difference="-2" hardness="Strong"/>
+                <task id="53" name="Deployment / Update Server Setup (AVANTI19)" meeting="false" start="2013-03-05" duration="30" complete="11" expand="false">
+                    <task id="54" name="Move master distribution point for Absolute Manage to AVANTI29 prior to AVANTI19 upgrade, get approval from IT Manager" meeting="false" start="2013-03-05" duration="1" complete="100" expand="true">
+                        <depend id="57" type="2" difference="7" hardness="Strong"/>
+                    </task>
+                    <task id="55" name="Set up SUS on AVANTI29 prior to AVANTI19 upgrade" meeting="false" start="2013-03-05" duration="1" complete="100" expand="true">
+                        <depend id="57" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="56" name="Setup AAMEE on AVANTI29 prior to AVANTI19 upgrade" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="57" name="Create Centrify test group policy to point updates to AVANTI29" color="#8cb6ce" meeting="false" start="2013-03-15" duration="1" complete="0" expand="true">
+                        <depend id="58" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="58" name="Test group policy on DTDE00160 -- Can it see updates, can it download updates, can it apply updates?" meeting="false" start="2013-03-18" duration="1" complete="0" expand="true">
+                        <depend id="61" type="2" difference="19" hardness="Strong"/>
+                    </task>
+                    <task id="59" name="Create disk image backups of both AVANTI19 volumes prior to upgrade" color="#8cb6ce" meeting="false" start="2013-03-14" duration="1" complete="0" expand="true">
+                        <depend id="61" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="60" name="Make old images available on AVANTI8 for manual imaging using bootable OS X CD &amp; external HD, if necessary" meeting="false" start="2013-03-15" duration="1" complete="0" expand="true">
+                        <depend id="61" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="61" name="Work with Mac Pros to configure and set up Mountain Lion server for image deployment and SUS, document process." color="#8cb6ce" meeting="false" start="2013-04-15" duration="1" complete="0" expand="true">
+                        <depend id="62" type="2" difference="-1" hardness="Strong"/>
+                        <depend id="63" type="2" difference="-1" hardness="Strong"/>
+                        <depend id="66" type="2" difference="-1" hardness="Strong"/>
+                        <depend id="68" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="62" name="Create and test netboot image for Snow Leopard" color="#8cb6ce" meeting="false" start="2013-04-15" duration="1" complete="0" expand="true">
+                        <depend id="65" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="63" name="Create and test netboot image for Mountain Lion" color="#8cb6ce" meeting="false" start="2013-04-15" duration="1" complete="0" expand="true">
+                        <depend id="64" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="64" name="Create and test a simple test image for Mountain Lion (create image of base OS using DeployStudio, create a test deployment .pkg and a test script, attempt to deploy)" color="#8cb6ce" meeting="false" start="2013-04-15" duration="1" complete="0" expand="true"/>
+                    <task id="65" name="Test deployment of a preexisting Snow Leopard image" color="#8cb6ce" meeting="false" start="2013-04-15" duration="1" complete="0" expand="true"/>
+                    <task id="66" name="Modify Systems' machines' group policy to point to Mountain Lion server for updates, for testing" color="#8cb6ce" meeting="false" start="2013-04-15" duration="1" complete="0" expand="true">
+                        <depend id="67" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="67" name="Test deployment of updates to Systems machines using Absolute Manage" color="#8cb6ce" meeting="false" start="2013-04-15" duration="1" complete="0" expand="true">
+                        <depend id="68" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="68" name="Modify test policy for DTDE0160 to point to Mountain Lion server for updates" color="#8cb6ce" meeting="false" start="2013-04-15" duration="1" complete="0" expand="true">
+                        <depend id="69" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="69" name="Test group policy on DTDE00160 -- Can it see updates, can it download updates, can it apply updates?" color="#8cb6ce" meeting="false" start="2013-04-15" duration="1" complete="0" expand="true">
+                        <depend id="70" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="70" name="Modify all users' machines' group policy to point to Mountain Lion server for updates" color="#8cb6ce" meeting="false" start="2013-04-15" duration="1" complete="0" expand="true"/>
+                </task>
+                <task id="71" name="Group Policy Setup / Planning" meeting="false" start="2013-03-11" duration="4" complete="0" expand="false">
+                    <task id="206" name="Create spreadsheet to track preexisting and new group policies" color="#8cb6ce" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true">
+                        <depend id="72" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="203" name="Can we upgrade console on AVANTI2 to 5.1 without impacting 4.4.0 clients?  Call Centrify." color="#8cb6ce" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="204" name="Remove Centrify 4.4.0 Console from AVANTI2, install Centrify 5.1 console" color="#8cb6ce" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="205" name="Install new Centrify Client (5.1) on Systems Macs for test -- Confirm 'password expiration bug' is resolved" color="#8cb6ce" meeting="false" start="2013-03-11" duration="1" complete="0" expand="true"/>
+                    <task id="72" name="Examine existing group policies.  Are there any settings we would want to change?" meeting="false" start="2013-03-12" duration="1" complete="0" expand="true">
+                        <depend id="73" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="73" name="Determine new group policies since DirectControl 4.4.0.  Are there any new policies we would want to make use of?" meeting="false" start="2013-03-13" duration="1" complete="0" expand="true">
+                        <depend id="74" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="74" name="Once group policies updated; test all policies being applied and make sure it is working properly" meeting="false" start="2013-03-14" duration="1" complete="0" expand="true"/>
+                </task>
+                <task id="75" name="OS and Application Settings Planning" meeting="false" start="2013-03-15" duration="16" complete="0" expand="false">
+                    <depend id="102" type="2" difference="0" hardness="Strong"/>
+                    <task id="76" name="Create spreadsheet list of issues and individual settings for applications" meeting="false" start="2013-03-15" duration="1" complete="100" expand="true">
+                        <depend id="77" type="2" difference="0" hardness="Strong"/>
+                        <depend id="78" type="2" difference="0" hardness="Strong"/>
+                        <depend id="79" type="2" difference="0" hardness="Strong"/>
+                        <depend id="80" type="2" difference="0" hardness="Strong"/>
+                        <depend id="81" type="2" difference="0" hardness="Strong"/>
+                        <depend id="82" type="2" difference="0" hardness="Strong"/>
+                        <depend id="83" type="2" difference="0" hardness="Strong"/>
+                        <depend id="84" type="2" difference="0" hardness="Strong"/>
+                        <depend id="85" type="2" difference="0" hardness="Strong"/>
+                        <depend id="86" type="2" difference="0" hardness="Strong"/>
+                        <depend id="87" type="2" difference="0" hardness="Strong"/>
+                        <depend id="88" type="2" difference="0" hardness="Strong"/>
+                        <depend id="89" type="2" difference="0" hardness="Strong"/>
+                        <depend id="90" type="2" difference="0" hardness="Strong"/>
+                        <depend id="91" type="2" difference="0" hardness="Strong"/>
+                        <depend id="92" type="2" difference="0" hardness="Strong"/>
+                        <depend id="93" type="2" difference="0" hardness="Strong"/>
+                        <depend id="94" type="2" difference="0" hardness="Strong"/>
+                        <depend id="95" type="2" difference="0" hardness="Strong"/>
+                        <depend id="96" type="2" difference="0" hardness="Strong"/>
+                        <depend id="97" type="2" difference="0" hardness="Strong"/>
+                        <depend id="98" type="2" difference="0" hardness="Strong"/>
+                        <depend id="99" type="2" difference="0" hardness="Strong"/>
+                        <depend id="265" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="77" name="Determine standard settings for Mac OS X and Mac OS X standard apps, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                        <depend id="140" type="2" difference="1" hardness="Strong"/>
+                    </task>
+                    <task id="78" name="Determine standard settings for Microsoft Outlook 2011, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                        <depend id="139" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="79" name="Determine standard settings for Microsoft Excel 2011, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                        <depend id="139" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="80" name="Determine standard settings for Microsoft Word 2011, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                        <depend id="139" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="81" name="Determine standard settings for Microsoft Powerpoint 2011, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                        <depend id="139" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="82" name="Determine standard settings for Safari, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="83" name="Determine standard settings for FileMaker Pro 11, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="84" name="Determine standard settings for FileZilla, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="85" name="Determine standard settings 9edge / Terminal, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="86" name="Determine standard settings for Centrify DirectControl, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="87" name="Determine if standard settings for Photoshop CS6 / other CS6 apps can be deployed" meeting="false" start="2013-03-18" duration="1" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="88" name="Determine standard settings for CUPC/Jabber, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                        <depend id="141" type="2" difference="2" hardness="Strong"/>
+                    </task>
+                    <task id="89" name="Determine standard settings for Sophos Anti-virus, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="90" name="Determine standard settings for Universal Type Client, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="91" name="Determine standard settings for Absolute Manage Client, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="92" name="Determine standard settings for i1Profiler, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="93" name="Determine standard settings for VPN Client, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                        <depend id="142" type="2" difference="2" hardness="Strong"/>
+                    </task>
+                    <task id="94" name="Determine standard settings for NEC ImageDirect, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="95" name="Determine standard settings for Wacom Tablet Driver, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="96" name="Determine standard settings for all print drivers -- Bizhub 501, C353, Xerox, Epson, HPLJ4700, HPLJ4200, Training Room, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="97" name="Determine settings to disable updates and administrative functionality for all 3rd party apps, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="98" name="Determine any desktop-specific settings, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="99" name="Determine any laptop-specific settings, and their deployment method" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="100" name="Confirm settings are appropriate with Systems" meeting="false" start="2013-04-01" duration="1" complete="0" expand="true">
+                        <depend id="101" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="101" name="Confirm standard settings for Alpha Config for OS and Applications complete - All settings/issues resolved or deferred in spreadsheet." meeting="false" start="2013-04-02" duration="4" complete="0" expand="true"/>
+                    <task id="265" name="Confirm how to prevent old settings from transferring / being synced" color="#8cb6ce" meeting="false" start="2013-03-18" duration="10" complete="0" expand="true">
+                        <depend id="100" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                </task>
+                <task id="102" name="Image and Process Creation" color="#8cb6ce" meeting="false" start="2013-04-16" duration="6" complete="0" expand="false">
+                    <task id="103" name="Create Post Image Configuration document; any changes that must be implemented manually post-deployment of image, apps and settings should be included/logged." color="#8cb6ce" meeting="false" start="2013-04-16" duration="1" complete="0" expand="true">
+                        <depend id="104" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="104" name="Work with Mac Pros to design standard base image for laptop and desktop" color="#8cb6ce" meeting="false" start="2013-04-16" duration="4" complete="0" expand="true">
+                        <depend id="108" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="105" name="Work with Mac Pros to create deployment packages for applications and settings" color="#8cb6ce" meeting="false" start="2013-04-16" duration="3" complete="0" expand="true">
+                        <depend id="108" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="106" name="Work with Mac Pros to create deployment packages for all printers and determined settings -- Bizhub 501, C353, Xerox, Epson, HPLJ4700, HPLJ4200, Training Room" color="#8cb6ce" meeting="false" start="2013-04-16" duration="2" complete="0" expand="true">
+                        <depend id="108" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="108" name="Determine standard process for image deployment to existing machines with preexisting users; document it" color="#8cb6ce" meeting="false" start="2013-04-19" duration="1" complete="0" expand="true">
+                        <depend id="107" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="107" name="Determine standard process for image deployment to new machines with preexisting users; document it" color="#8cb6ce" meeting="false" start="2013-04-19" duration="1" complete="0" expand="true">
+                        <depend id="109" type="2" difference="-1" hardness="Strong"/>
+                    </task>
+                    <task id="109" name="Determine standard process for image deployment to machines with new users, document it" color="#8cb6ce" meeting="false" start="2013-04-19" duration="1" complete="0" expand="true"/>
+                    <task id="112" name="Determine OS / Application update process for updated configuration, if there are any changes" color="#8cb6ce" meeting="false" start="2013-04-23" duration="1" complete="0" expand="true"/>
+                    <task id="113" name="Determine process to update images and deployment packages going forward, document it" meeting="false" start="2013-04-23" duration="1" complete="0" expand="true"/>
+                    <task id="111" name="Determine standard process for purchasing machines, document it" meeting="false" start="2013-04-23" duration="1" complete="0" expand="true"/>
+                    <task id="110" name="Determine standard process for decommissioning machines, document it" meeting="false" start="2013-04-23" duration="1" complete="0" expand="true"/>
+                </task>
+            </task>
+            <task id="114" name="Image Testing" color="#8cb6ce" meeting="false" start="2013-04-22" duration="25" complete="0" expand="false">
+                <task id="115" name="Design test process/checklist; cover both new user installs and existing user installs" color="#8cb6ce" meeting="false" start="2013-04-22" duration="1" complete="0" expand="true">
+                    <depend id="116" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="116" name="Deploy draft image(s) to test desktop and laptop machines" meeting="false" start="2013-04-23" duration="1" complete="0" expand="true">
+                    <depend id="121" type="2" difference="7" hardness="Strong"/>
+                </task>
+                <task id="117" name="Perform deployment process (existing machine, existing user) and complete test process/checklist" meeting="false" start="2013-04-23" duration="1" complete="0" expand="true">
+                    <depend id="121" type="2" difference="7" hardness="Strong"/>
+                </task>
+                <task id="118" name="Perform deployment process (new machine, existing user) and complete test process/checklist" meeting="false" start="2013-04-23" duration="1" complete="0" expand="true">
+                    <depend id="121" type="2" difference="7" hardness="Strong"/>
+                </task>
+                <task id="119" name="Perform deployment process (new machine, new user) and complete test process/checklist" meeting="false" start="2013-04-23" duration="1" complete="0" expand="true">
+                    <depend id="121" type="2" difference="7" hardness="Strong"/>
+                </task>
+                <task id="120" name="Deploy draft image(s) to one or more Systems users, perform deployment process, complete test process/checklist" meeting="false" start="2013-04-24" duration="1" complete="0" expand="true">
+                    <depend id="121" type="2" difference="7" hardness="Strong"/>
+                </task>
+                <task id="121" name="Work with Mac Pros to implement necessary changes to image / deployment packages determined from Alpha configuration testing" color="#8cb6ce" meeting="false" start="2013-05-06" duration="1" complete="0" expand="true">
+                    <depend id="122" type="2" difference="-1" hardness="Strong"/>
+                </task>
+                <task id="122" name="Create Beta configuration based on changes, update spreadsheet" color="#8cb6ce" meeting="false" start="2013-05-06" duration="1" complete="0" expand="true">
+                    <depend id="123" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="123" name="Deploy Beta configuration to 1-2 users from each department of Creative, Design and Production, following deployment process and completing test process/checklist.  Users test." meeting="false" start="2013-05-07" duration="9" complete="0" expand="true">
+                    <depend id="124" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="124" name="Work with Mac Pros to implement necessary changes to image / deployment packages determined from Beta configuration testing" meeting="false" start="2013-05-20" duration="1" complete="0" expand="true">
+                    <depend id="125" type="2" difference="-1" hardness="Strong"/>
+                </task>
+                <task id="125" name="Create Release/Production configuration based on changes, update spreadsheet" color="#8cb6ce" meeting="false" start="2013-05-20" duration="1" complete="0" expand="true">
+                    <depend id="126" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="126" name="Reimage Beta configuration machines with Release/Production configuration, and perform final test, following deployment process and completing test process/checklist" meeting="false" start="2013-05-21" duration="3" complete="0" expand="true">
+                    <depend id="127" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="127" name="Confirm image testing is complete; and all issues/settings changes in spreadsheet have been either resolved or deferred before proceeding to Image Deployment." meeting="false" start="2013-05-24" duration="1" complete="0" expand="true"/>
+            </task>
+            <task id="137" name="Image Deployment and Training" color="#8cb6ce" meeting="false" start="2013-04-01" duration="73" complete="0" expand="true">
+                <task id="139" name="Create training materials for Office 2011" meeting="false" start="2013-04-01" duration="1" complete="0" expand="true">
+                    <depend id="143" type="2" difference="2" hardness="Strong"/>
+                </task>
+                <task id="140" name="Create training materials for Mac OS X 10.8" color="#8cb6ce" meeting="false" start="2013-04-02" duration="1" complete="0" expand="true">
+                    <depend id="143" type="2" difference="2" hardness="Strong"/>
+                </task>
+                <task id="141" name="Create training materials for CUPC / Jabber (if updated)" color="#8cb6ce" meeting="false" start="2013-04-03" duration="1" complete="0" expand="true">
+                    <depend id="143" type="2" difference="2" hardness="Strong"/>
+                </task>
+                <task id="142" name="Create training materials for VPN client (if updated)" color="#8cb6ce" meeting="false" start="2013-04-03" duration="1" complete="0" expand="true">
+                    <depend id="143" type="2" difference="2" hardness="Strong"/>
+                </task>
+                <task id="266" name="Scheduled training and deployment for Group 1 users; confirmed with dept. heads" color="#8cb6ce" meeting="false" start="2013-04-08" duration="1" complete="0" expand="true"/>
+                <task id="267" name="&quot;Information&quot; section in Mac Refresh Deployment Checklist completed for Group 1" color="#8cb6ce" meeting="false" start="2013-04-08" duration="1" complete="0" expand="true"/>
+                <task id="268" name="Scheduled training and deployment for Group 2 users; confirmed with dept. heads" color="#8cb6ce" meeting="false" start="2013-04-08" duration="1" complete="0" expand="true"/>
+                <task id="269" name="&quot;Information&quot; section in Mac Refresh Deployment Checklist completed for Group 2" color="#8cb6ce" meeting="false" start="2013-04-08" duration="1" complete="0" expand="true"/>
+                <task id="270" name="Scheduled training and deployment for Group 3 users; confirmed with dept heads" color="#8cb6ce" meeting="false" start="2013-04-08" duration="1" complete="0" expand="true"/>
+                <task id="271" name="&quot;Information&quot; section in Mac Refresh Deployment Checklist completed for Group 3" color="#8cb6ce" meeting="false" start="2013-04-08" duration="1" complete="0" expand="true"/>
+                <task id="272" name="Scheduled training and deployment for Group 4 users; confirmed with dept. heads" color="#8cb6ce" meeting="false" start="2013-04-08" duration="1" complete="0" expand="true"/>
+                <task id="274" name="&quot;Information&quot; section in Mac Refresh Deployment Checklist completed for Group 4" color="#8cb6ce" meeting="false" start="2013-04-08" duration="1" complete="0" expand="true"/>
+                <task id="273" name="Schedule flight and hotel stay for Systems in NY" color="#8cb6ce" meeting="false" start="2013-04-08" duration="1" complete="0" expand="true"/>
+                <task id="275" name="Shipping manifest created for NY hardware upgrades, replacement machines, and replacement accessories" color="#8cb6ce" meeting="false" start="2013-04-08" duration="1" complete="0" expand="true"/>
+                <task id="276" name="Shipped NY hardware upgrades, replacement machines and replacement accessories to NY" color="#8cb6ce" meeting="false" start="2013-06-20" duration="7" complete="0" expand="true"/>
+                <task id="277" name="Confirmed NY received all items listed on shipping manifest" color="#8cb6ce" meeting="false" start="2013-07-01" duration="3" complete="0" expand="true"/>
+                <task id="143" name="Schedule use of training room on training dates" color="#8cb6ce" meeting="false" start="2013-04-08" duration="1" complete="0" expand="true"/>
+                <task id="278" name="Group 1 replacement machines base configuration deployed" color="#8cb6ce" meeting="false" start="2013-05-31" duration="1" complete="0" expand="true"/>
+                <task id="279" name="Group 1 trained" color="#8cb6ce" meeting="false" start="2013-05-31" duration="1" complete="0" expand="true"/>
+                <task id="280" name="Group 1 deployed (&quot;Deployment&quot; and &quot;Turnover to User&quot; sections in Mac Refresh Deployment Checklist completed)" color="#8cb6ce" meeting="false" start="2013-05-31" duration="2" complete="0" expand="true"/>
+                <task id="281" name="Group 2 replacement machines base configuration deployed" color="#8cb6ce" meeting="false" start="2013-06-07" duration="1" complete="0" expand="true"/>
+                <task id="282" name="Group 2 trained" color="#8cb6ce" meeting="false" start="2013-06-10" duration="1" complete="0" expand="true"/>
+                <task id="283" name="Group 2 deployed (&quot;Deployment&quot; and &quot;Turnover to User&quot; sections in Mac Refresh Deployment Checklist completed)" color="#8cb6ce" meeting="false" start="2013-06-10" duration="2" complete="0" expand="true"/>
+                <task id="284" name="Group 3 replacement machines base configuration deployed" color="#8cb6ce" meeting="false" start="2013-06-14" duration="1" complete="0" expand="true"/>
+                <task id="285" name="Group 3 trained" color="#8cb6ce" meeting="false" start="2013-06-17" duration="1" complete="0" expand="true"/>
+                <task id="286" name="Group 3 deployed (&quot;Deployment&quot; and &quot;Turnover to User&quot; sections in Mac Refresh Deployment Checklist completed)" color="#8cb6ce" meeting="false" start="2013-06-17" duration="2" complete="0" expand="true"/>
+                <task id="287" name="Group 4 replacement machines base configuration deployed" color="#8cb6ce" meeting="false" start="2013-06-19" duration="1" complete="0" expand="true"/>
+                <task id="288" name="Group 4 trained" color="#8cb6ce" meeting="false" start="2013-07-08" duration="1" complete="0" expand="true"/>
+                <task id="289" name="Group 4 deployed (&quot;Deployment&quot; and &quot;Turnover to User&quot; sections in Mac Refresh Deployment Checklist completed)" color="#8cb6ce" meeting="false" start="2013-07-08" duration="2" complete="0" expand="true"/>
+                <task id="399" name="Multiuser workstations deployed" color="#8cb6ce" meeting="false" start="2013-07-09" duration="4" complete="0" expand="true"/>
+                <task id="396" name="Package up and ship decommissioned items back to Detroit" color="#8cb6ce" meeting="false" start="2013-07-09" duration="4" complete="0" expand="true"/>
+            </task>
+            <task id="148" name="Cleanup / Close" color="#8cb6ce" meeting="false" start="2013-07-15" duration="15" complete="0" expand="true">
+                <task id="150" name="Move decommissioned machines / accessories to 5th floor" meeting="false" start="2013-07-15" duration="5" complete="0" expand="true"/>
+                <task id="151" name="Determine # of hard drives / laptops / desktops that need to be destroyed" meeting="false" start="2013-07-15" duration="5" complete="0" expand="true"/>
+                <task id="152" name="Schedule GEEP pickup of 5th floor items" meeting="false" start="2013-07-15" duration="5" complete="0" expand="true"/>
+                <task id="230" name="GEEP picks up all 5th floor items" color="#8cb6ce" meeting="false" start="2013-07-22" duration="1" complete="0" expand="true"/>
+                <task id="153" name="Confirm # of hard drives / laptops /desktops destroyed with GEEP" meeting="false" start="2013-07-23" duration="9" complete="0" expand="true"/>
+                <task id="154" name="Schedule other systems personnel attempt to deploy the next new machine, to test process and documentation clarity" meeting="false" start="2013-07-15" duration="1" complete="0" expand="true"/>
+                <task id="155" name="Schedule other systems personnel attempt to update the image, to test process and documentation clarity" meeting="false" start="2013-07-15" duration="1" complete="0" expand="true"/>
+                <task id="156" name="Schedule other systems personnel attempt to update the application and settings deployment, to test process and documentation clarity" meeting="false" start="2013-07-15" duration="1" complete="0" expand="true"/>
+            </task>
+        </task>
+    </tasks>
+    <resources>
+        <resource id="0" name="test" function="Default:1" contacts="" phone=""/>
+    </resources>
+    <allocations/>
+    <vacations>
+        <vacation start="2013-02-27" end="2013-03-30" resourceid="0"/>
+    </vacations>
+    <taskdisplaycolumns>
+        <displaycolumn property-id="tpd2" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd7" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd8" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd6" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd10" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd11" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd9" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd1" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd0" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd3" order="0" width="423" visible="true"/>
+        <displaycolumn property-id="tpd4" order="1" width="70" visible="true"/>
+        <displaycolumn property-id="tpd5" order="2" width="67" visible="true"/>
+    </taskdisplaycolumns>
+    <previous/>
+    <roles roleset-name="Default"/>
+    <roles roleset-name="SoftwareDevelopment"/>
+</project>
