@@ -1,0 +1,1 @@
+This folder contains artifacts in progress for Cindy Samano.
