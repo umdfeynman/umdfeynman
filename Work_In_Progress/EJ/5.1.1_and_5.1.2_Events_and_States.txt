@@ -1,0 +1,53 @@
+Ring Up Customer
+	Events
+		5.1.1.1.1  Customer approaches cash register
+		5.1.1.1.2  Customer provides either name/address or account number
+		5.1.1.1.3  Customer doesn't have an account
+		5.1.1.1.4  Customer has an account
+		5.1.1.1.5  Customer has past prescriptions
+		5.1.1.1.6  Customer wants prescriptions refilled
+		5.1.1.1.7  Customer provides item to add to order
+		5.1.1.1.8  Item is in stock
+		5.1.1.1.9  Item is not in stock
+		5.1.1.1.10  Item has item discount
+		5.1.1.1.11  Item does not have item discount
+		5.1.1.1.12  Order is under 4 items
+		5.1.1.1.13  Item has coupled item
+		5.1.1.1.14  Item doesn't have coupled item
+		5.1.1.1.15  Customer wants to purchase coupled item
+		5.1.1.1.16  Customer wants to order more items
+		5.1.1.1.17  Customer has 5 items
+		5.1.1.1.18  Coupled item is in stock
+		5.1.1.1.19  Customer wants to remove an item
+		5.1.1.1.20  Customer wants to complete order
+		5.1.1.1.21  Order verified by secondary cashier
+		5.1.1.1.22  Order not verified by secondary cashier
+		5.1.1.1.23  Customer has a coupon
+		5.1.1.1.24  Customer doesn't have a coupon
+		5.1.1.1.25  Customer's coupon exists
+		5.1.1.1.26  Customer's coupon does not exist
+	States
+		5.1.2.1.1  Displaying customer account lookup screen
+		5.1.2.1.2  Awaiting customer information for account lookup
+		5.1.2.1.3  Creating customer account
+		5.1.2.1.4  Loading customer account
+		5.1.2.1.5  Displaying order screen
+		5.1.2.1.6  Checking refill eligibility
+		5.1.2.1.7  Adding refill-eligible prescriptions to order
+		5.1.2.1.8  Awaiting item to add to order from customer
+		5.1.2.1.9  Checking item stock level at store level
+		5.1.2.1.10  Generating store-level replenishment request for item (no stock at store)
+		5.1.2.1.11  Checking for item discounts
+		5.1.2.1.12  Checking item count 4<
+		5.1.2.1.13  Checking item count 5<
+		5.1.2.1.14  Checking for coupled items
+		5.1.2.1.15  Checking item stock level at store level
+		5.1.2.1.16  Awaiting customer response to removing an item or completing item choices
+		5.1.2.1.17  Awaiting secondary cashier verification on all prescriptions
+		5.1.2.1.18  Awaiting customer response to having a coupon or not
+		5.1.2.1.19  Checking coupon existence
+		5.1.2.1.20  Finalizing transaction
+		5.1.2.1.21  Printing prescription labels
+		5.1.2.1.22  Removing purchased items from stock
+		5.1.2.1.23  Providing filled prescription to customer		
+	
