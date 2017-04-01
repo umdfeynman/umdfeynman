@@ -1,0 +1,22 @@
+
+Drop-down menus for choosing the base and compare branchesUse the base branch dropdown menu to select the branch you'd like to merge your changes into, then use the compare branch drop-down menu to choose the topic branch you made your changes in.
+
+Pull request title and description fieldsType a title and description for your pull request.
+
+Create pull request buttonClick Create pull request.
+
+Tip: After you create a pull request, you can ask a specific person to review your proposed changes. For more information, see "Requesting a pull request review."
+After your pull request has been reviewed, it can be merged into the repository.
+
+Further reading
+
+"Creating a pull request from a fork"
+"Changing the base branch of a pull request"
+"Adding issues and pull requests to a project board from the sidebar"
+ Contact a human
+Article versions
+GitHub.com
+GitHub Enterprise 2.9
+GitHub Enterprise 2.8
+GitHub Enterprise 2.7
+GitHub Enterprise 2.6
