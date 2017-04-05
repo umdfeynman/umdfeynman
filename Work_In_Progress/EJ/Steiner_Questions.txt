@@ -1,0 +1,22 @@
+***STEINER What does "HANDLE" mean in "Handle for transactions in which one or more prescriptions for medicines not in stock."
+***STEINER Is priority 1 highest or lowest?
+1 - highest
+***STEINER Do reports need to provide quantity, dollar amounts, or both?  (Start with 1)both
+***STEINER - What time of day on 4/28
+***STEINER:  Does sequence checking for Create/Delete store need to take into account previous adddeletestore.txt sequence number (Do we need to store this?)
+***STEINER:  Is sequence number for entire batch process or is it per-segment (Create/Delete Store, Update Inventory, etc).
+***Check recording:  What is purpose for date in all the files (YYYY-MM-DD)?  To determine date for transactions?  Do we need to track this for other actions?  Don't need to do anything with date
+
+Ask after class:
+***Check recording for sequence mismatch:  Dump out of entire process or proceed to next batch subprogram?
+	Proceed to next batch subprogram.
+
+***TDD?
+***Algo first, one program, few header files, many
+classes, many methods
+
+STEINER:  Program documents:  White box testing.
+
+- Stop algorithm breakdown, switch to determining tests based on use cases.
+
+// No preexisting database files:  Create and initialize in-memory stuff to 0.
