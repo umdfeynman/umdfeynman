@@ -1,0 +1,118 @@
+Class warehouse_item_data
+{   
+    int item_number; // Key 1
+    int vendor_number;
+    int item_dosage; // mg
+    int coupled_item_number;
+    int item_discount_percent;
+    std::string item_name;
+    int reorder_quantity;  // Default reorder amount
+    int restock_delay;  // Number of days will take be back in stock
+    int quantity;
+};
+Class store_inventory
+{
+    int item_number = 0; // can pull item_data information using this field, Key 1
+    int store_number = 0; // Key 2
+    int quantity = 0; // Quantity on-hand
+    int high_threshold = 0;
+    int low_threshold = 0;
+    int accustock_pct_change = 0;
+    int accustock_direction = 0;
+    int accustock_frequency = 0;
+    int restock_level = 0;  // Y DO DIS?
+    double price = 0.0;
+    int default_quantity = 0;
+    int reorder_level = 0;
+    int reorder_quantity = 0;
+    
+
+    // Initialize in constructor
+
+
+}
+Class store_data
+{
+    char store_status; // D, O, C - Deactivated, open, or closed
+    int store_priority;
+    int store_number; // Key 1
+}
+Class customer
+{
+    int account_number;
+    std::string address;
+    std::string name;   
+    std::vector<int> cust_items;  // Same index as item_dates
+    std::vector<date> item_dates; // Same index as cust_items
+}
+
+Class coupon
+{
+    int coupon_number;
+    int discount_pct;
+}
+Class Transactions
+{
+    int order_number;  // Key 1
+    int originating_cashier_number;
+    int approving_cashier_number;
+    int store_number;
+    *** ADD TO ERD & PERTINENT DATA DIAGRAMS
+    Date transaction_date;
+    int account_number;
+    int discount_pct;  // Discount percent from coupon
+    double grand_total;  // Transaction total after all discounts applied, for easy generation of grand totals in reporting
+    std::vector<int> transaction_item;
+    std::vector<int> transaction_item_quantity;
+    std::vector<double> transaction_item_price;  // Item price after individual item discount 
+}
+
+NOTE:  During batch process, after add/delete stores finishes, sort list by priority.
+std::vector<item_data> item_table;
+std::vector<store_inventory> store_inventory_table;
+
+Reading Steiner Files:
+Class Add_Delete_Store_Event
+{
+    //Date date;  // Per Steiner:  Date not used
+    char action_type; 'A' 'D' 'I' 'C'
+    int store_id;
+    std::string street_address
+    std::string city_name
+    std::string state_name
+    int zip_code;
+    int store_priority_level;
+    int item_code;
+    int store_default_quantity;
+    int store_reorder_level;
+    int store_reorder_quantity;
+    int store_overall_item_count;   
+}
+
+std::vector<Add_Delete_Store_Event> store_update_events;
+foreach event in store_update_events:
+    switch (action_type)
+    {
+        case 'A':
+            Create new store
+            Fill in new store info
+    }
+
+// Sequence number storage for header
+
+*** STORE DATA AS ARRAY OF INT
+                int seqNo[6];
+                sequence_numbers[0] = 23498432; // Previous seq# for adddeletestore.txt
+                // Use globals to refer to array index #define add_delete_store_index
+                Each record:
+                Seq#
+#define adddeletestore 0
+#define storeupdate 1
+#define itemreceived 2
+#define vendororder 3 
+#define items 4
+#define reports 5
+
+std::vector<int> sequence_numbers;
+sequence_numbers[adddeletestore] = ####
+

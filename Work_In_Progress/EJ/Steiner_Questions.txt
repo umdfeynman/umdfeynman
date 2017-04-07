@@ -20,3 +20,16 @@ STEINER:  Program documents:  White box testing.
 - Stop algorithm breakdown, switch to determining tests based on use cases.
 
 // No preexisting database files:  Create and initialize in-memory stuff to 0.
+
+Unanswered:
+
+*** STEINER - If unexpected action code, stop reading file or proceed to next line?
+
+ If "out of order error - ADIC parse fails" - skip iteration and log appropriate error message
+ ///////////////////**** DO WE CONTINUE HERE OR DROP OUT OF THIS BATCH SUBPROGRAM? -- STEINER
+
+ *** STEINER - If count of items does not match item count record stop batch subprogram and move on, or do WHAT?
+
+ *** STEINER - When we read from the storeupdate.txt file during the adddeletestore process should we update the file sequence number?
+
+ *** STEINER - 

@@ -1,0 +1,175 @@
+Offline Batch Process:
+5.  Run Offline Batch Process
+    For each store in store_table
+        If store_status is 'O'
+            Display error message
+            Log error message
+            Return to main menu
+    Try to read file "adddeletestore.txt"
+        Existence check
+            If file does not exist, log & proceed to next batch subprogram
+        Header check
+            If header is bad, log & proceed to next batch subprogram
+            Sequence check
+                If out of sequence, log & proceed to next batch subprogram
+                sequence_numbers[adddeletestore] = <filesequencenumber>                
+        Record check
+            If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number & proceed to next batch subprogram
+            If next line is trailer & trailer says >0 rows, log error & proceed to next batch subprogram
+            Read rows until trailer row, store in num_rows
+    (A) Process records
+        // Input 'cleanup' section
+        If at trailer, proceed to next batch subprogram
+        Switch
+            Case 'A'
+                Create an instance of Add_Delete_Store_Event
+                Store 'A' action_type in Add_Delete_store_Event
+                Read 5 characters
+                Validate positive number
+                // Trim leading zeroes - assuming integer
+                Store store# in Add_Delete_Store_Event
+                Read 20 characters
+                Trim spaces off left & right side
+                *Convert letters to uppercase
+                Store store_address in Add_Delete_Store_Event
+                Read 20 characters
+                Trim spaces off left & right side
+                *Convert letters to uppercase
+                Store city_name in Add_Delete_Store_Event
+                Read 2 characters
+                Validate all letters
+                *Convert letters to uppercase
+                Store state in Add_Delete_Store_Event
+                Read 9 characters
+                Validate all numbers, positive number
+                Store zip in Add_Delete_Store_Event
+                Read 2 characters
+                Validate positive int <16
+                Store priority_level in Add_Delete_Store_Event
+                Push_back Add_Delete_Store_Event instance to storage vector
+                Proceed to next record
+            Case 'D'
+                Store 'D' action_type in Add_Delete_store_Event
+                Read 5 characters
+                Validate positive number
+                // Trim leading zeroes - assuming integer
+                Store store# in Add_Delete_Store_Event
+                Read 20 characters
+                Trim spaces off left & right side
+                *Convert letters to uppercase
+                Store store_address in Add_Delete_Store_Event
+                Read 20 characters
+                Trim spaces off left & right side
+                *Convert letters to uppercase
+                Store city_name in Add_Delete_Store_Event
+                Read 2 characters
+                Validate all letters
+                *Convert letters to uppercase
+                Store state in Add_Delete_Store_Event
+                Read 9 characters
+                Validate all numbers, positive number
+                Store zip in Add_Delete_Store_Event
+                Read 2 characters
+                Validate positive int <16
+                Store priority_level in Add_Delete_Store_Event
+                Push_back Add_Delete_Store_Event instance to storage vector
+                Proceed to next record
+            Case 'I'
+            	Store 'I' action_type in Add_Delete_store_Event
+                Read 9 characters
+                Validate positive number
+                // Trim leading zeroes - assuming integer
+               	Store item_code in Add_Delete_Store_Event
+				Read 10 characters
+                Validate positive number
+                // Trim leading zeroes - assuming integer
+               	Store default_quantity in Add_Delete_Store_Event
+				Read 10 characters
+                Validate positive number
+                // Trim leading zeroes - assuming integer
+               	Store reorder_level in Add_Delete_Store_Event
+				Read 10 characters
+                Validate positive number
+                // Trim leading zeroes - assuming integer
+               	Store reorder_quantity in Add_Delete_Store_Event               
+                Push_back Add_Delete_Store_Event instance to storage vector
+                Proceed to next record
+            Case 'C'
+                Store 'C' action_type in Add_Delete_Store_Event
+                Read 1 character to nowhere (space)
+                Read 4 characters
+                Validate positive number
+                // Trim leading zeroes - assuming integer
+                Store store_overall_item_count in Add_Delete_Store_Event
+                Push_back Add_Delete_Store_Event instance to storage vector
+                Proceed to next record
+            Case 'T'
+                Read 1 character to nowhere (space)
+                Read 4 characters and store in num_rows
+                Count number of items in table vector
+                If number of items <> num_rows, log error "Trailer row count does not match number of rows" and proceed
+            Case default
+                Log error "Invalid action code - <givencode>"
+        // Process actions section
+    (B)     For curr_item = 0 to count of Add_Delete_Store_Event vector items
+            If "out of order error - ADIC parse fails" - skip iteration and log appropriate error message
+ ///////////////////**** DO WE CONTINUE HERE OR DROP OUT OF THIS BATCH SUBPROGRAM? -- STEINER
+            if item.action_type == 'A'
+                Check if store exists
+                    If so, log error "Store already exists"
+                    Go to next iteration -- go to B
+                Create instance of store_data
+                Set store_status to C
+                Set store_priority to item.store_priority_level
+                Set store_number to item.store_id
+                curr_item++
+                inventory_items_counter = 0
+                Create vector of store_inventory items
+                while item.action_type == 'I'
+                    Create instance of store_inventory
+                    inventory_items_counter++
+                    Set store_inventory.item_code to item.item_code
+                    Set store_inventory.store_default_quantity to item.store_default_quantity
+                    Set store_inventory.store_reorder_level to item.store_reorder_level
+                    Set store_inventory.store_reorder_quantity to item.store_reorder_quantity
+                    Push back store_inventory item to store_inventory vector
+                    Reinitialize instance of store_inventory to nothing
+                    curr_item++
+                If item.store_overall_item_count = inventory_items_counter
+                    For each item in vector of store_inventory items
+                        Push back to store_inventory vector table
+                    Push back instance of store_data to store_data table vector
+                Else
+                    Log Error "Number of item records for store does not match count record"
+
+
+        **** LEFT OFF HERE
+                //// NEED TO WRITE OUT FILE FOR "Will cause inventory to be shipped to store location write out a file that will be input into INVENTORY TO STORE REQUEST process"
+
+                Check to see if storeupdate.txt file exists
+                    Header check
+                        If header is bad, log & proceed to next batch subprogram
+                    Sequence check
+                        If out of sequence, log & proceed to next batch subprogram
+                    sequence_numbers[adddeletestore] = <filesequencenumber>
+
+
+
+                Proceed to next batch subprogram
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

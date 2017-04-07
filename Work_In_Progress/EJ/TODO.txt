@@ -1,12 +1,21 @@
 8.3 - Analysis Metrics
-5.1.1 - Events
-5.1.2 - States
-5.2 State Transition Diagrams
 
-Store Manager Use Case
-Store Manager Swimlane Diagram
 
-Use Case Summary
-SPMP
+
+SPMP:
+Task Network Diagram
+Tasks
+Estimates:
+	Tasks
+	Function Point Estimate
+
 
 Presentation
+
+TOUCHUPS:
+	- Store Manager Use Case - Swimlane - Box 1 needs changing to Store Management System
+
+
+SRS (Next Time)
+Store Manager Use Case
+Store Manager Swimlane Diagram
