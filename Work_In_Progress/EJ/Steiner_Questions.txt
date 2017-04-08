@@ -21,8 +21,6 @@ STEINER:  Program documents:  White box testing.
 
 // No preexisting database files:  Create and initialize in-memory stuff to 0.
 
-Unanswered:
-
 *** STEINER - If unexpected action code, stop reading file or proceed to next line?
 
  If "out of order error - ADIC parse fails" - skip iteration and log appropriate error message
@@ -33,3 +31,7 @@ Unanswered:
  *** STEINER - When we read from the storeupdate.txt file during the adddeletestore process should we update the file sequence number?
 
  *** STEINER - 
+
+Unanswered:
+
+ *** STEINER - For a given input file during the entire batch process, should the file sequence number be updated each time the file is read, even if it is read multiple times during a single run of the batch process?  Or should it only be updated the very last time the file is read in the current run of the batch process?
