@@ -3,23 +3,37 @@ Offline Batch Process:
     For each store in store_table
         If store_status is 'O'
             Display error message
-            Log error message
+            Log warning message
             Return to main menu
-    Try to read file "adddeletestore.txt"
-        Existence check
+	
+	// Add/Delete Store Batch Subprocess
+//	Try to read file "adddeletestore.txt"
+        ExistenceCheck
             If file does not exist, log & proceed to next batch subprogram
-        Header check
-            If header is bad, log & proceed to next batch subprogram
-            Sequence check
-                If out of sequence, log & proceed to next batch subprogram
-                sequence_numbers[adddeletestore] = <filesequencenumber>                
-        Record check
-            If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number & proceed to next batch subprogram
-            If next line is trailer & trailer says >0 rows, log error & proceed to next batch subprogram
-            Read rows until trailer row, store in num_rows
+        HeaderCheck
+            If header is bad proceed to next subprogram
+			//	First two characters != 'HD'
+			//	Third character != <space>				
+			// Then log error "Header read failed" & proceed to next batch subprogram				
+		SequenceCheck
+			If out of sequence proceed to next batch subprogram
+			//If out of sequence, log error "Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//& proceed to next batch subprogram
+            //sequence_numbers[adddeletestore] = <filesequencenumber>                
+        TrailerCheck
+			If no rows in file 
+				UpdateSequenceNumber()
+				proceed to next batch subprogram
+			If issue reading trailer proceed to next batch subprogram
+            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
+		
+		Move to record immediately following header
     (A) Process records
-        // Input 'cleanup' section
-        If at trailer, proceed to next batch subprogram
+		If at end of file, proceed to cleanup
+        // Input section
+        // If at trailer, proceed to next batch subprogram
         Switch
             Case 'A'
                 Create an instance of Add_Delete_Store_Event
@@ -29,11 +43,11 @@ Offline Batch Process:
                 // Trim leading zeroes - assuming integer
                 Store store# in Add_Delete_Store_Event
                 Read 20 characters
-                Trim spaces off left & right side
+                Trim spaces off right side
                 *Convert letters to uppercase
                 Store store_address in Add_Delete_Store_Event
                 Read 20 characters
-                Trim spaces off left & right side
+                Trim spaces off right side
                 *Convert letters to uppercase
                 Store city_name in Add_Delete_Store_Event
                 Read 2 characters
@@ -55,11 +69,11 @@ Offline Batch Process:
                 // Trim leading zeroes - assuming integer
                 Store store# in Add_Delete_Store_Event
                 Read 20 characters
-                Trim spaces off left & right side
+                Trim spaces off right side
                 *Convert letters to uppercase
                 Store store_address in Add_Delete_Store_Event
                 Read 20 characters
-                Trim spaces off left & right side
+                Trim spaces off right side
                 *Convert letters to uppercase
                 Store city_name in Add_Delete_Store_Event
                 Read 2 characters
@@ -105,11 +119,12 @@ Offline Batch Process:
                 Proceed to next record
             Case 'T'
                 Read 1 character to nowhere (space)
-                Read 4 characters and store in num_rows
-                Count number of items in table vector
-                If number of items <> num_rows, log error "Trailer row count does not match number of rows" and proceed
+                //Read 4 characters and store in num_rows
+                //Count number of items in table vector
+                //If number of items <> num_rows, log error "Trailer row count does not match number of rows" and proceed
             Case default
                 Log error "Invalid action code - <givencode>"
+				
         // Cleanup section
 		For curr_item = 0 to count of Add_Delete_Store_Event vector items
 				
@@ -141,17 +156,36 @@ Offline Batch Process:
 							curr_item--		
 							
 		(B)	For curr_item = 0 to count of Add_Delete_Store_Event vector items	
-			
+				
+		
+		
+		ExistenceCheck
+			If file exists:
+				HeaderCheck					
+					If header is bad proceed to next batch subprogram
+				SequenceCheck
+					If out of sequence proceed to next batch subprogram				
+				item_count = TrailerCheck
+					If trailer is bad proceed to next batch subprogram
+				DeleteTrailer				
+			If file does not exist:
+				CreateFile("storeupdate.txt", 1)			
+				Set item_count to 0							
+				
 		// Process actions section
 			if item.action_type == 'A'
                 Check if store exists
                     If so, log error "Store already exists"
-					Go to next iteration -- go to B // use continue
+					Increment curr_item until we hit that store's 'C' row, then go to B // use continue					
                 Create instance of store_data
                 Set store_status to C
                 Set store_priority to item.store_priority_level
                 Set store_number to item.store_id
-                curr_item++            
+				Set street_address to item.street_address
+				Set city_name to item.city_name
+				Set state_name to item.state_name
+				Set zip_code to item.zip_code
+                curr_item++
                 Create vector of store_inventory items
                 while item.action_type == 'I'
                     Create instance of store_inventory
@@ -161,46 +195,169 @@ Offline Batch Process:
                     Set store_inventory.store_reorder_quantity to item.store_reorder_quantity
                     Push back store_inventory item to store_inventory vector
                     Reinitialize instance of store_inventory to nothing
+								
+					Write to storeupdate.txt:
+						'A'
+						Leading zeroes + store id
+						Leading zeroes + store priority level
+						Leading zeroes + item code
+						Leading zeroes + requested quantity
+						Carriage return / nextline
+					item_count++
                     curr_item++
 				curr_item++ // Move past "C" record
 				
 				For each item in vector of store_inventory items
 					Push back to store_inventory vector table
 				Push back instance of store_data to store_data table vector
-
-
-        **** LEFT OFF HERE
-                //// NEED TO WRITE OUT FILE FOR "Will cause inventory to be shipped to store location write out a file that will be input into INVENTORY TO STORE REQUEST process"
-								
-				//// 
-
-                Check to see if storeupdate.txt file exists
-					If file exists:
-						Header check
-							If header is bad, log & proceed to next batch subprogram
-						Sequence check
-							If out of sequence, log & proceed to next batch subprogram
-						Read trailer
-						Store row count in row_count
-						Delete trailer
-						For each 
+				
+				std::sort store_data based on store_priority				
+				
+				InsertTrailer(item_count)				
+				Close and save file
+			else if item.action_type == 'D'		
+                Check if store does not exist
+                    If so, log error "Store does not exist" and skip to next line // Use continue			
+				Check if store is already deleted (store_status == 'D')
+					If so, log error "Store has already been deleted" and skip to next line // Use continue
+				Look up store information from store table
+                If store_priority != item.store_priority_level
+				OR	
+                If store_number != item.store_id
+				OR
+				If street_address != item.street_address
+				OR
+				If city_name != item.city_name
+				OR
+				If state_name != item.state_name
+				OR
+				If zip_code != item.zip_code
+					Log error "Data mismatch, deletion aborted"
+				Else
+					Delete the store
+						
+						For each item in store_inventory where store_number = item.store_number
+							Open itemreceived.txt
+							Create a line in itemreceived.txt
+							Delete the item from store_inventory
+							Close itemreceived.txt
+						Set the item in store_data to 'D'
 							
-						
-						
-						
-						sequence_numbers[adddeletestore] = <filesequencenumber>
-						Update file sequence number
-				
-
-				234 -> expecting 235
-				
-				file: 235
-				
-				update sequence number?
-
-                Proceed to next batch subprogram
-
-
+                curr_item++
+            				
+			Proceed to next batch subprogram
+		
+////// En masse inventory item updates
+		//	Try to read file "items.txt"
+        ExistenceCheck
+            If file does not exist, log & proceed to next batch subprogram
+        HeaderCheck
+            If header is bad proceed to next subprogram
+			//	First two characters != 'HD'
+			//	Third character != <space>				
+			// Then log error "Header read failed" & proceed to next batch subprogram				
+		SequenceCheck
+			If out of sequence proceed to next batch subprogram
+			//If out of sequence, log error "Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//& proceed to next batch subprogram
+            //sequence_numbers[adddeletestore] = <filesequencenumber>                
+        TrailerCheck
+			If no rows in file 
+				UpdateSequenceNumber()
+				proceed to next batch subprogram
+			If issue reading trailer proceed to next batch subprogram
+            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
+	
+		Move to record immediately following header
+	(A) Read data from file
+		If at end of file, proceed to cleanup
+        // Input section
+        // If at trailer, proceed to next batch subprogram        
+		Switch
+            Case 'D'
+                Create an instance of Update_Item_Data_Event
+                Store 'D' action_type in Update_Item_Data_Event
+                Read 9 characters
+                Validate positive number
+                // Trim leading zeroes - assuming integer
+				Store item_code in Update_Item_Data_Event instance
+                Push_back Update_Item_Data_Event instance to storage vector
+                Proceed to next record
+            Case 'A'
+                Store 'A' action_type in Update_Item_Data_Event
+                Read 9 characters
+                Validate positive number
+                // Trim leading zeroes - assuming integer
+                Store item_code in Update_Item_Data_Event instance
+                Read 20 characters
+                Trim spaces off right side
+                *Convert letters to uppercase
+                Store item_name in Update_Item_Data_Event instance
+                Read 100 characters
+                Trim spaces off right side
+                *Convert letters to uppercase
+                Store item_description in Update_Item_Data_Event instance
+                Read 20 characters
+				Trim spaces off right side
+				*Convert letters to uppercase
+                Store item_dosage in Update_Item_Data_Event instance
+                Read 10 characters
+                Validate positive number
+				Store warehouse_reorder_level in Update_Item_Data_Event instance
+                Read 4 characters
+                Validate positive number
+                Store vendor_code in Update_Item_Data_Event
+                Read 10 characters
+                Validate positive number
+                Store warehouse_reorder_quantity in Update_Item_Data_Event
+                Read 20 characters
+				Trim spaces off right side
+				*Convert letters to uppercase
+                Store expected_delivery_time in Update_Item_Data_Event instance
+				Push_back Update_Item_Data_Event instance to storage vector
+                Proceed to next record
+            Case 'C'
+            	Store 'C' action_type in Update_Item_Data_Event
+                Read 9 characters
+                Validate positive number
+                // Trim leading zeroes - assuming integer
+                Store item_code in Update_Item_Data_Event instance
+                Read 20 characters
+                Trim spaces off right side
+                *Convert letters to uppercase
+                Store item_name in Update_Item_Data_Event instance
+                Read 100 characters
+                Trim spaces off right side
+                *Convert letters to uppercase
+                Store item_description in Update_Item_Data_Event instance
+                Read 20 characters
+				Trim spaces off right side
+				*Convert letters to uppercase
+                Store item_dosage in Update_Item_Data_Event instance
+                Read 10 characters
+                Validate positive number
+				Store warehouse_reorder_level in Update_Item_Data_Event instance
+                Read 4 characters
+                Validate positive number
+                Store vendor_code in Update_Item_Data_Event
+                Read 10 characters
+                Validate positive number
+                Store warehouse_reorder_quantity in Update_Item_Data_Event
+                Read 20 characters
+				Trim spaces off right side
+				*Convert letters to uppercase
+                Store expected_delivery_time in Update_Item_Data_Event instance
+				Push_back Update_Item_Data_Event instance to storage vector
+                Proceed to next record
+            Case 'T'
+                Read 1 character to nowhere (space)
+                //Read 4 characters and store in num_rows
+                //Count number of items in table vector
+                //If number of items <> num_rows, log error "Trailer row count does not match number of rows" and proceed
+            Case default
+                Log error "Invalid action code - <givencode>"
 
 
 

@@ -1,0 +1,9 @@
+PMACS_Sequence_Module
+
+bool UpdateSequenceNumber(int new_seq_number, int file_index, int seqnumber_arr [6])
+	seqnumber_arr[file_index] = new_seq_number
+int GetSequenceNumber(int file_index, int seqnumber_arr[6]
+	return seqnumber_arr[file_index]
+
+
+	

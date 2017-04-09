@@ -1,0 +1,65 @@
+PMACS_File_Validation
+
+		
+		ofstream CreateFile(std::string file_name, int file_index)
+			ofstream the_file // Create file
+			InsertHeader(the_file, file_index) // Create header
+			Write CR/LF or newline
+			return the_file
+		ifstream ExistenceCheck (std::string file_name) // If good, return file, if failed, return null
+            If file does not exist				
+				log error "Unable to open file"
+				return null
+			If file exists				
+				return file object
+        bool HeaderCheck (success/failure)
+            If header is bad
+				First two characters != 'HD'
+				Third character != <space>				
+				Then log error "Header read failed" & proceed to next batch subprogram
+		bool InsertHeader (ofstream input_file, int file_index) // Pass the #define global file_index_name
+			Write 'HD'
+			Write <space>
+			Write leading zeroes + GetSequenceNumber(file_index, OTHERSTUFF?)
+			Write <6 spaces>
+			Write YYYY-MM-DD
+			Write CR/LF or Newline
+		bool UpdateFileSequenceNumber
+			Go to sequence number in file
+			Write leading zeroes + GetSequenceNumber(file_index, OTHERSTUFF?)		
+		bool SequenceCheck //success/failure
+			If out of sequence, log error "Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			& proceed to next batch subprogram
+            sequence_numbers[adddeletestore] = <filesequencenumber>
+		bool InsertSequence
+			
+        int TrailerCheck // successful - >0 items to process (number of items in file), successful - 0 items to process (0), failure (-1)
+			Move to last line in file
+			If trailer is bad
+				Last line, first character != 'T'
+				Second character != <space>
+				Then log error "Trailer read failed"
+				return -1
+            If second line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            If second line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+			// No issues, count items in file
+			Store trailer row count in row_count
+			Move to 2nd line in file
+			For each non-trailer row
+				item_count++
+			If row_count != item_count
+				Log Error "Row count in storeupdate.txt does not match number of items"
+		bool DeleteTrailer
+			If the last row's first character == 'T'
+				Delete Trailer
+				Make sure we're immediately following the last CR/LF or newline character
+				Return True
+			Return False
+		bool InsertTrailer(num_items)
+			If the last row's first character == 'T'
+				DeleteTrailer			
+			Insert a new line:
+				'T'
+				<space>
+				Leading zeroes + num_items
+	

@@ -36,6 +36,10 @@ Class store_data
     char store_status; // D, O, C - Deactivated, open, or closed
     int store_priority;
     int store_number; // Key 1
+	std::string street_address;
+	std::string city_name;
+	std::string state_name;
+	int zip_code;
 }
 Class customer
 {
@@ -88,6 +92,21 @@ Class Add_Delete_Store_Event
     int store_reorder_quantity;
     int store_overall_item_count;   
 }
+
+class Update_Item_Data_Event
+{
+	char action_type; 'A' 'C' 'D' 'N'
+	int item_code;
+	std::string item_name;
+	std::string item_description;
+	std::string item_dosage;
+	int warehouse_reorder_level;
+	int vendor_code;
+	int warehouse_reorder_quantity;
+	std::string expected_delivery_time;
+	int update_item_action_count; // Number of rows for each 'A' 'C' or 'D'
+}
+
 
 std::vector<Add_Delete_Store_Event> store_update_events;
 foreach event in store_update_events:
