@@ -1,3 +1,6 @@
+**// Track current date and increment each time we successfully complete batch process
+**// Method to 'fake date' for testing refills
+
 Offline Batch Process:
 5.  Run Offline Batch Process
     For each store in store_table

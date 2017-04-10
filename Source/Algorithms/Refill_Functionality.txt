@@ -1,0 +1,74 @@
+Refill Functionality (Ring Up Customer)
+- Customer account loads
+- Check through item_dates on customer
+	- If any item_dates <= current date - 30
+		- Add to list for refills
+	- If list for refills contains items
+		- Display list
+	- Else
+		- Display no refills available
+
+Coupled Items (Ring Up Customer)
+- Customer account loads
+
+
+*********Coupled Items***********************************************************************************************************************************************************    
+Couple Items    //Love is in the air
+    enter itemNumber (IDR WHAT THIS IS)
+    if valid
+        check if item exists
+        if exists
+            check item for coupling
+            if coupled
+                error message; item already coupled
+                return to itemNumber entry
+            else //item has no coupling
+                enter second itemNumber (IDR WHAT THIS IS)
+                if     valid
+                    check item for coupling
+                    if coupled
+                        error message; item already coupled
+                        return to second itemNumber entry
+                    else //item has no coupling
+                        add item2 to item1's coupling
+                        add item1 to item2's coupling
+                        display item coupling message
+                else     //invalid second itemNumber
+                    error message; item does not exist
+                    return to second itemNumber entry
+        else //first itemNumber is invalid
+            error message; item does not exist
+            return to itemNumber entry
+    else    //itemNumber is invalid format        
+        
+        
+
+        //CAN BE SIMPLIFIED ------ Enter one item - if coupled, remove. if not, error
+Decouple Items    //Tragic love ends abruptly    
+    enter itemNumber (IDR WHAT THIS IS)
+    if valid
+        check if item exists
+        if exists
+            enter second itemNumber (IDR WHAT THIS IS)
+            if valid
+                check if item exists
+                if exists
+                    check if item1 coupling is item2
+                    if match
+                        decouple items
+                        display decoupling message
+                    else //items not coupled
+                        error message; items are not coupled
+                        return to second itemNumber entry
+                else    //itemNumber 2 does not exist
+                    error message; item does not exist
+                    return to second itemNumber entry
+            else    //itemNumber is invalid format
+                error message; item does not exist
+                return to itemNumber entry
+        else    //item1 does not exist
+            error message; item does not exist
+            return to itemNumber entry
+    else    //itemNumber is invalid format
+        error message; format not accepted
+        return to itemNumber entry
