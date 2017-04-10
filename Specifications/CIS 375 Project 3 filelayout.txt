@@ -185,6 +185,28 @@ N number of adjustment rows, report error if number of data records is incorrect
 T trailer record, report error if number of data records is incorrect (count does NOT include N records)
 
 
+1.  If we encounter action records without a corresponding "N" trailer row, delete them?
+
+D
+D
+D
+^- Delete these?
+A
+A
+A
+
+
+2.  Back to adddeletestore.txt, should we have deleted the 'I' rows if an A record and I record are good, but C does not match?
+
+A
+I
+I
+I
+^- Delete these?
+D
+
+
+
 HD 0001      2017-03-12
 D000001000
 D301020304
@@ -200,7 +222,7 @@ A000020202name                description                                       
 A203020104name                description                                                                                           dose ..... 
 A350830984name                description                                                                                           dose .....
 A000045045name                description                                                                                           dose .....
-NC 0005
+NA 0005
 T 0012
 
 

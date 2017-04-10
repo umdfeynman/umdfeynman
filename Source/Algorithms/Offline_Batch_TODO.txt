@@ -1,0 +1,2 @@
+- Move 'validate positive number's to Cleanup pass
+- Create globals for field position & length

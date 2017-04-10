@@ -46,9 +46,12 @@ Unanswered:
 
 - Should we assume that in items.txt, action (A,C,D) rows will always be in order specified, and followed by N?  Or do we need to check for out of order rows?
 
-*** 
+- Since items.txt is left justified, if we encounter a row that starts with a space in any field,
+should we log it as an error and process it anyways, or just log it as an error?
 
+- *CALL* regarding itemreceived.txt and "from "external" source or from delete store process above - assume separate files with separate seq numbers"
 
+- For adddeletestore.txt, if we encounter A-I-I-I... but no C, should we process the items in the sequence or just ignore them?
 
-
+- If we get an 'A'
 

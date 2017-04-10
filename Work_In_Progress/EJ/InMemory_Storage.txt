@@ -104,6 +104,7 @@ class Update_Item_Data_Event
 	int vendor_code;
 	int warehouse_reorder_quantity;
 	std::string expected_delivery_time;
+	char specific action_designation; // {A, D, C} immediately following 'N'
 	int update_item_action_count; // Number of rows for each 'A' 'C' or 'D'
 }
 

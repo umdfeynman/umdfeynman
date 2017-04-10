@@ -1,0 +1,9 @@
+adddeletestore_txt_add_
+	store_id 1,5
+	store_address 6,20
+	store_city 26,20
+	store_state 46,2
+	store_zip 48,9
+	store_priority 57,2
+
+<filename>_txt_<actioncode>_<fieldname>

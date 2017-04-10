@@ -48,94 +48,51 @@ Offline Batch Process:
                 Create an instance of Add_Delete_Store_Event
                 Store 'A' action_type in Add_Delete_store_Event
                 input_string = input_line.substr(adddeletestore_txt_a_store_number_pos,adddeletestore_txt_a_store_number_len) // store_number_length is global designating store_number field length
-				if (StringToInt(input_string) < 0)
-					log error "Store number is negative on line [curr_item index]"
-					break				
-				Store store# in Add_Delete_Store_Event
-				input_string = input_line.substr(adddeletestore_txt_a_store_address_pos,adddeletestore_txt_a_store_address_len)				
+				Store store# in Add_Delete_Store_Event                
+				input_string = input_line.substr(adddeletestore_txt_a_store_address_pos,adddeletestore_txt_a_store_address_len)
 				Store store_address in Add_Delete_Store_Event
                 input_string = input_line.substr(adddeletestore_txt_a_store_city_name_pos,adddeletestore_txt_a_store_city_name_len)
 				Store city_name in Add_Delete_Store_Event
                 input_string = input_line.substr(adddeletestore_txt_a_store_state_pos,adddeletestore_txt_a_store_state_len)
-                if (!ValidateAllLetters(input_string))
-					log error "State composed of characters other than letters"
-					break
-				Store state in Add_Delete_Store_Event
+                Store state in Add_Delete_Store_Event
                 input_string = input_line.substr(adddeletestore_txt_a_store_zip_pos,adddeletestore_txt_a_store_zip_len)
-                if (StringToInt(input_string) < 0)
-					log error "Store number is negative on line [curr_item index]"
-					break				
-				Store zip in Add_Delete_Store_Event
+                Store zip in Add_Delete_Store_Event
                 input_string = input_line.substr(adddeletestore_txt_a_store_priority_pos,adddeletestore_txt_a_store_priority_len)
-                if (StringToInt(input_string) < 0)
-					log error "Store number is negative on line [curr_item index]"
-					break				
-				Store priority_level in Add_Delete_Store_Event
+                Store priority_level in Add_Delete_Store_Event
                 Push_back Add_Delete_Store_Event instance to storage vector
                 Proceed to next record
             Case 'D'
-				Create an instance of Add_Delete_Store_Event
                 Store 'D' action_type in Add_Delete_store_Event
                 input_string = input_line.substr(adddeletestore_txt_d_store_number_pos,adddeletestore_txt_d_store_number_len)
-                if (StringToInt(input_string) < 0)
-					log error "Store number is negative on line [curr_item index]"
-					break								
-				Store store# in Add_Delete_Store_Event
-                input_string = input_line.substr(adddeletestore_txt_d_store_address_pos,adddeletestore_txt_d_store_address_len)			
-				Store store_address in Add_Delete_Store_Event
-                input_string = input_line.substr(adddeletestore_txt_d_store_city_name_pos,adddeletestore_txt_d_store_city_name_len)				
-				Store city_name in Add_Delete_Store_Event
+                Store store# in Add_Delete_Store_Event
+                input_string = input_line.substr(adddeletestore_txt_d_store_address_pos,adddeletestore_txt_d_store_address_len)
+                Store store_address in Add_Delete_Store_Event
+                input_string = input_line.substr(adddeletestore_txt_d_store_city_name_pos,adddeletestore_txt_d_store_city_name_len)
+                Store city_name in Add_Delete_Store_Event
                 input_string = input_line.substr(adddeletestore_txt_d_store_state_pos,adddeletestore_txt_d_store_state_len)
-                if (!ValidateAllLetters(input_string))
-					log error "State composed of characters other than letters"
-					break
-				Store state in Add_Delete_Store_Event
+                Store state in Add_Delete_Store_Event
                 input_string = input_line.substr(adddeletestore_txt_d_store_zip_pos,adddeletestore_txt_d_store_zip_len)
-				if (StringToInt(input_string) < 0)
-					log error "Store number is negative on line [curr_item index]"
-					break							
-				Store zip in Add_Delete_Store_Event
+                Store zip in Add_Delete_Store_Event
                 input_string = input_line.substr(adddeletestore_txt_d_store_priority_pos,adddeletestore_txt_d_store_priority_len)
-                int store_int = StringToInt(input_string)
-				if (store_int < 0 || store_int > 15)
-					log error "Priority is negative or greater than 15 on line [curr_item index]"
-					break				
-				Store priority_level in Add_Delete_Store_Event
+                Store priority_level in Add_Delete_Store_Event
                 Push_back Add_Delete_Store_Event instance to storage vector
                 Proceed to next record
             Case 'I'
-            	Create an instance of Add_Delete_Store_Event
-				Store 'I' action_type in Add_Delete_store_Event
+            	Store 'I' action_type in Add_Delete_store_Event
                 input_string = input_line.substr(adddeletestore_txt_i_item_number_pos,adddeletestore_txt_i_item_number_len)
-				if (StringToInt(input_string) < 0)
-					log error "Store number is negative on line [curr_item index]"
-					break				
 				Store item_code in Add_Delete_Store_Event
 				input_string = input_line.substr(adddeletestore_txt_i_store_default_quantity_pos,adddeletestore_txt_i_store_default_quantity_len)
-				if (StringToInt(input_string) < 0)
-					log error "Store number is negative on line [curr_item index]"
-					break				
 				Store default_quantity in Add_Delete_Store_Event
 				input_string = input_line.substr(adddeletestore_txt_i_store_reorder_level_pos,adddeletestore_txt_i_store_reorder_level_len)
-               	if (StringToInt(input_string) < 0)
-					log error "Store number is negative on line [curr_item index]"
-					break				
-				Store reorder_level in Add_Delete_Store_Event
-				input_string = input_line.substr(adddeletestore_txt_i_store_reorder_quantity_pos,adddeletestore_txt_i_store_reorder_quantity_len)
-               	if (StringToInt(input_string) < 0)
-					log error "Store number is negative on line [curr_item index]"
-					break				
-				Store reorder_quantity in Add_Delete_Store_Event               
+               	Store reorder_level in Add_Delete_Store_Event
+				input_string = input_line.substr(adddeletestore_txt_i_store_reorder_quantity_pos,adddeletestore_txt_i__store_reorder_quantity_len)
+               	Store reorder_quantity in Add_Delete_Store_Event               
                 Push_back Add_Delete_Store_Event instance to storage vector
                 Proceed to next record
             Case 'C'
-                Create an instance of Add_Delete_Store_Event
-				Store 'C' action_type in Add_Delete_Store_Event
+                Store 'C' action_type in Add_Delete_Store_Event
                 input_string = input_line.substr(adddeletestore_txt_c_store_overall_item_count_pos,adddeletestore_txt_c_store_overall_item_count_len)
-               	if (StringToInt(input_string) < 0)
-					log error "Store number is negative on line [curr_item index]"
-					break				
-				Store store_overall_item_count in Add_Delete_Store_Event
+               	Store store_overall_item_count in Add_Delete_Store_Event
                 Push_back Add_Delete_Store_Event instance to storage vector
                 Proceed to next record
             Case 'T'
@@ -239,12 +196,132 @@ Offline Batch Process:
 				Else
 					log error "Invalid action code on line [curr_item index]"
 					
+				
+			
+				
 		std::sort store_data based on store_priority				
 		
 		InsertTrailer(item_counter)				
-		Close and save file				
+		Close and save file
+		
+*				TODO:  **// For priority level validate <= 15 & >= 1, otherwise log error & delete
+*				TODO:  **// If any integers are negative, log error & delete			
+				
+		
+		
+		
+
+								
+			// Old "cleanup" section 4/9/2017
+				// If item[curr_item].action_type == 'I'
+					// Log Error "I record encountered out of sequence"
+					// //Delete item[curr_item]
+					// //curr_item--
+				// If item[curr_item].action_type == 'C'
+					// Log Error "C record encountered out of sequence"
+					// //Delete item[curr_item]				
+					// //curr_item--
+				// If item[curr_item].action_type == 'A'
+					// Set item_counter to 0
+					// Set a_record to curr_item
+					// curr_item++
+					// If item[curr_item].action_type != 'I'
+						// Delete item[a_record]
+						// Delete item[curr_item]
+						// Log Error
+					// While (item[curr_item].action_type == 'I')
+						// item_counter++
+						// curr_item++
+					// If item[curr_item].action_type != 'C' || C record item count != item_counter
+						// If item[curr_item].action_type != 'C' Log Error "Action codes A-I-C out of sequence"
+						// If C record item count != item_counter Log Error "Item count does not match C record count"
+						// curr_item-- // Back up one record so we don't delete possibly 'good' record
+						// while (curr_item => a_record)
+							// Delete item[curr_item]
+							// curr_item--	
+							
+		// (B)	For curr_item = 0 to count of Add_Delete_Store_Event vector items	
+				
+		
+		
+				
+		Process actions section
+			// if item.action_type == 'A'
+                // Check if store exists
+                    // If so, log error "Store already exists"
+					// Increment curr_item until we hit that store's 'C' row, then go to B // use continue					
+                // Create instance of store_data
+                // Set store_status to C
+                // Set store_priority to item.store_priority_level
+                // Set store_number to item.store_id
+				// Set street_address to item.street_address
+				// Set city_name to item.city_name
+				// Set state_name to item.state_name
+				// Set zip_code to item.zip_code
+                // curr_item++
+                // Create vector of store_inventory items
+                // while item.action_type == 'I'
+                    // Create instance of store_inventory
+                    // Set store_inventory.item_code to item.item_code
+                    // Set store_inventory.store_default_quantity to item.store_default_quantity
+                    // Set store_inventory.store_reorder_level to item.store_reorder_level
+                    // Set store_inventory.store_reorder_quantity to item.store_reorder_quantity
+                    // Push back store_inventory item to store_inventory vector
+                    // Reinitialize instance of store_inventory to nothing
+								
+					// Write to storeupdate.txt:
+						// 'A'
+						// Leading zeroes + store id
+						// Leading zeroes + store priority level
+						// Leading zeroes + item code
+						// Leading zeroes + requested quantity
+						// Carriage return / nextline
+					// item_count++
+                    // curr_item++
+				// curr_item++ // Move past "C" record
+				
+				// For each item in vector of store_inventory items
+					// Push back to store_inventory vector table
+				// Push back instance of store_data to store_data table vector
+				
+				// std::sort store_data based on store_priority				
+				
+				// InsertTrailer(item_count)				
+				// Close and save file
+				
+				
+			// else if item.action_type == 'D'		
+                // Check if store does not exist
+                    // If so, log error "Store does not exist" and skip to next line // Use continue			
+				// Check if store is already deleted (store_status == 'D')
+					// If so, log error "Store has already been deleted" and skip to next line // Use continue
+				// Look up store information from store table
+                // If store_priority != item.store_priority_level
+				// OR	
+                // If store_number != item.store_id
+				// OR
+				// If street_address != item.street_address
+				// OR
+				// If city_name != item.city_name
+				// OR
+				// If state_name != item.state_name
+				// OR
+				// If zip_code != item.zip_code
+					// Log error "Data mismatch, deletion aborted"
+				// Else
+					// Delete the store
+						
+						// *******TODO
+						// For each item in store_inventory where store_number = item.store_number
+							// Open itemreceived.txt
+							// Create a line in itemreceived.txt
+							// Delete the item from store_inventory
+							// Close itemreceived.txt
+						// Set the item in store_data to 'D'
+							
+                // curr_item++
             				
-		Proceed to next batch subprogram
+			Proceed to next batch subprogram
 		
 ////// En masse inventory item updates
 		//	Try to read file "items.txt"
