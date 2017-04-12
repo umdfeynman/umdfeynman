@@ -1,0 +1,39 @@
+Initialize itemNumber == 0
+Initialize itemName == " "
+while (itemNumber != -1 && itemName != "")
+	Initialize value totalQuantity = 0
+	Prompt to lookup by item name or number
+	Name:
+		Compare space-trimmed, uppercased entry to 
+		warehouse_item_data vector item_name, also space-trimmed and uppercased
+******	Display ALL (possibly multiple, due to dosage) items that match
+	Prompt for item name/number, store in findItem
+	Validate item entry (non-negative, etc)
+	Validate item exists
+	Display item information
+		//Warehouse level
+		Print header:
+			== WAREHOUSE ==
+			Status  Item#  ItemName  Vendor#  Qty  Dosage  Coupled  Discount%  ReorderQty  RestockDelay
+			totalQuantity += item.quantity
+			Output appropriate fields from warehouse_item_data vector
+		// Store level
+		Print header:
+			== STORE == 
+			Status  Item#  Store#  Quantity
+		For each store_data item <store> in store_data table
+			For each store_inventory item <item> in <store>
+				If findItem == item_number
+					totalQuantity += <item>.quantity
+					Output appropriate fields from <item>
+	Print header:
+		== TOTAL QUANTITY: <quantity> ==
+
+	Prompt:  Would you like to modify any of the following fields?
+		1 - Item Status
+		2 - Vendor Number
+		3 - Item Dosage
+		4 - Item Name
+		5 - Warehouse Reorder Quantity
+		6 - Warehouse Restock Delay
+		7
