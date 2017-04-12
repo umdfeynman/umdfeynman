@@ -1,6 +1,7 @@
-Manage Inventory:
+﻿Manage Inventory:
 W	o	Given an item (item number or name) - display item data and inventory (overall and per store), allow update of item values (inventory, price, etc.)
 W	o	Assign/delete inventory items to a store and company level
+- Store replenishment based on reorder level & reorder quantity
 
 View/Update/Close Store
 	o	Request update of store inventory items to specified levels for that store (assume store inventory updated at start of day – this triggers creation of a batch file to run overnight, added to similar functionality below) - Done, Durwin
@@ -8,6 +9,9 @@ W   - Close Store
 	
 Sales Report Creation - Durwin
 	o	Calculate historical sales based on inventory for an individual store or individual item- user will request display per day, by week, by month, or by year (total year if prior years data or year-to-date in current year – be sure to label properly)
+
+AccuStock - 
+
 
 Test Files:
 adddeletestore.txt

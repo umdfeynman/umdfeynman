@@ -1,6 +1,7 @@
 Class warehouse_item_data
 {   
-    int item_number; // Key 1
+    char item_status; 'D' or 'A'
+	int item_number; // Key 1
     int vendor_number;
     int item_dosage; // mg
     int coupled_item_number;
@@ -11,8 +12,9 @@ Class warehouse_item_data
     int quantity;
 };
 Class store_inventory
-{
-    int item_number = 0; // can pull item_data information using this field, Key 1
+{	
+    char item_status; 'D' or 'A'
+	int item_number = 0; // can pull item_data information using this field, Key 1
     int store_number = 0; // Key 2
     int quantity = 0; // Quantity on-hand
     int high_threshold = 0;
@@ -132,6 +134,8 @@ foreach event in store_update_events:
 #define vendororder 3 
 #define items 4
 #define reports 5
+#define returnitems 6
+
 
 std::vector<int> sequence_numbers;
 sequence_numbers[adddeletestore] = ####

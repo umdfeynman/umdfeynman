@@ -40,8 +40,6 @@ STEINER:  Program documents:  White box testing.
 
 How should we handle this?
 
-Unanswered:
-
 - Example for itemreceived.txt
 
 - Should we assume that in items.txt, action (A,C,D) rows will always be in order specified, and followed by N?  Or do we need to check for out of order rows?
@@ -54,4 +52,10 @@ should we log it as an error and process it anyways, or just log it as an error?
 - For adddeletestore.txt, if we encounter A-I-I-I... but no C, should we process the items in the sequence or just ignore them?
 
 - If we get an 'A'
+
+Unanswered:
+
+In the adddeletestore process, when creating the file that will be used to merge into the itemreceived file,
+do we need to account for the file preexisting due to a previous failure that caused the entire process to shut down
+prematurely?
 

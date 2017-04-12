@@ -55,7 +55,7 @@ PMACS_File_Validation
 				Make sure we're immediately following the last CR/LF or newline character
 				Return True
 			Return False
-		bool InsertTrailer(num_items)
+		bool InsertTrailer(ofstream output_file, num_items)
 			If the last row's first character == 'T'
 				DeleteTrailer			
 			Insert a new line:

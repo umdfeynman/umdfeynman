@@ -1,2 +1,7 @@
-- Move 'validate positive number's to Cleanup pass
 - Create globals for field position & length
+- Make sure all "final reads" update sequence numbers
+- Determine default values for all sequence numbers
+- Change code to take into account D/A flags for store_inventory and warehouse_item_data
+- Differing error messages for if an add is attempted and the item number already exists, for
+active and inactive item
+- Functionality to enable inventory manager to activate items
