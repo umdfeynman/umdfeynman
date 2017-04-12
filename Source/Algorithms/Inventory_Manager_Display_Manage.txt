@@ -36,4 +36,4 @@ while (itemNumber != -1 && itemName != "")
 		4 - Item Name
 		5 - Warehouse Reorder Quantity
 		6 - Warehouse Restock Delay
-		7
+		7 - Quantity

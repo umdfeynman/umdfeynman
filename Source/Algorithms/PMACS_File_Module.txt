@@ -62,4 +62,7 @@ PMACS_File_Validation
 				'T'
 				<space>
 				Leading zeroes + num_items
-	
+		bool WriteReturnItemsFile (ofstream output_file, zero-filled vendor number, 
+		zero-filled item code, zero-filled store inventory quantity)
+			ofstream.writeline(vendor_number + item_code + quantity)
+		

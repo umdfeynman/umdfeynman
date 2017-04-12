@@ -20,7 +20,7 @@ Offline Batch Process:
 			// Then log error "Header read failed" & proceed to next batch subprogram				
 		SequenceCheck
 			If out of sequence proceed to next batch subprogram
-			//If out of sequence, log error "Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//If out of sequence, log error "<Batch job name> <Filename> Sequence validation failed, expected [stored_num] but encountered [file_num] " 
 			//& proceed to next batch subprogram
             //sequence_numbers[adddeletestore] = <filesequencenumber>                
         TrailerCheck
@@ -154,7 +154,7 @@ Offline Batch Process:
 				HeaderCheck					
 					If header is bad proceed to next batch subprogram
 				SequenceCheck
-					If out of sequence proceed to next batch subprogram				
+					If out of sequence proceed to next batch subprogram					
 				item_count = TrailerCheck
 					If trailer is bad proceed to next batch subprogram
 				DeleteTrailer				
@@ -174,7 +174,7 @@ Offline Batch Process:
 				else if item[curr_item].action_type == 'I'
 					Log error "'I' record encountered out of sequence"				
 				else if item[curr_item].action_type == 'D'
-					 Check if store does not exist
+					Check if store does not exist
                     If so, log error "Store does not exist" and skip to next line // Use continue			
 					Check if store is already deleted (store_status == 'D')
 						If so, log error "Store has already been deleted" and skip to next line // Use continue
@@ -195,10 +195,13 @@ Offline Batch Process:
 						delete_item_counter++
 												
 						For each item in store_inventory where store_number = curr_item.store_number							
-							Create a line in itemreceived.txt:
-								Zero-filled vendor number (warehouse_item_data.vendor_number)
-								Zero-filled item code (warehouse_item_data.item_number)
-								Zero-filled quantity (store_inventory.quantity)
+							
+							//Create a line in returnitem.txt:
+								//Zero-filled vendor number (warehouse_item_data.vendor_number)
+								//Zero-filled item code (warehouse_item_data.item_number)
+								//Zero-filled quantity (store_inventory.quantity)
+							WriteReturnItems(returnitems_txt, vendor_number, item_code, quantity)
+								
 							Set the item in store_inventory to 'D'							
 						Set the item in store_data to 'D'				
 														
@@ -213,10 +216,14 @@ Offline Batch Process:
 					Set zip_code to item.zip_code
 					Push back instance of store_data to store_data table vector				
 					
+					If last element
+						Log error "Error - End of file reached but no trailer"
+						break
+					
 					Move to next item (curr_item++)
 					Reinitialize item_counter to 0
 					// I mode
-					while item[curr_item].action_type == I && Not last element					
+					while item[curr_item].action_type == I && Not past last element					
 						item_counter++
 						Create instance of store_inventory
 						Set store_inventory.item_code to item.item_code
@@ -232,20 +239,39 @@ Offline Batch Process:
 						Leading zeroes + item code
 						Leading zeroes + requested quantity
 						Carriage return / nextline
-						Move to next item
+						Move to next item (curr_item++)
+					else If (past last element) 
+						log error "No corresponding C for A on line [curr_item index]"
+						break
 					if item[curr_item].action-type == 'C'								
 						If C record item count != item_counter Log error "Item count on line [curr_item index] does not match number of items"
 					else If (trailer)
-						
-					else If (last element && !C) || trailer, log error "No corresponding C for A on line [curr_item index]"
-						break out of for loop
+						Log error "No corresponding control record <linenumber>"
+						break			
 					
+					// THIS SECTION IS SUPER JANKY SO IF WE FIGURE OUT HOW TO DO IT A DIFFERENT WAY
+					// PLEASE DO
+					else if item[curr_item].action_type == 'D'
+						Log error "<action_type> on <line_number> out of sequence"
+						curr_item--
+						**[REFERENCE CODE FROM 'D' SECTION ABOVE]**	- REPEAT
+					else if item[curr_item].action_type == 'A'
+						Log error "<action_type> on <line_number> out of sequence"	
+						curr_item--
+						
 					else If item[curr_item].action_type != 'C'
 						Log error "<action_type> on <line_number> out of sequence"
 				Else If item[curr_item].action_type == 'A' && store does exist
-					log error "Store already exists"				
+					log error "Store already exists"
+				Else If item[curr_item].action-type == 'T' && !(last element)
+					log error "Out of sequence trailer record"
+				Else If item[curr_item].action_type == 'T' && (last element)
+					log "Done processing adddeletestore.txt"				
 				Else
 					log error "Invalid action code on line [curr_item index]"
+					
+				If item[curr_item].action_type != 'T' && (last element)
+					log "Error - End of file reached but no trailer"
 		
 		InsertTrailer(returnitems_txt, delete_item_counter)
 		Close and save returnitems.txt
@@ -255,6 +281,51 @@ Offline Batch Process:
 		Close and save storeupdate.txt	
             				
 		Proceed to next batch subprogram
+		
+////// Merge returnfile.txt & vendororder.txt
+		// Try to read file "returnitems.txt"
+		    If file does not exist, log & proceed to next batch subprogram
+        HeaderCheck
+            If header is bad proceed to next subprogram
+			//	First two characters != 'HD'
+			//	Third character != <space>				
+			// Then log error "Header read failed" & proceed to next batch subprogram				
+		SequenceCheck
+			If out of sequence proceed to next batch subprogram
+			//If out of sequence, log error "<Batch job name> <Filename> Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//& proceed to next batch subprogram
+            //sequence_numbers[adddeletestore] = <filesequencenumber>                
+        TrailerCheck
+			If no rows in file 
+				UpdateSequenceNumber()
+				proceed to next batch subprogram
+			If issue reading trailer proceed to next batch subprogram
+            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
+			
+		// Try to read file "vendororder.txt"
+		    If file does not exist, log & proceed to next batch subprogram
+        HeaderCheck
+            If header is bad proceed to next subprogram
+			//	First two characters != 'HD'
+			//	Third character != <space>				
+			// Then log error "Header read failed" & proceed to next batch subprogram				
+		SequenceCheck
+			If out of sequence proceed to next batch subprogram
+			//If out of sequence, log error "<Batch job name> <Filename> Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//& proceed to next batch subprogram
+            //sequence_numbers[adddeletestore] = <filesequencenumber>                
+        TrailerCheck
+			If no rows in file 
+				UpdateSequenceNumber()
+				proceed to next batch subprogram
+			If issue reading trailer proceed to next batch subprogram
+            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
+		
+		
 		
 ////// En masse inventory item updates
 		//	Try to read file "items.txt"
