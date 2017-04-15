@@ -51,3 +51,11 @@ bool LetterCheck(char test)
     }
     return 0;                                //else it is not accepted as a letter
 };
+
+bool CheckSpaces(std::string input_string, int field_length)
+			Set all_spaces_flag to true
+			For each character in (iterate over field_length characters)
+				If character != <space> 
+					all_spaces_flag == false
+					return all_spaces_flag	
+	

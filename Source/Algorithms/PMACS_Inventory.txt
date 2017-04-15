@@ -1,0 +1,53 @@
+PMACS_Inventory_Update
+
+AddItem
+ChangeItem
+DeleteItem
+MoveItem
+ Store -> Warehouse
+ Warehouse -> Store
+ 
+bool ItemExists(&warehouse_item_data, int item_number)
+	For each item in warehouse_item_data
+		If item.item_number == item_number
+			return true
+	return false
+	
+int findWarehouseItem(&warehouse_item_data, int item_number)
+	For each item in warehouse_item_data
+		If item.item_number == item_number
+			return item.index
+	return -1
+
+bool ItemHasQuantityAtStore(&store_inventory, int item_number)
+	For each thing in store_inventory
+		If thing.item_number == item_number && thing.quantity > 0
+			return true
+	return false
+	
+bool ItemHasQuantityAtWarehouse(&warehouse_item_data, int item_number)
+	For each thing in warehouse_item_data
+		If thing.item_number == item_number && thing.quantity > 0
+			return true
+	return false	
+
+bool deleteItemEverywhere(&store_inventory, &warehouse_item_data, int item_number)
+	If ItemExists(&warehouse_item_data, item_number)					
+		If !ItemHasQuantityAtWarehouse(&warehouse_item_data, item.item_number)		
+			If !ItemHasQuantityAtStore(&store_inventory, item.item_number)
+				For each thing in store_inventory where thing.item_number == item_number
+					thing.status = 'D'
+				For each thing in warehouse_item_data where thing.item_number == item_number
+					thing.status = 'D'					
+				return true
+			Else
+				Log Error "deleteItemEverywhere failed, item <item_number> still has 
+				quantity at stores"
+				return false
+		Else
+			Log Error "deleteItemEverywhere failed, item <item_number> still has quantity
+			at warehouse"
+			return false
+	Else
+		Log Error "deleteItemEverywhere failed, item <item_number> does not exist"
+		return false

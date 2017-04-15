@@ -1,6 +1,15 @@
+TODO:
 **// Track current date and increment each time we successfully complete batch process
-**// Method to 'fake date' for testing refills
-
+**// Method to 'fake date' for testing refills = **// Set system date
+**// RECONCILE ALL NAMES W/ FIND&REPLACE
+**// TYPE CONVERSION:  String to whatever type
+**// CONVERSION FUNCTIONS FOR Event DATA STRUCTURES
+**// "STORE" - IMPLIES TYPE CONVERSION, THIS NEEDS TO BE DONE
+**// AddDeleteStore -- Populate price with randomly generated # between 1.0-40.0
+**// Add warehouse item functionality in online portion pending on Steiner response
+			// *NOTE*:  ONLY TRIM SPACES WHEN EVALUATING... EX:  SEARCH, MATCH, ETC.
+			DO IF TIME:
+			// *NOTE*:  ONLY UPPERCASE WHEN EVALUATING... EX:  SEARCH, MATCH, ETC.
 
 Offline Batch Process:
 5.  Run Offline Batch Process
@@ -74,8 +83,7 @@ Offline Batch Process:
 			// If at trailer, proceed to next batch subprogram
 			Switch input_line[0]
 			// Format of globals for field position & length - <filename>_txt_<actioncode>_<field_name>_pos/len 
-			// *NOTE*:  ONLY TRIM SPACES WHEN EVALUATING... EX:  SEARCH, MATCH, ETC.
-			// *NOTE*:  ONLY UPPERCASE WHEN EVALUATING... EX:  SEARCH, MATCH, ETC.
+
 			// User enters:  Frank
 			// We store:  Frank
 			// We evaluate:  FRANK		
@@ -351,7 +359,9 @@ Offline Batch Process:
 		
 		Create vector of Merge_Vendor_Return_Event
 		
-		Move to record immediately following header
+		Move to record immediately following header for returnitems
+		Move to record immediately following header for vendororder
+		
     (A) Get input from files
 		int item_counter = 0
 		
@@ -416,6 +426,8 @@ Offline Batch Process:
 		InsertTrailer(itemreceived.txt, item_counter)
 		Close itemreceived.txt
 		
+//// itemreceived.txt Inventory Generation
+		
 		// Try to read file "itemreceived.txt"
 		    If file does not exist, log & proceed to next batch subprogram
         HeaderCheck
@@ -437,7 +449,23 @@ Offline Batch Process:
             //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
             // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
 		
-////// Warehouse incoming shipment generation
+		Create vector of Merge_Vendor_Return_Event
+		
+		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
+			Read a line from file as as a string - input_line
+			
+			// Input section
+			// If at trailer, proceed to next batch subprogram				
+			
+			std::string input_string
+			input_string = input_line.substr(returnitems_txt_vendor_code_pos,returnitems_txt_vendor_code_len) // store_number_length is global designating store_number field length
+			Store vendor_code in Merge_Vendor_Return_Event
+			input_string = input_line.substr(returnitems_txt_item_code_pos,returnitems_txt_item_code_len) // store_number_length is global designating store_number field length
+			Store item_code in Merge_Vendor_Return_Event
+			input_string = input_line.substr(returnitems_txt_incoming_quantity_pos,returnitems_txt_incoming_quantity_len) // store_number_length is global designating store_number field length
+			Store incoming_quantity in Merge_Vendor_Return_Event
+			item_counter++	
+		
 		(B)	For curr_item = 0 to count of Merge_Vendor_Return_Event vector items
 	
 		// Item check
@@ -479,18 +507,28 @@ Offline Batch Process:
             // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
 	
 		Move to record immediately following header
+	
+		std::vector<Update_Item_Data_Event> d_event
+		std::vector<Update_Item_Data_Event> a_event
+		std::vector<Change_Data_Event> c_event
+		std::vector<Update_Item_Data_Event> n_event
+	
 	(A) while(ifstream.good() & !eof)  // While we can read from the file and are not at the end		
 			Read a line from file as as a string - input_line
 			// Input section
 			// If at trailer, proceed to next batch subprogram
-			std::string input_string
+			std::string input_string		
+			
 			Switch input_line[0]
 				Case 'D'
 					Create an instance of Update_Item_Data_Event
 					Store 'D' action_type in Update_Item_Data_Event
 					input_string = input_line.substr(items_txt_d_item_number_pos,items_txt_d_item_number_len)
+					if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break
 					Store item_code in Update_Item_Data_Event instance
-					Push_back Update_Item_Data_Event instance to storage vector
+					Push_back Update_Item_Data_Event instance to d_event
 				Case 'A'
 					Store 'A' action_type in Update_Item_Data_Event              
 					input_string = input_line.substr(items_txt_a_item_number_pos,items_txt_a_item_number_len)
@@ -521,69 +559,130 @@ Offline Batch Process:
 					Store warehouse_reorder_quantity in Update_Item_Data_Event
 					input_string = input_line.substr(items_txt_a_expected_delivery_time_pos,items_txt_a_expected_delivery_time_len)
 					Store expected_delivery_time in Update_Item_Data_Event instance
-					Push_back Update_Item_Data_Event instance to storage vector
+					Push_back Update_Item_Data_Event instance to a_event
 				Case 'C'
-					Store 'C' action_type in Update_Item_Data_Event
+					Store 'C' action_type in Change_Data_Event
 					input_string = input_line.substr(items_txt_c_item_number_pos,items_txt_c_item_number_len)
-					Store item_code in Update_Item_Data_Event instance
+					if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break
+					Store item_code in Change_Data_Event instance
 					input_string = input_line.substr(items_txt_c_item_name_pos,items_txt_c_item_name_len)
-					Store item_name in Update_Item_Data_Event instance
+					Store item_name in Change_Data_Event instance
 					input_string = input_line.substr(items_txt_c_item_description_pos,items_txt_c_item_description_len)
-					Store item_description in Update_Item_Data_Event instance
+					Store item_description in Change_Data_Event instance
 					input_string = input_line.substr(items_txt_c_item_dosage_pos,items_txt_c_item_dosage_len)
-					Store item_dosage in Update_Item_Data_Event instance
+					Store item_dosage in Change_Data_Event instance
 					input_string = input_line.substr(items_txt_c_warehouse_reorder_level_pos,items_txt_c_warehouse_reorder_level_len)
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						break
-					Store warehouse_reorder_level in Update_Item_Data_Event instance
+					Store warehouse_reorder_level in Change_Data_Event instance
 					input_string = input_line.substr(items_txt_c_vendor_code_pos,items_txt_c_vendor_code_len)
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						break
-					Store vendor_code in Update_Item_Data_Event
+					Store vendor_code in Change_Data_Event
 					input_string = input_line.substr(items_txt_c_warehouse_reorder_quantity_pos,items_txt_c_warehouse_reorder_quantity_len)
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						break
-					Store warehouse_reorder_quantity in Update_Item_Data_Event
+					Store warehouse_reorder_quantity in Change_Data_Event
 					input_string = input_line.substr(items_txt_c_expected_delivery_time_pos,items_txt_c_expected_delivery_time_len)
-					Store expected_delivery_time in Update_Item_Data_Event instance				
-					Push_back Update_Item_Data_Event instance to storage vector
+					Store expected_delivery_time in Change_Data_Event instance				
+					Push_back Change_Data_Event instance to c_event
 				Case 'T'
 					//Do nothing
 					//Read 4 characters and store in num_rows
 					//Count number of items in table vector
 					//If number of items <> num_rows, log error "Trailer row count does not match number of rows" and proceed
 				Case 'N'
+					if next character is not D,A or C
+						Log Error "Invalid N-type record on line <line>"
+						continue
 					Store 'N' action_type in Update_Item_Data_Event
 					Store specific_action_designation // ie, A records = NA
 					input_string = input_line.substr(items_txt_n_update_item_action_count,items_txt_n_update_item_action_count_len) // Specific action count is number following N that indicates the number of records of that specific action
-					Store update_item_action_count in Update_Item_Data_Event instance			
+					Store update_item_action_count in Update_Item_Data_Event instance
+					Push_back Update_Item_Data_Event instance to n_event
 				Case default
 					Log error "Invalid action code - <givencode> <linenumber>"			
-			Proceed to next record
-			
-		// Cleanup section
-
-		For curr_item = 0 to count of Add_Delete_Store_Event vector items
-*				TODO:  **// If any integers are negative, log error & delete
-			
-		If (CheckSpaces(items.txt, 20)
-					Store "" in Update_Item_Data_Event // Signifies we need to not make a change during processing
+						
+		// ND,NA,NC record count check
+				
+		int NDcount = -1 
+		int NAcount = -1
+		int NCcount = -1
+		For each Update_Item_Data_Event in n_event
+			if n_event.action = 'ND'
+				if NDCount != -1
+					Log Error "Duplicate ND row detected on line <line>"
 				Else
-					Trim spaces off right side
-					*Convert letters to uppercase
-					Store item_name in Update_Item_Data_Event instance
-		
+					NDcount = n_event.update_item_action_count
+			if n_event.action = 'NA'
+				if NAcount != -1
+					Log Error "Duplicate NA row detected on line <line>"
+				Else
+					NAcount = n_event.update_item_action_count
+			if n_event.action = 'NC'
+				if NCcount != -1
+					Log Error "Duplicate NC row detected on line <line>"
+				Else
+					NCcount = n_event.update_item_action_count
+					
+		if NDcount == -1 Log Error ("No ND record in file")
+		if NAcount == -1 Log Error ("No NA record in file")
+		if NCcount == -1 Log Error ("No NC record in file")
 
-		CheckSpaces(std::string input_string, int field_length)
-			Set all_spaces_flag to true
-			For each character in (iterate over field_length characters)
-				If character != <space> 
-					all_spaces_flag == false
-					return all_spaces_flag		
-	
+		if NDcount != d_event.size()
+			Log Error "D record count does not match ND control record count"
+		if NAcount != a_event.size()
+			Log Error "A record count does not match NA control record count"
+		if NCcount != c_event.size()
+			Log Error "C record count does not match NC control record count"
+		
+		// Processing add, delete, change items		
+		
+		For each item in d_event
+			bool returnCode = deleteItemEverywhere(&store_inventory, &warehouse_item_data, item_number)
+			if (!returnCode)
+				Log Error "Failed to delete item <item_number>"
+				
+		For each item in a_event
+			If (!ItemExists)
+				Create an instance of warehouse_item_data
+				instance.item_status = 'A'
+				instance.item_number = item.item_number
+				instance.item_name= item.item_name
+				instance.item_description = item.item_description
+				instance.item_dosage = item.item_dosage
+				instance.reorder_level = item.warehouse_reorder_level
+				instance.vendor_number = item.vendor_number
+				instance.reorder_quantity = item.warehouse_reorder_quantity
+				instance.expected_delivery_time
+				instance.quantity
+				Push_back instance to warehouse_item_data
+			Else
+				Log Error ("Item <item_number> already exists, add denied")
+		
+		For each item in c_event		
+		
+		// Change - check if item exists
+			If (ItemExists(item.item_number))
+				int item_index = findWarehouseItem(&warehouse_item_data, item.item_number)				
+				If !CheckSpaces(item_status, 1) warehouse_item_data[item_index].item_name = item.item_name
+				If !CheckSpaces(item_status, 1) warehouse_item_data[item_index].item_description = item.item_description
+				If !CheckSpaces(item_status, 1) warehouse_item_data[item_index].item_dosage = item.item_dosage
+				If !CheckSpaces(item_status, 1) warehouse_item_data[item_index].reorder_level = StringToInt(item.warehouse_reorder_level)
+				If !CheckSpaces(item_status, 1) warehouse_item_data[item_index].vendor_number = StringToInt(item.vendor_number)
+				If !CheckSpaces(item_status, 1) warehouse_item_data[item_index].reorder_quantity = StringToInt(warehouse_reorder_quantity)
+				If !CheckSpaces(item_status, 1) warehouse_item_data[item_index].expected_delivery_time = item.expected_delivery_time
+				If !CheckSpaces(item_status, 1) warehouse_item_data[item_index].quantity = StringToInt(item.quantity)							
+			Else
+				Log Error ("Item <item_number> already exists, change denied")
+				
+		Close items.txt
+		
 //// Store automated replenishment (qty <= reorder level) AKA Batch Inventory Review
 		
 		CreateFile("batchreplenish.txt", 8)		
@@ -604,13 +703,243 @@ Offline Batch Process:
 					item_counter++					
 		
 		InsertTrailer("batchreplenish.txt" item_counter)
-		Close itemreceived.txt
+		Close batchreplenish.txt
 
-
+/// Merge of addstoreitems, batchreplenish, onlineinvrequest
 		
+	// Try to read file "addstoreitems.txt"
+		    If file does not exist, log & proceed to next batch subprogram
+        HeaderCheck
+            If header is bad proceed to next subprogram
+			//	First two characters != 'HD'
+			//	Third character != <space>				
+			// Then log error "Header read failed" & proceed to next batch subprogram				
+		SequenceCheck
+			If out of sequence proceed to next batch subprogram
+			//If out of sequence, log error "<Batch job name> <Filename> Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//& proceed to next batch subprogram
+            //sequence_numbers[adddeletestore] = <filesequencenumber>                
+        TrailerCheck
+			If no rows in file 
+				UpdateSequenceNumber()
+				proceed to next batch subprogram
+			If issue reading trailer log error
+            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
+			
+		// Try to read file "batchreplenish.txt"
+		    If file does not exist, log & proceed to next batch subprogram
+        HeaderCheck
+            If header is bad proceed to next subprogram
+			//	First two characters != 'HD'
+			//	Third character != <space>				
+			// Then log error "Header read failed" & proceed to next batch subprogram				
+		SequenceCheck
+			If out of sequence proceed to next batch subprogram
+			//If out of sequence, log error "<Batch job name> <Filename> Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//& proceed to next batch subprogram
+            //sequence_numbers[adddeletestore] = <filesequencenumber>                
+        TrailerCheck
+			If no rows in file 
+				UpdateSequenceNumber()
+				proceed to next batch subprogram
+			If issue reading trailer log error
+            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
+			
+		// Try to read file "onlineinvrequest.txt"
+		    If file does not exist, log & proceed to next batch subprogram
+        HeaderCheck
+            If header is bad proceed to next subprogram
+			//	First two characters != 'HD'
+			//	Third character != <space>				
+			// Then log error "Header read failed" & proceed to next batch subprogram				
+		SequenceCheck
+			If out of sequence proceed to next batch subprogram
+			//If out of sequence, log error "<Batch job name> <Filename> Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//& proceed to next batch subprogram
+            //sequence_numbers[adddeletestore] = <filesequencenumber>                
+        TrailerCheck
+			If no rows in file 
+				UpdateSequenceNumber()
+				proceed to next batch subprogram
+			If issue reading trailer log error
+            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
+		
+		Create vector of Merge_Add_Online_Batch_Event
+		
+		Move to record immediately following header for addstoreitems
+		Move to record immediately following header for batchreplenish
+		Move to record immediately following header for onlineinvrequest
+    (A) Get input from files
+		int item_counter = 0
+		
+		// Read from addstoreitems.txt
+		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
+			Read a line from file as as a string - input_line
+			
+			// Input section
+			// If at trailer, proceed to next batch subprogram				
+			
+			std::string input_string
+			Store source_code in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(addstoreitems_txt_store_number_pos,addstoreitems_txt_store_number_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store store_number in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(addstoreitems_txt_store_priority_pos,addstoreitems_txt_store_priority_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store store_priority in Merge_Vendor_Return_Event
+			input_string = input_line.substr(addstoreitems_txt_item_number_pos,addstoreitems_txt_item_number_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store item_number in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(addstoreitems_txt_requested_quantity_pos,addstoreitems_txt_requested_quantity_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store requested_quantity in Merge_Vendor_Return_Event
+			item_counter++
+			
+		// Read from batchreplenish.txt
+		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
+			Read a line from file as as a string - input_line
+			
+			// Input section
+			// If at trailer, proceed to next batch subprogram				
+			
+			std::string input_string
+			Store source_code in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(batchreplenish_txt_store_number_pos,batchreplenish_txt_store_number_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store store_number in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(batchreplenish_txt_store_priority_pos,batchreplenish_txt_store_priority_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store store_priority in Merge_Vendor_Return_Event
+			input_string = input_line.substr(batchreplenish_txt_item_number_pos,batchreplenish_txt_item_number_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store item_number in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(batchreplenish_txt_requested_quantity_pos,batchreplenish_txt_requested_quantity_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store requested_quantity in Merge_Vendor_Return_Event
+			item_counter++
 
+		// Read from onlineinvrequest.txt
+		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
+			Read a line from file as as a string - input_line
+			
+			// Input section
+			// If at trailer, proceed to next batch subprogram				
+			
+			std::string input_string
+			Store source_code in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(onlineinvrequest_txt_store_number_pos,onlineinvrequest_txt_store_number_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store store_number in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(onlineinvrequest_txt_store_priority_pos,onlineinvrequest_txt_store_priority_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store store_priority in Merge_Vendor_Return_Event
+			input_string = input_line.substr(onlineinvrequest_txt_item_number_pos,onlineinvrequest_txt_item_number_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store item_number in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(onlineinvrequest_txt_requested_quantity_pos,onlineinvrequest_txt_requested_quantity_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store requested_quantity in Merge_Vendor_Return_Event
+			item_counter++		
 
+		CreateFile(storeupdate.txt, 2)
+	(B)	For curr_item = 0 to count of Merge_Vendor_Return_Event
+			Write to file:
+						source_code
+						Leading zeroes + store_number
+						Leading zeroes + store_priority
+						Leading zeroes + item_number
+						Leading zeroes + requested_quantity
+						Carriage return / nextline		
+		InsertTrailer(storeupdate.txt, item_counter)
+		Close storeupdate.txt
 
+//// Inventory processing of merged batchreplenish, addstoreitems, onlineinvrequest files
+	
+	// Try to read file "storeupdate.txt"
+		    If file does not exist, log & proceed to next batch subprogram
+        HeaderCheck
+            If header is bad proceed to next subprogram
+			//	First two characters != 'HD'
+			//	Third character != <space>				
+			// Then log error "Header read failed" & proceed to next batch subprogram				
+		SequenceCheck
+			If out of sequence proceed to next batch subprogram
+			//If out of sequence, log error "<Batch job name> <Filename> Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//& proceed to next batch subprogram
+            //sequence_numbers[adddeletestore] = <filesequencenumber>                
+        TrailerCheck
+			If no rows in file 
+				UpdateSequenceNumber()
+				proceed to next batch subprogram
+			If issue reading trailer log error
+            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
+		
+		Create vector of Merge_Add_Online_Batch_Event
+		
+		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
+			Read a line from file as as a string - input_line
+			
+			// Input section
+			// If at trailer, proceed to next batch subprogram				
+			
+			std::string input_string
+			input_string = input_line.substr(returnitems_txt_vendor_code_pos,returnitems_txt_vendor_code_len) // store_number_length is global designating store_number field length
+			Store vendor_code in Merge_Vendor_Return_Event
+			input_string = input_line.substr(returnitems_txt_item_code_pos,returnitems_txt_item_code_len) // store_number_length is global designating store_number field length
+			Store item_code in Merge_Vendor_Return_Event
+			input_string = input_line.substr(returnitems_txt_incoming_quantity_pos,returnitems_txt_incoming_quantity_len) // store_number_length is global designating store_number field length
+			Store incoming_quantity in Merge_Vendor_Return_Event
+			item_counter++	
+		
+		(B)	For curr_item = 0 to count of Merge_Vendor_Return_Event vector items
+	
+		// Item check
+			bool itemFound == false
+			For each wh_item in warehouse_item_data
+				If item[curr_item].item_number == wh_item.item_number
+					If item[curr_item].vendor_number == wh_item.vendor_number
+						wh_item.quantity += item[curr_item].quantity
+						itemFound = true
+						break
+					Else
+						Log Error "Item <Item> found but vendor number <vendor_number> does not match"		
+			If (!itemFound)
+				Log Error "Item <Item> not found"
+				
+		Close itemreceived.txt
+	
 
 
 

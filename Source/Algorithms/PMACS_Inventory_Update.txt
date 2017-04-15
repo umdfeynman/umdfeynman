@@ -1,9 +1,0 @@
-PMACS_Inventory_Update
-
-AddItem
-ChangeItem
-DeleteItem
-MoveItem
- Store -> Warehouse
- Warehouse -> Store
- 

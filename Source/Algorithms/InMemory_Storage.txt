@@ -1,14 +1,16 @@
 Class warehouse_item_data
 {   
     char item_status; 'D' or 'A'
-	int item_number; // Key 1
-    int vendor_number;
-    int item_dosage; // mg
-    int coupled_item_number;
-    int item_discount_percent;
+	int item_number = -1; // Key 1
+    int vendor_number = -1;
+    std::string item_dosage; // mg
+    int coupled_item_number = -1;
+    int item_discount_percent = 0;
     std::string item_name;
-    int reorder_quantity;  // Default reorder amount
-    int restock_delay;  // Number of days will take be back in stock
+	std::string item_description;
+    int reorder_quantity = -1;  // Default reorder amount
+	int reorder_level = -1;  // When warehouse quantity gets below this, order reorder_quantity
+    std::string expected_delivery_time;  // Number of days will take be back in stock
     int quantity;
 };
 Class store_inventory
@@ -27,7 +29,6 @@ Class store_inventory
     int default_quantity = 0;
     int reorder_level = 0;
     int reorder_quantity = 0;
-    
 
     // Initialize in constructor
 
@@ -110,11 +111,35 @@ class Update_Item_Data_Event
 	int update_item_action_count; // Number of rows for each 'A' 'C' or 'D'
 }
 
+class Change_Data_Event
+{
+	std::string action_type; 'A' 'C' 'D' 'N'
+	std::string item_code;
+	std::string item_name;
+	std::string item_description;
+	std::string item_dosage;
+	std::string warehouse_reorder_level;
+	std::string vendor_code;
+	std::string warehouse_reorder_quantity;
+	std::string expected_delivery_time;
+	std::string specific action_designation; // {A, D, C} immediately following 'N'
+	std::string update_item_action_count; // Number of rows for each 'A' 'C' or 'D'
+}
+
 class Merge_Vendor_Return_Event
 {
 	int vendor_code;
 	int item_code;
 	int incoming_quantity;
+}
+
+class Merge_Add_Online_Batch_Event
+{
+	char source_code;
+	int store_number;
+	int store_priority;
+	int item_code;
+	int requested_quantity;	
 }
 
 
