@@ -142,7 +142,9 @@ foreach event in store_update_events:
 #define items 4
 #define reports 5
 #define returnitems 6
-
+#define addstoreitems 7
+#define batchreplenish 8
+#define onlineinvrequest 9
 
 std::vector<int> sequence_numbers;
 sequence_numbers[adddeletestore] = ####

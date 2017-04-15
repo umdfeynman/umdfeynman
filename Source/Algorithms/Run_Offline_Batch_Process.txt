@@ -1,13 +1,47 @@
 **// Track current date and increment each time we successfully complete batch process
 **// Method to 'fake date' for testing refills
 
+
 Offline Batch Process:
 5.  Run Offline Batch Process
-    For each store in store_table
-        If store_status is 'O'
-            Display error message
-            Log warning message
-            Return to main menu
+	
+	void runOfflineBatchProcess
+	{
+
+		
+			For each store in store_table
+				If store_status is 'O'
+					Display error message
+					Log warning message
+					Return to main menu
+	
+		ReturnValue = AddDeleteStore(warehouse_item_data, store_data, etc)
+		if (AddDeleteStore == 1)
+			Log Error "Finished processing AddDeleteStore with Errors"
+		if (AddDeleteStore == -1)
+			Log Error "CRITICAL ERROR - SEQUENCE CHECK FAILED"
+			break
+		if (AddDeleteStore == 0)
+			Log "AddDeleteStore completed successfully"
+		
+		.
+		.
+		.
+		
+		MergeValue = Merge(...)
+		if (Merge == 1)
+		
+		
+	}
+		
+	int AddDeleteStore(&table1, &table2, etc)
+	
+		// Critical error
+			return -1
+		// Non-critical error
+			return 1
+		// Success
+			return 0	
 	
 	// Add/Delete Store Batch Subprocess
 //	Try to read file "adddeletestore.txt"
@@ -27,7 +61,7 @@ Offline Batch Process:
 			If no rows in file 
 				UpdateSequenceNumber()
 				proceed to next batch subprogram
-			If issue reading trailer proceed to next batch subprogram
+			If issue reading trailer log error
             //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
             //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
             // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
@@ -148,19 +182,9 @@ Offline Batch Process:
 				Proceed to next record
         // Cleanup section
 		// Process & Cleanup section
-		
-				ExistenceCheck
-			If file exists:
-				HeaderCheck					
-					If header is bad proceed to next batch subprogram
-				SequenceCheck
-					If out of sequence proceed to next batch subprogram					
-				item_count = TrailerCheck
-					If trailer is bad proceed to next batch subprogram
-				DeleteTrailer				
-			If file does not exist:
-				CreateFile("storeupdate.txt", 1)			
-				Set item_count to 0							
+					
+			CreateFile("addstoreitems.txt", 7)			
+			Set item_count to 0							
 
 		returnitems.txt:
 			CreateFile("returnfile.txt", 6)
@@ -232,7 +256,7 @@ Offline Batch Process:
 						Set store_inventory.store_reorder_quantity to item.store_reorder_quantity
 						Push back store_inventory item to store_inventory table
 													
-						Write to storeupdate.txt:
+						Write to addstoreitems.txt:
 						'A'
 						Leading zeroes + store id
 						Leading zeroes + store priority level
@@ -277,8 +301,8 @@ Offline Batch Process:
 		Close and save returnitems.txt
 		
 		std::sort store_data based on store_priority	
-		InsertTrailer(storeupdate_txt, item_counter)				
-		Close and save storeupdate.txt	
+		InsertTrailer(addstoreitems.txt, item_counter)				
+		Close and save addstoreitems.txt	
             				
 		Proceed to next batch subprogram
 		
@@ -299,7 +323,7 @@ Offline Batch Process:
 			If no rows in file 
 				UpdateSequenceNumber()
 				proceed to next batch subprogram
-			If issue reading trailer proceed to next batch subprogram
+			If issue reading trailer log error
             //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
             //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
             // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
@@ -320,7 +344,7 @@ Offline Batch Process:
 			If no rows in file 
 				UpdateSequenceNumber()
 				proceed to next batch subprogram
-			If issue reading trailer proceed to next batch subprogram
+			If issue reading trailer log error
             //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
             //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
             // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
@@ -389,18 +413,47 @@ Offline Batch Process:
 						Leading zeroes + incoming_quantity
 						"2017-11-17" (hard-coded string) (DURWIN IS NOT ALLOWED TO CODE THIS SECTION)
 						Carriage return / nextline		
-		InsertTrailer(itemreceied.txt, item_counter)
-			
+		InsertTrailer(itemreceived.txt, item_counter)
+		Close itemreceived.txt
+		
+		// Try to read file "itemreceived.txt"
+		    If file does not exist, log & proceed to next batch subprogram
+        HeaderCheck
+            If header is bad proceed to next subprogram
+			//	First two characters != 'HD'
+			//	Third character != <space>				
+			// Then log error "Header read failed" & proceed to next batch subprogram				
+		SequenceCheck
+			If out of sequence proceed to next batch subprogram
+			//If out of sequence, log error "<Batch job name> <Filename> Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//& proceed to next batch subprogram
+            //sequence_numbers[adddeletestore] = <filesequencenumber>                
+        TrailerCheck
+			If no rows in file 
+				UpdateSequenceNumber()
+				proceed to next batch subprogram
+			If issue reading trailer log error
+            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
+		
 ////// Warehouse incoming shipment generation
-				(B)	For curr_item = 0 to count of Merge_Vendor_Return_Event vector items
+		(B)	For curr_item = 0 to count of Merge_Vendor_Return_Event vector items
 	
 		// Item check
-			found_matching_item = false;
+			bool itemFound == false
 			For each wh_item in warehouse_item_data
 				If item[curr_item].item_number == wh_item.item_number
 					If item[curr_item].vendor_number == wh_item.vendor_number
-						found_matching_item = true;
-						break;		
+						wh_item.quantity += item[curr_item].quantity
+						itemFound = true
+						break
+					Else
+						Log Error "Item <Item> found but vendor number <vendor_number> does not match"		
+			If (!itemFound)
+				Log Error "Item <Item> not found"
+				
+		Close itemreceived.txt
 		
 ////// En masse inventory item updates
 		//	Try to read file "items.txt"
@@ -420,14 +473,13 @@ Offline Batch Process:
 			If no rows in file 
 				UpdateSequenceNumber()
 				proceed to next batch subprogram
-			If issue reading trailer proceed to next batch subprogram
+			If issue reading trailer log error
             //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
             //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
             // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
 	
 		Move to record immediately following header
-	(A) while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
-			If at end of file, proceed to cleanup		
+	(A) while(ifstream.good() & !eof)  // While we can read from the file and are not at the end		
 			Read a line from file as as a string - input_line
 			// Input section
 			// If at trailer, proceed to next batch subprogram
@@ -516,60 +568,6 @@ Offline Batch Process:
 
 		For curr_item = 0 to count of Add_Delete_Store_Event vector items
 *				TODO:  **// If any integers are negative, log error & delete
-
-			If first row == D
-				While row action == D 
-					action_counter++
-					Move to next record
-				If no more rows || next row != ND error
-			If first row == A
-				While row action == A 
-					action_counter++
-					Move to next record
-				If no more rows || next row != NA error
-			If first row == C
-				While row action == C 
-					action_counter++
-					Move to next record
-				If no more rows || next row != NC error
-			
-			HD
-			D
-			D
-			D
-			A
-			A
-			A
-			NA
-			
-
-
-				If item[curr_item].action_type == 'I'
-					Log Error "I record encountered out of sequence"
-					Delete item[curr_item]
-					curr_item--
-				If item[curr_item].action_type == 'C'
-					Log Error "C record encountered out of sequence"
-					Delete item[curr_item]				
-					curr_item--
-				If item[curr_item].action_type == 'A'
-					Set item_counter to 0
-					Set a_record to curr_item
-					curr_item++
-					If item[curr_item].action_type != 'I'
-						Delete item[a_record]
-						Delete item[curr_item]
-						Log Error
-					While (item[curr_item].action_type == 'I')
-						item_counter++
-						curr_item++
-					If item[curr_item].action_type != 'C' || C record item count != item_counter
-						If item[curr_item].action_type != 'C' Log Error "Action codes A-I-C out of sequence"
-						If C record item count != item_counter Log Error "Item count does not match C record count"
-						curr_item-- // Back up one record so we don't delete possibly 'good' record
-						while (curr_item => a_record)
-							Delete item[curr_item]
-							curr_item--		
 			
 		If (CheckSpaces(items.txt, 20)
 					Store "" in Update_Item_Data_Event // Signifies we need to not make a change during processing
@@ -579,15 +577,36 @@ Offline Batch Process:
 					Store item_name in Update_Item_Data_Event instance
 		
 
-	CheckSpaces(std::string input_string, int field_length)
-		Set all_spaces_flag to true
-		For each character in (iterate over field_length characters)
-			If character != <space> 
-				all_spaces_flag == false
-				return all_spaces_flag	
+		CheckSpaces(std::string input_string, int field_length)
+			Set all_spaces_flag to true
+			For each character in (iterate over field_length characters)
+				If character != <space> 
+					all_spaces_flag == false
+					return all_spaces_flag		
 	
-			
+//// Store automated replenishment (qty <= reorder level) AKA Batch Inventory Review
 		
+		CreateFile("batchreplenish.txt", 8)		
+		InsertHeader(batchreplenish_txt, 8)			
+	
+		std::vector<store_inventory> store_table (referencing this table)		
+		Int item_counter = 0
+		
+		For each store
+			For each item
+				If (item.quantity <= item.reorder_level)
+					Write:
+						'B'
+						Zero-filled store.store_number
+						Zero-filled store.store_priority
+						Zero-filled item.item_number
+						Zero-filled item.reorder_quantity					
+					item_counter++					
+		
+		InsertTrailer("batchreplenish.txt" item_counter)
+		Close itemreceived.txt
+
+
 		
 
 

@@ -1,0 +1,126 @@
+			D - No A, C, NA, NC, ND
+			A - No NA, NC, C
+			C - No A, NC			
+			ND - No A, C, NA, NC, ND
+			NA - No C, NA, NC
+			NC - No A, NC
+
+D->ND->A->NA->C->NC
+
+char mode = 'D'
+
+UpdateItemData prev = new UpdateItemData
+
+D
+D
+D
+D
+C
+C
+C
+C
+A
+A
+
+Current character is in order
+Current character is acceptable in the current mode
+
+
+
+if 'D' && mode != A,C,NA,NC,ND
+	// Good to go
+	Process
+	mode = 'D'
+Else
+	Log Error "D out of sequence on line <itemnumber>"
+	Process
+if 'ND' && !processedDeletes && !processedActions && !processedChanges && mode != A,C,NA,NC,ND
+	// Good to go
+	Process
+	mode = 'ND'
+	processedDeletes = true
+Else
+	Log Error "ND out of sequence on line <itemnumber>"
+	Process
+	mode = 'ND'
+	processedDeletes = true
+if 'A' && processedDeletes && !processedActions && !processedChanges && mode != NA, NC, C
+	// Good to go
+	Process
+	mode = 'A'
+Else
+	Log Error "A out of sequence on line <itemnumber>"
+	Process
+	mode = 'A'
+	processedDeletes = true	
+
+
+
+	
+
+	D - No A, C, NA, NC, ND
+			A - No NA, NC, C
+			C - No A, NC			
+			ND - No A, C, NA, NC, ND
+			NA - No C, NA, NC
+			NC - No A, NC
+			
+			NC->A
+			"Error:  1 or more rows contain out-of-sequence 'A' records starting at <line>"
+			
+			
+			
+			If first row == D
+				While row action == D 
+					action_counter++
+					Move to next record
+				If no more rows || next row != ND error
+			If first row == A
+				While row action == A 
+					action_counter++
+					Move to next record
+				If no more rows || next row != NA error
+			If first row == C
+				While row action == C 
+					action_counter++
+					Move to next record
+				If no more rows || next row != NC error
+			
+			HD
+			D
+			D
+			D
+			A
+			A
+			A
+			NA
+			
+
+
+				If item[curr_item].action_type == 'I'
+					Log Error "I record encountered out of sequence"
+					Delete item[curr_item]
+					curr_item--
+				If item[curr_item].action_type == 'C'
+					Log Error "C record encountered out of sequence"
+					Delete item[curr_item]				
+					curr_item--
+				If item[curr_item].action_type == 'A'
+					Set item_counter to 0
+					Set a_record to curr_item
+					curr_item++
+					If item[curr_item].action_type != 'I'
+						Delete item[a_record]
+						Delete item[curr_item]
+						Log Error
+					While (item[curr_item].action_type == 'I')
+						item_counter++
+						curr_item++
+					If item[curr_item].action_type != 'C' || C record item count != item_counter
+						If item[curr_item].action_type != 'C' Log Error "Action codes A-I-C out of sequence"
+						If C record item count != item_counter Log Error "Item count does not match C record count"
+						curr_item-- // Back up one record so we don't delete possibly 'good' record
+						while (curr_item => a_record)
+							Delete item[curr_item]
+							curr_item--		
+		
