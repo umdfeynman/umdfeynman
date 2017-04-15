@@ -1,0 +1,18 @@
+8.3 - Analysis Metrics
+
+SPMP:
+Task Network Diagram
+Tasks
+Estimates:
+	Tasks
+	Function Point Estimate
+
+
+Presentation
+
+TOUCHUPS:
+	- Store Manager Use Case - Swimlane - Box 1 needs changing to Store Management System
+
+SRS (Next Time)
+Store Manager Use Case
+Store Manager Swimlane Diagram

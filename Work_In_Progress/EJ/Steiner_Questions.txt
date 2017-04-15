@@ -1,0 +1,61 @@
+***STEINER What does "HANDLE" mean in "Handle for transactions in which one or more prescriptions for medicines not in stock."
+***STEINER Is priority 1 highest or lowest?
+1 - highest
+***STEINER Do reports need to provide quantity, dollar amounts, or both?  (Start with 1)both
+***STEINER - What time of day on 4/28
+***STEINER:  Does sequence checking for Create/Delete store need to take into account previous adddeletestore.txt sequence number (Do we need to store this?)
+***STEINER:  Is sequence number for entire batch process or is it per-segment (Create/Delete Store, Update Inventory, etc).
+***Check recording:  What is purpose for date in all the files (YYYY-MM-DD)?  To determine date for transactions?  Do we need to track this for other actions?  Don't need to do anything with date
+
+Ask after class:
+***Check recording for sequence mismatch:  Dump out of entire process or proceed to next batch subprogram?
+	Proceed to next batch subprogram.
+
+***TDD?
+***Algo first, one program, few header files, many
+classes, many methods
+
+STEINER:  Program documents:  White box testing.
+
+- Stop algorithm breakdown, switch to determining tests based on use cases.
+
+// No preexisting database files:  Create and initialize in-memory stuff to 0.
+
+*** STEINER - If unexpected action code, stop reading file or proceed to next line?
+
+ If "out of order error - ADIC parse fails" - skip iteration and log appropriate error message
+ ///////////////////**** DO WE CONTINUE HERE OR DROP OUT OF THIS BATCH SUBPROGRAM? -- STEINER
+
+ *** STEINER - If count of items does not match item count record stop batch subprogram and move on, or do WHAT?
+
+ *** STEINER - When we read from the storeupdate.txt file during the adddeletestore process should we update the file sequence number?
+
+ *** STEINER - For a given input file during the entire batch process, should the file sequence number be updated each time the file is read, even if it is read multiple times during a single run of the batch process?  Or should it only be updated the very last time the file is read in the current run of the batch process?
+
+*** STEINER - If during the adddeletestore process, we fail to write to the storeupdate.txt file
+	- Should we leave the same adddelestore.txt sequence number in our data? (so it gets processed again)
+	- If not, we should update the adddeletestore.txt sequence number, but what should we do as far as the store's inventory?
+
+*** STEINER - For itemreceived.txt, you state "Assume separate files with separate seq numbers" for "external" source vs delete from store process, but down below you specify the file as itemreceived.txt (only one file).
+
+How should we handle this?
+
+- Example for itemreceived.txt
+
+- Should we assume that in items.txt, action (A,C,D) rows will always be in order specified, and followed by N?  Or do we need to check for out of order rows?
+
+- Since items.txt is left justified, if we encounter a row that starts with a space in any field,
+should we log it as an error and process it anyways, or just log it as an error?
+
+- *CALL* regarding itemreceived.txt and "from "external" source or from delete store process above - assume separate files with separate seq numbers"
+
+- For adddeletestore.txt, if we encounter A-I-I-I... but no C, should we process the items in the sequence or just ignore them?
+
+- If we get an 'A'
+
+Unanswered:
+
+In the adddeletestore process, when creating the file that will be used to merge into the itemreceived file,
+do we need to account for the file preexisting due to a previous failure that caused the entire process to shut down
+prematurely?
+

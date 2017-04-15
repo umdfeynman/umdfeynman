@@ -1,0 +1,16 @@
+Customer file:
+account_number,address,name{item1,item2,item3} OR {} if no prescriptions
+
+Transaction file:
+order_number,originating_cashier_number,approving_cashier_number,store_number,transaction_date,account_number,discount_pct,grand_total
+{transaction_item_1,transaction_item_2,...}
+{transaction_item_quantity_1,transaction_item_quantity_2,...}
+{transaction_item_price_1,transaction_item_price_2,...}
+
+Warehouse_item_data file:
+item_number,store_number,quantity,high_threshold,low_threshold,default_level,accutock_pct_change,accustock_direction,accustock_frequency,restock_level,price
+
+Store file:
+store_number,priority,status
+After read, sort by priority.
+
