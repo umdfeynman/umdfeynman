@@ -325,7 +325,82 @@ Offline Batch Process:
             //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
             // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
 		
+		Create vector of Merge_Vendor_Return_Event
 		
+		Move to record immediately following header
+    (A) Get input from files
+		int item_counter = 0
+		
+		// Read from returnitems.txt
+		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
+			Read a line from file as as a string - input_line
+			
+			// Input section
+			// If at trailer, proceed to next batch subprogram				
+			
+			std::string input_string
+			input_string = input_line.substr(returnitems_txt_vendor_code_pos,returnitems_txt_vendor_code_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store vendor_code in Merge_Vendor_Return_Event
+			input_string = input_line.substr(returnitems_txt_item_code_pos,returnitems_txt_item_code_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store item_code in Merge_Vendor_Return_Event
+			input_string = input_line.substr(returnitems_txt_incoming_quantity_pos,returnitems_txt_incoming_quantity_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store incoming_quantity in Merge_Vendor_Return_Event
+			item_counter++
+		
+		// Read from vendororder.txt
+		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
+			Read a line from file as as a string - input_line
+			
+			// Input section
+			// If at trailer, proceed to next batch subprogram
+				
+			std::string input_string
+			input_string = input_line.substr(vendororder_txt_vendor_code_pos,vendororder_txt_vendor_code_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break
+			Store vendor_code in Merge_Vendor_Return_Event
+			input_string = input_line.substr(vendororder_txt_item_code_pos,vendororder_txt_item_code_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break		
+			Store item_code in Merge_Vendor_Return_Event
+			input_string = input_line.substr(vendororder_txt_incoming_quantity_pos,vendororder_txt_incoming_quantity_len) // store_number_length is global designating store_number field length
+			if (StringToInt(input_string) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						break			
+			Store incoming_quantity in Merge_Vendor_Return_Event
+			item_counter++
+					
+		CreateFile(itemreceived.txt, 2)
+	(B)	For curr_item = 0 to count of Merge_Vendor_Return_Event
+			Write to file:
+						Leading zeroes + vendor_code
+						Leading zeroes + item_code
+						Leading zeroes + incoming_quantity
+						"2017-11-17" (hard-coded string) (DURWIN IS NOT ALLOWED TO CODE THIS SECTION)
+						Carriage return / nextline		
+		InsertTrailer(itemreceied.txt, item_counter)
+			
+////// Warehouse incoming shipment generation
+				(B)	For curr_item = 0 to count of Merge_Vendor_Return_Event vector items
+	
+		// Item check
+			found_matching_item = false;
+			For each wh_item in warehouse_item_data
+				If item[curr_item].item_number == wh_item.item_number
+					If item[curr_item].vendor_number == wh_item.vendor_number
+						found_matching_item = true;
+						break;		
 		
 ////// En masse inventory item updates
 		//	Try to read file "items.txt"

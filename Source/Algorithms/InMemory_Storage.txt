@@ -110,6 +110,13 @@ class Update_Item_Data_Event
 	int update_item_action_count; // Number of rows for each 'A' 'C' or 'D'
 }
 
+class Merge_Vendor_Return_Event
+{
+	int vendor_code;
+	int item_code;
+	int incoming_quantity;
+}
+
 
 std::vector<Add_Delete_Store_Event> store_update_events;
 foreach event in store_update_events:
