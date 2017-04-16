@@ -18,9 +18,13 @@ PMACS_File_Validation
 				Third character != <space>				
 				Then log error "Header read failed" & proceed to next batch subprogram
 		bool InsertHeader (ofstream input_file, int file_index) // Pass the #define global file_index_name
+						
 			Write 'HD'
 			Write <space>
 			Write leading zeroes + GetSequenceNumber(file_index, OTHERSTUFF?)
+		
+			// DURWIN TO WRITE GETHEADER, takes sequenceNumber & recordlength & returns header as string, simplify this section	
+			
 			Write <6 spaces>
 			Write YYYY-MM-DD
 			Write CR/LF or Newline

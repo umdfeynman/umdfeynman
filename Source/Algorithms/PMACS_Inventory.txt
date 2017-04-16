@@ -13,9 +13,21 @@ bool ItemExists(&warehouse_item_data, int item_number)
 			return true
 	return false
 	
+bool ItemExistsAtStore(&store_inventory, int item_number)
+	For each item in store_inventory
+		If item.item_number == item_number
+			return true
+	return false
+	
 int findWarehouseItem(&warehouse_item_data, int item_number)
 	For each item in warehouse_item_data
 		If item.item_number == item_number
+			return item.index
+	return -1
+
+int findStoreItem(&store_inventory, int item_number, int store_number)
+	For each item in store_inventory
+		If item.item_number == item_number && item.store_number == store_number
 			return item.index
 	return -1
 

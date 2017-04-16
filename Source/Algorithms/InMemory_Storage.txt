@@ -140,6 +140,12 @@ class Merge_Add_Online_Batch_Event
 	int requested_quantity;	
 }
 
+class vendor_report_vendor
+{
+	int vendor_number;
+	std::vector<warehouse_item_level> vendor_report_items
+}
+
 
 std::vector<Add_Delete_Store_Event> store_update_events;
 foreach event in store_update_events:

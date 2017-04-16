@@ -14,7 +14,18 @@ TODO:
 		// High Threshold = 1.15 * reorder_level
 		// Low Threshold = 0.85 * reorder_level
 **// Implement 'empty months' in sales reports
-			
+**// Make sure any 'default' values in data structures are pre-initialized (constructors?)
+**// Validation for field length & central storage of field name, type, length
+**// Did we check to make sure items were active (vs deactivated)?  Double check
+**// Online inventory request & add delete store inventory allocation produce 'recycle' files which get included as input in the warehouse to store
+	inventory generation merge process
+**// Separate vendor report generation & order generation into two functions
+**// Make sure "C" record in adddeletestore and "NA,NC,ND" in items.txt don't count for Trailer
+**// Make sure header adds spaces to fill out record size
+**// Double check handling for "empty files" row count = 0
+**// Zero-fill function for strings
+**// Space-fill function for strings
+**// Sequence number rollover
 			
 Offline Batch Process:
 5.  Run Offline Batch Process
@@ -260,6 +271,11 @@ Offline Batch Process:
 					// I mode
 					while item[curr_item].action_type == I && Not past last element					
 						item_counter++
+						
+						If !ItemExists(warehouse_item_data, item_number)
+							Log Error ("Add item to store failed - item does not exist")
+							continue						
+						
 						Create instance of store_inventory
 						Set store_inventory.item_code to item.item_code
 						Set store_inventory.store_default_quantity to item.store_default_quantity
@@ -272,7 +288,7 @@ Offline Batch Process:
 						Leading zeroes + store id
 						Leading zeroes + store priority level
 						Leading zeroes + item code
-						Leading zeroes + requested quantity
+						Leading zeroes + default_quantity
 						Carriage return / nextline
 						Move to next item (curr_item++)
 					else If (past last element) 
@@ -311,7 +327,7 @@ Offline Batch Process:
 		InsertTrailer(returnitems_txt, delete_item_counter)
 		Close and save returnitems.txt
 		
-		std::sort store_data based on store_priority	
+		//std::sort store_data based on store_priority	-> Moved to Store Inventory Generation
 		InsertTrailer(addstoreitems.txt, item_counter)				
 		Close and save addstoreitems.txt	
             				
@@ -953,12 +969,14 @@ Offline Batch Process:
 			input_string = input_line.substr(storeupdate_txt_requested_quantity_pos,storeupdate_txt_requested_quantity_len) // store_number_length is global designating store_number field length
 			Store requested_quantity in Merge_Add_Online_Batch_Event
 		
+		std::sort Merge_Add_Online_Batch_Event based on store_priority (1 = highest)		
+		
 		(B)	For curr_item = 0 to count of Merge_Add_Online_Batch_Event vector items				
 				int store_index = FindStore(store_data, int store_number)				
 				if (store_index == -1)
 					Log Error "Store <store_number> does not exist"
 					continue
-				int store_item_index = FindStoreItem(store_inventory, int item_number)
+				int store_item_index = FindStoreItem(store_inventory, item_number)
 				if (store_item_index == -1)
 					Log Error "Item <item_number> does not exist at store <store_number>"
 					continue
@@ -966,6 +984,7 @@ Offline Batch Process:
 					Log Error "Item <item_number> priority does not match store <store_number>'s"
 					continue
 				store_inventory[store_item_index].quantity = item.quantity
+				
 				
 		Close storeupdate.txt
 	
@@ -975,18 +994,92 @@ Offline Batch Process:
 	InsertHeader(vendorrequest_txt, 8)			
 
 	std::vector<warehouse_item_data> wh_table (referencing this table)		
-	Int item_counter = 0	
-	
+	Int item_counter = 0
+		
+	std::vector<vendor_report_vendor> vendors
+
 	For each item
 		If (item.quantity <= item.reorder_level)
+			
+			int vendor_index = -1
+			For each thing in vendors
+				If item.vendor_number == thing.vendor_number
+					vendor_index = thing.index
+				Else
+					Create instance of vendor_report_vendor vrv_i
+					vrv_i.vendor_number = item.vendor_number
+					Push_back vrv_i to vendors
+					vendor_index = vendors.size() - 1
+				Push_back item to vendors[vendor_index].vendor_report_items		
 			Write:				
 				Zero-filled item.vendor_number
 				Zero-filled item.item_number
 				Zero-filled item.reorder_quantity
-			item_counter++					
+			item_counter++		
 
 	InsertTrailer("batchreplenish.txt" item_counter)
 	Close vendorrequest.txt
+	
+	For each thing in vendors
+		std::sort (thing.vendor_report_items by thing.vendor_report_items.expected_delivery_time)
+	
+	std::sort vendors by vendor_number
+
+	Create report file "vendororderreport.txt"
+	
+	Output Header:
+		Vendor Order Report
+		Date?
+		Vendor# <tab> Item Number <tab> Reorder Quantity <tab> Expected Delivery Time
+	
+	For each thing in vendors
+		Output "Vendor <thing.vendor_number>: "		
+		
+		For each item in thing.vendor_report_items
+			Output "<tab> <thing.vendor_report_items.item_number>
+			<thing.vendor_report_items.reorder_quantity>
+			<thing.report_items.expected_delivery_time>"
+		
+		
+			
+	
+	
+	
+
+////  Vendor order report generation
+	
+	// Try to read file "vendorrequest.txt"
+		    If file does not exist, log & proceed to next batch subprogram
+        HeaderCheck
+            If header is bad proceed to next subprogram
+			//	First two characters != 'HD'
+			//	Third character != <space>				
+			// Then log error "Header read failed" & proceed to next batch subprogram				
+		SequenceCheck
+			If out of sequence proceed to next batch subprogram
+			//If out of sequence, log error "<Batch job name> <Filename> Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//& proceed to next batch subprogram
+            //sequence_numbers[adddeletestore] = <filesequencenumber>                
+        TrailerCheck
+			If no rows in file 
+				UpdateSequenceNumber()
+				proceed to next batch subprogram
+			If issue reading trailer log error
+            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
+		
+	std::vector<int> report_items
+	while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
+			Read a line from file as as a string - input_line
+			
+			// Input section
+			// If at trailer, proceed to next batch subprogram				
+			
+			if (StringToInt(input_line) < 0)
+						log error "Store number is negative on line [curr_item index]"
+						continue		
+			Store input_line in report_items
 
 //// Yearly Sales Report generation
 

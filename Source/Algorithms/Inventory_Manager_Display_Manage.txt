@@ -5,6 +5,8 @@
 
 3? - Manage Inventory
 
+		1 - Modify Item Data
+		
 Initialize itemNumber == 0
 Initialize itemName == " "
 while (itemNumber != -1 && itemName != "")
@@ -22,13 +24,13 @@ while (itemNumber != -1 && itemName != "")
 		//Warehouse level
 		Print header:
 			== WAREHOUSE ==
-			Status  Item#  ItemName  Vendor#  Qty  Dosage  Coupled  Discount%  ReorderQty  RestockDelay
+			Item# Status  ItemName  Vendor#  Qty  Dosage  Coupled  Discount%  ReorderQty  RestockDelay
 			totalQuantity += item.quantity
 			Output appropriate fields from warehouse_item_data vector
 		// Store level
 		Print header:
 			== STORE == 
-			Status  Item#  Store#  Quantity
+			Item# Store# Status Quantity
 		For each store_data item <store> in store_data table
 			For each store_inventory item <item> in <store>
 				If findItem == item_number
@@ -106,13 +108,112 @@ while (itemNumber != -1 && itemName != "")
 				warehouse_item_data[item_index].reorder_level = entry_num
 			Case '8'
 				Prompt: "Please enter a new base price" -> entry
-**** NEED TO WRITE FUNC		entry_num = DoubleToInt(entry)
+				entry_num = StringToDouble(entry)
 				Validate positive & less than 9999.99, greater than 0
 				If not
 					Display error
 					Break
 				warehouse_item_data[item_index].price = entry_num
-			
 				
+		2 - Assign/Remove Item from one store
+			Display menu & get user input:
+			1 - Assign
+			2 - Remove
+			3 - Exit				
+				
+				1 - Assign
+				
+				Prompt for store number -> store_num_string
+				Validate input (Non-negative, 1-99999)
+				Validate existence (store exists)
+				Convert from string to num -> store_num
+				Prompt for item number -> item_num_string
+				Validate input (Non-negative, 1-999999999
+				int wh_index = findWarehouseItem(warehouse_item_data, item_num)
+				if (wh_index == -1)
+					Display Error "Item <item_num> not found at warehouse"
+					break				
+				int store_index = findStoreItem(store_inventory, item_num, store_num)
+				if (store_index != -1)
+					Display Error "Item <item_num> already exists at store <store_num>"
+					break								
+				Convert from string to num -> item_num
+				Create instance of store_inventory  // Any fields not included should use defaults
+					Write:
+					item_status = 'A'
+					item_number = item_num
+					store_number = store_num
+					Prompt for default_quantity
+					Validate input (Non-negative, 1-9999999999)
+					Prompt for reorder_level
+					Validate input (Non-negative, 1-9999999999)
+					Prompt for reorder_quantity
+					Validate input (Non-negative, 1-9999999999)
+				Push_back instance to store_inventory table			
+			
+				2 - Remove:
+				Prompt for store number -> store_num_string
+				Validate input (Non-negative, 1-99999)
+				Validate existence (store exists)
+				Convert from string to num -> store_num
+				Prompt for item number -> item_num_string
+				Validate input (Non-negative, 1-999999999
+				int delete_index = findStoreItem(store_inventory, item_num, store_num)
+				if (delete_index == -1)
+					Display Error "Item <item_num> not found at store <store_num>"
+					break				
+				Validate no stock (quantity at store = 0)
+				Convert from string to num -> item_num
+				store_inventory[delete_index].status = 'D'	
+		
+		3 - Assign/Remove Item from all stores
+		
+			1 - Assign:				
+				Prompt for item number -> item_num_string
+				Validate input (Non-negative, 1-999999999
+				int wh_index = findWarehouseItem(warehouse_item_data, item_num)
+				if (wh_index == -1)
+					Display Error "Item <item_num> not found at warehouse"
+					return
+				Prompt for default_quantity
+				Validate input (Non-negative, 1-9999999999)
+				Prompt for reorder_level
+				Validate input (Non-negative, 1-9999999999)
+				Prompt for reorder_quantity
+				Validate input (Non-negative, 1-9999999999)
+				int store_index = ItemExistsAtStore(store_inventory, item_num)
+					if (store_index != -1)
+						Display Error "Item <item_num> already exists at store <store_num>"
+						return
+				For each thing in store_data									
+					Convert from string to num -> item_num
+					Create instance of store_inventory  // Any fields not included should use defaults
+						Write:
+						item_status = 'A'
+						item_number = item_num
+						store_number = thing.store_num
+						default_quantity
+						reorder_level
+						reorder_quantity						
+					Push_back instance to store_inventory table			
+				
+			2 - Remove:
+				Prompt for item number -> item_num_string
+				Validate input (Non-negative, 1-999999999
+				int wh_index = findWarehouseItem(warehouse_item_data, item_num)
+				if (wh_index == -1)
+					Display Error "Item <item_num> not found at warehouse"
+					return
+				int store_index = ItemExistsAtStore(store_inventory, item_num)
+					if (store_index == -1)
+						Display Error "Item <item_num> not found in any stores"
+						return
+				For each thing in store_data where thing.item_number == item_num									
+					thing.status = 'D'
+				
+				
+		
+		
+		
 		
 		

@@ -4,6 +4,11 @@ int StringToInt(std::string input_string)
 	int a;
 	a = stoi(input_string);
 	return a;
+	
+double StringToDouble (std::string input_string)
+	double a;
+	a = stod(input_string);
+	return a;
 
 std::string TrimSpaces(std::string input_string)
 {
