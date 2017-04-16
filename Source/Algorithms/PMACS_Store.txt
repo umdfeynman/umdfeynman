@@ -1,0 +1,13 @@
+PMACS_Stores
+
+int findStore(&store_data, int store_number)
+	For each item in store_data
+		If store.store_number == store_number
+			return store.index
+	return -1
+
+int findStoreItem(&store_inventory, int item_number)
+	For each item in store_inventory
+		If item.item_number == item_number
+			return item.index
+	return -1

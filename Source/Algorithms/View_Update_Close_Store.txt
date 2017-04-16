@@ -1,0 +1,13 @@
+
+4? - View/Update/Close Store
+Prompt for store number -> store_number
+int store_num = stoi (store_number)
+int loc_store = FindStore(store_data, store_num)
+if (loc_store == -1)
+	Print error "Unable to find store <store_num>"
+	Return to 4?
+
+//// Close Store
+	store_data[loc_store].status = 'C'
+	
+	

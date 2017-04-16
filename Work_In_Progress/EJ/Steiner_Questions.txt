@@ -53,9 +53,11 @@ should we log it as an error and process it anyways, or just log it as an error?
 
 - If we get an 'A'
 
-Unanswered:
-
 In the adddeletestore process, when creating the file that will be used to merge into the itemreceived file,
 do we need to account for the file preexisting due to a previous failure that caused the entire process to shut down
 prematurely?
 
+
+Unanswered:
+
+- What filename should incoming vendor shipment use, and what filename should outgoing vendor order use?

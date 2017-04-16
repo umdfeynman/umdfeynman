@@ -12,6 +12,7 @@ Class warehouse_item_data
 	int reorder_level = -1;  // When warehouse quantity gets below this, order reorder_quantity
     std::string expected_delivery_time;  // Number of days will take be back in stock
     int quantity;
+	double price = 0.0;
 };
 Class store_inventory
 {	
@@ -19,19 +20,16 @@ Class store_inventory
 	int item_number = 0; // can pull item_data information using this field, Key 1
     int store_number = 0; // Key 2
     int quantity = 0; // Quantity on-hand
-    int high_threshold = 0;
-    int low_threshold = 0;
-    int accustock_pct_change = 0;
-    int accustock_direction = 0;
-    int accustock_frequency = 0;
-    int restock_level = 0;  // Y DO DIS?
-    double price = 0.0;
+    int high_threshold = 0; // Low reorder level threshold
+    int low_threshold = 0; // High reorder level threshold
+    int accustock_pct_change = 0; // Change applied based on H/L
+    //int accustock_direction = 0; // + = H, - = L
+	bool accustock_direction = 0; T = H, F = L
+    int accustock_frequency = 0; // # of days elapsed
+    //double price = 0.0;
     int default_quantity = 0;
     int reorder_level = 0;
     int reorder_quantity = 0;
-
-    // Initialize in constructor
-
 
 }
 Class store_data
@@ -170,6 +168,7 @@ foreach event in store_update_events:
 #define addstoreitems 7
 #define batchreplenish 8
 #define onlineinvrequest 9
+#define vendorrequest 10
 
 std::vector<int> sequence_numbers;
 sequence_numbers[adddeletestore] = ####

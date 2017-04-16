@@ -1,3 +1,10 @@
+**/// Wish List:
+	// 9 - Expected Delivery Time
+	// 10 - Per-Store Pricing
+	// Vendor Number Table (for vendor validation)	
+
+3? - Manage Inventory
+
 Initialize itemNumber == 0
 Initialize itemName == " "
 while (itemNumber != -1 && itemName != "")
@@ -7,9 +14,10 @@ while (itemNumber != -1 && itemName != "")
 		Compare space-trimmed, uppercased entry to 
 		warehouse_item_data vector item_name, also space-trimmed and uppercased
 ******	Display ALL (possibly multiple, due to dosage) items that match
-	Prompt for item name/number, store in findItem
+	Prompt for item name/number, store in findItem)
 	Validate item entry (non-negative, etc)
 	Validate item exists
+	Store item index in item_index
 	Display item information
 		//Warehouse level
 		Print header:
@@ -27,13 +35,84 @@ while (itemNumber != -1 && itemName != "")
 					totalQuantity += <item>.quantity
 					Output appropriate fields from <item>
 	Print header:
-		== TOTAL QUANTITY: <quantity> ==
+		== TOTAL QUANTITY: <totalQuantity> ==
 
 	Prompt:  Would you like to modify any of the following fields?
 		1 - Item Status
 		2 - Vendor Number
 		3 - Item Dosage
 		4 - Item Name
-		5 - Warehouse Reorder Quantity
-		6 - Warehouse Restock Delay
-		7 - Quantity
+		5 - Item Description
+		6 - Warehouse Reorder Quantity
+		7 - Warehouse Reorder Level
+		8 - Base Price
+		9 - Exit
+	while (menuSelect != 9)
+		Switch(menuSelect)
+			Case '1'
+				Prompt: "Please enter an item status code (D or A)" -> entry
+				Validate D or A
+				If invalid
+					Display Error
+					Break
+				warehouse_item_data[item_index].item_status = entry
+			Case '2'
+				Prompt: "Please enter a new vendor number" -> entry
+				entry_num = StringToInt(entry)
+				Validate positive & less than or eq to 9999, greater than 0000
+				If not
+					Display error
+					Break
+				warehouse_item_data[item_index].vendor_number = entry_num
+			Case '3'
+				Prompt: "Please enter an item dosage" -> entry
+				Validate <=20 characters long
+				Validate not blank
+				If invalid
+					Display Error
+					Break
+				warehouse_item_data[item_index].item_dosage = entry
+			Case '4'
+				Prompt: "Please enter an item name" -> entry
+				Validate <=20 characters long
+				Validate not blank
+				If invalid
+					Display Error
+					Break
+				warehouse_item_data[item_index].item_name = entry
+			Case '5'
+				Prompt: "Please enter an item description" -> entry
+				Validate <=100 characters long
+				Validate not blank
+				If invalid
+					Display Error
+					Break
+				warehouse_item_data[item_index].item_description = entry
+			Case '6'
+				Prompt: "Please enter a new reorder quantity" -> entry
+				entry_num = StringToInt(entry)
+				Validate positive & less than or eq to 9999999999, greater than 0
+				If not
+					Display error
+					Break
+				warehouse_item_data[item_index].reorder_quantity = entry_num
+			Case '7'
+				Prompt: "Please enter a new reorder level" -> entry
+				entry_num = StringToInt(entry)
+				Validate positive & less than or eq to 9999999999, greater than 0
+				If not
+					Display error
+					Break
+				warehouse_item_data[item_index].reorder_level = entry_num
+			Case '8'
+				Prompt: "Please enter a new base price" -> entry
+**** NEED TO WRITE FUNC		entry_num = DoubleToInt(entry)
+				Validate positive & less than 9999.99, greater than 0
+				If not
+					Display error
+					Break
+				warehouse_item_data[item_index].price = entry_num
+			
+				
+		
+		
