@@ -20,7 +20,7 @@ Logger::Logger(std::string filename)
 			printf("Error.  Unable to open file %s!\n", filename.c_str());		
 	}
 	
-	logFile << getTime() << "\t[LOGGER] Logfile " << filename << " opened successfully.\n";
+	logFile << getTime() << "\t[LOGGER] Logfile opened successfully.\n";
 }
 
 Logger::~Logger()
@@ -42,17 +42,27 @@ std::string Logger::getTime()
 	return trimYear;
 }
 
-void Logger::logError(std::string message, std::string subprogram)
+void Logger::logError(std::string message)
 {
-	logFile << getTime() << "\t[ERROR] [" << subprogram << "] " << message << "\n";
+	logFile << getTime() << "\t[ERROR] [" << getContext() << "] " << message << "\n";
 }
 
-void Logger::logWarn(std::string message, std::string subprogram)
+void Logger::logWarn(std::string message)
 {
-	logFile << getTime() << "\t[WARN] [" << subprogram << "] " << message << "\n";
+	logFile << getTime() << "\t[WARN] [" << getContext() << "] " << message << "\n";
 }
 
-void Logger::logInfo(std::string message, std::string subprogram)
+void Logger::logInfo(std::string message)
 {
-	logFile << getTime() << "\t[INFO] [" << subprogram << "] " << message << "\n";
+	logFile << getTime() << "\t[INFO] [" << getContext() << "] " << message << "\n";
+}
+
+void Logger::setContext(std::string newcontext)
+{
+	context = newcontext;
+}
+
+std::string Logger::getContext()
+{
+	return context;
 }

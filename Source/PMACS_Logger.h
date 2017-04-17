@@ -10,16 +10,18 @@
 
 class Logger
 {
-public:
-	void logInfo(std::string message, std::string subprogram);
-	void logWarn(std::string message, std::string subprogram);
-	void logError(std::string message, std::string subprogram);
-	Logger(std::string filename);
-	~Logger();
-private:
-	std::ofstream logFile;
-	std::string getTime();
-	
+	public:
+		void logInfo(std::string message);
+		void logWarn(std::string message);
+		void logError(std::string message);
+		Logger(std::string filename);
+		~Logger();
+		void setContext(std::string newcontext);
+		std::string getContext();
+	private:
+		std::ofstream logFile;
+		std::string context;
+		std::string getTime();	
 };
 
 #endif
