@@ -1,0 +1,236 @@
+Be sure to update your artifacts with any assumptions, business rules and the order that files must be loaded.
+
+Generate log file(s) with output of run sequence - execution and errors.
+
+Header and Trailer records on ALL files - Account for SEQ# rollover!!!!
+
+Header
+HD<space>SEQ#(4 digits - zero fill)<6 spaces>YYYY-MM-DD<remainder of line to file record size is spaces> 
+
+Trailer
+T<space>#ROWS(4 digits - zero fill) - Note: #Rows does NOT include control records (e.g. header)
+
+Log errors as they occur. File not found, no header record, error in SEQ# - log error message and stop program. For all other errors log error message and continue. Assume error data will be corrected with submission of next version of the file.
+
+
+Assumption: all data items described exist on the actual files (e.g. date on HD record, item expiration date) but if YOUR application does not use it you can ignore that data field 
+
+
+CREATE/DELETE STORE 
+
+May be "empty" --- header and trailer #ROWS = 0
+
+Add store - add store to company list of stores, create list of items in store with default inventory levels, Will cause inventory to be shipped to store location write out a file that will be input into INVENTORY TO STORE REQUEST process
+Delete store - remove all inventory from store - sending back to warehouse - write out a file that will be input into ITEM INVENTORY RECEIVED AT WAREHOUSE process
+
+HD SEQ#      YYYY-MM-DD 
+|action code 'A' or 'D'|store id|street address|city name|state|zip code|store priority level|
+|action code 'I'|item code|store default quantity|store reorder level|store reorder quantity|
+|action code 'C'|<space>|count| 
+T #ROWS
+
+HD header record, seq number must be next up value or reject file, date (no process at this time)
+
+action code = 'A' add or 'D' delete store, 'I' for item, 'C' for control 
+'A' or 'D' - all fields required - do not add store if store id already exists, do not perform delete unless ALL data fields match, error if no 'I' records following an 'A' or if 'I' records follow a 'D'
+store id = 5 digits (zero fill)
+street address = 20 characters
+city = 20 characters 
+state = 2 characters
+zip code = 9 digits (no "-", 9 digits)
+store priority level = 2 digits (zero fill, range 01 - 15)
+'I' - all items required, item must exist
+item code = 9 digits (zero filled)
+store default quantity = 10 digits (zero filled)
+store reorder level = 10 digits (zero fill)
+store reorder quantity = 10 digits (zero fill)
+'C' - number of item records for that store
+space
+count = 4 digits - number of item records for that store, zero fill, error if incorrect value, display error message but continue processing 
+T trailer record, report error if number of data records is incorrect  
+
+HD 0103      2016-03-27
+D000014901 Evergreen      Dearborn            MI48126999802
+A00006123 Main Street     Westland            MI48185001511 
+I000000010000001000000000040000000001000
+I000000123000450000000000030000000004000
+C 0002
+T 0004 (count of only 'A', 'D' and 'I' records)   
+
+
+Set SEQ# to 0102 prior to final turn in
+File name is adddeletestore.txt
+
+
+
+INVENTORY TO STORE REQUEST
+
+combination of batch inventory review input file, create store, online request - all have the SAME layout - must combine all three sources into one file
+
+HD SEQ#      YYYY-MM-DD 
+|source|store id|store priority level|item code|requested quantity|
+T #ROWS
+
+HD header record, seq number must be next up value or reject file, date (no process at this time)
+
+source code = 'A' store add, 'O' online request, 'B' batch inventory review
+store id = 5 digits (zero fill) - store id must exist
+store priority level = 2 digits (zero fill, range 01 - 15, must match store priority level in store data store)
+item code = 9 digits (zero filled, item must exist)
+requested quantity = 10 digits (zero filled)
+T trailer record, report error if number of data records is incorect  
+
+HD 0053      2017-03-27
+A00006110000000100000010000
+A00006110000001230004500000
+O00010010000000100000005000
+B00012050000001230000020000
+T 0004  
+
+
+Set SEQ# to 0052 prior to final turn in
+File name is storeupdate.txt
+
+
+
+ITEM INVENTORY RECEIVED AT WAREHOUSE (from "external" source or from delete store process above - assume separate files with separate seq numbers) 
+
+HD SEQ#      YYYY-MM-DD 
+|vendor code|item code|quantity received|expiration date| 
+T #ROWS
+
+HD header record, seq number must be next up value or reject file, date (no process at this time)
+
+vendor code = 4 digit number (zero fill)
+item code = 9 digits (zero filled, item must exist at company level)
+quantity received = 10 digits (zero filled)
+expiration date = 10 characters YYY-MM-DD
+T trailer record, report error if number of data records is incorrect  
+
+HD 0001      2017-03-24
+001000000001000050100002017-11-17
+003300000012300055000002018-03-01
+T 0002
+
+
+Set SEQ# to 9999 prior to final turn in
+File name is itemreceived.txt
+
+
+
+INVENTORY GENERATION
+
+can be empty (no order records but need to output header and trailer with record count of zero)
+
+HD SEQ#      YYYY-MM-DD 
+|vendor code|item code|quantity ordered|
+T #ROWS
+
+HD header record, seq number must be next up value or reject file, date (no process at this time)
+
+vendor code = 4 digit number (zero fill)
+item code = 9 digits (zero filled, item must exist at company level)
+quantity ordered = 10 digits (zero filled)
+T trailer record, report error if number of data records is incorrect  
+
+HD 0001      2017-03-12
+00100000000100005000000
+00330000001230007000000
+T 0002
+
+
+Set SEQ# to 5001 prior to final turn in
+File name is vendororder.txt
+
+
+
+
+UPDATE ITEM DATA
+
+data in order of delete, add then changes
+
+HD SEQ#      YYYY-MM-DD 
+|A|item code|item name|item description|item dosage|warehouse reorder level|vendor code|warehouse reorder quantity|expected delivery time|
+|C|item code|item name|item description|item dosage|warehouse reorder level|vendor code|warehouse reorder quantity|expected delivery time|
+|D|item code|
+N {A | C | D} #ROWS for add, change, delete - appears after each associated section
+T #ROWS IN FILE
+  
+
+HD header record, seq number must be next up value or reject file, date (no process at this time)
+
+transaction code = 1 character - A = add, C = change, D = delete, N = control
+A
+item code = 9 digits (zero filled, must not exist)
+item name = 20 characters (left justify, space filled)
+item description = 100 characters (left justify, space filled)
+item dosage = 20 characters (left justify, space filled)
+warehouse reorder level = 10 digits (zero fill)
+vendor code = 4 digits (zero fill)
+warehouse reorder quantity = 10 digits (zero fill)
+expected delivery time = 20 characters (left justify, space file e.g. "2 weeks" or "5 days")   
+D
+item code = 9 digits (zero filled, must exist, inventory EVERYWHERE must be zero, delete all entries - store, warehouse, etc. .... do not delete from sales and item data stores as sales requests can still occur ....)
+C - cannot change item code, value(s) to change will have values, values that are spaces will NOT change)
+item code = 9 digits (zero filled, must exist)
+item name = 20 characters (left justify, space filled)
+item description = 100 characters (left justify, space filled)
+item dosage = 20 characters (left justify, space filled)
+warehouse reorder level = 10 digits (zero fill)
+vendor code = 4 digits (zero fill)
+warehouse reorder quantity = 10 digits (zero fill)
+expected delivery time = 20 characters (left justify, space file e.g. "2 weeks" or "5 days")
+  
+N number of adjustment rows, report error if number of data records is incorrect
+T trailer record, report error if number of data records is incorrect (count does NOT include N records)
+
+
+HD 0001      2017-03-12
+D000001000
+D301020304
+D000002030
+ND 0003
+C010102011                    change description to this
+C001020301change name         change description
+C040503020                                                                                                                          chg dosage
+C000000010change name again
+NC 0004
+A123456789name                description                                                                                           dose ..... 
+A000020202name                description                                                                                           dose .....
+A203020104name                description                                                                                           dose ..... 
+A350830984name                description                                                                                           dose .....
+A000045045name                description                                                                                           dose .....
+NA 0005
+T 0012
+
+
+Set SEQ# to 9999 prior to final turn in
+File name is items.txt
+
+
+
+
+YEARLY SALES
+
+HD header record, seq number must be next up value or reject file, date (no process at this time)
+
+HD SEQ#      YYYY-MM-DD 
+|item code|
+T #ROWS IN FILE
+
+item code = 9 digits (zero filled, item must exist)
+
+Calculate all sales based on inventory sales by month for entire history for the identified item
+provide sub total of sales by year
+provide grand total of all years
+
+
+HD 0001      2017-03-11
+I033000000
+I123456789
+T 0002
+
+
+Set SEQ# to 0000 prior to final turn in
+File name is reports.txt
+

@@ -1,13 +1,18 @@
 (1) Display Point of Sale Menu
-		1 Prompt for store number
+		Prompt for store number
+		Validate input
+		Validate store exists, if not exit
+		
 		*** CHANGE RING UP CUSTOMER USE CASE?
-		2 Prompt for cashier number
-		2 Display Customer Account Lookup
+		Prompt for cashier number
+		Validate input
+		
+		Display Customer Account Lookup
 			Account Number // Name & Address
-		3 Query System for Customer Account
+		Query System for Customer Account
 			(a) No Account -> Create Account, then proceed
 			(b) Account found -> Proceed
-		4 Display Order Entry Screen
+		Display Order Entry Screen
 			** Display Customer Name, Account Number, Address, Store Number
 			(lookup)
 		<----- // Create an instance of Transaction
