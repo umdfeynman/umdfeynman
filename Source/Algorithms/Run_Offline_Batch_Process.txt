@@ -23,8 +23,6 @@ TODO:
 **// Make sure "C" record in adddeletestore and "NA,NC,ND" in items.txt don't count for Trailer
 **// Make sure header adds spaces to fill out record size
 **// Double check handling for "empty files" row count = 0
-**// Zero-fill function for strings
-**// Space-fill function for strings
 **// Sequence number rollover
 **//- Create globals for field position & length
 **//- Make sure all "final reads" update sequence numbers

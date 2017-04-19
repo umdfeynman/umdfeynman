@@ -45,15 +45,15 @@
 
 // storeupdate.txt
 #definestoreupdate_txt_source_code_pos       
-storeupdate_txt_source_code_len
-storeupdate_txt_store_number_pos        
-storeupdate_store_number_code_len
-storeupdate_txt_store_priority_pos      
-storeupdate_txt_store_priority_len
-storeupdate_txt_item_code_pos          
-storeupdate_txt_item_code_len
-storeupdate_txt_requested_quantity_pos       
-storeupdate_txt_requested_quantity_len
+#define storeupdate_txt_source_code_len
+#define storeupdate_txt_store_number_pos        
+#define storeupdate_store_number_code_len
+#define storeupdate_txt_store_priority_pos      
+#define storeupdate_txt_store_priority_len
+#define storeupdate_txt_item_code_pos          
+#define storeupdate_txt_item_code_len
+#define storeupdate_txt_requested_quantity_pos       
+#define storeupdate_txt_requested_quantity_len
 
 // itemreceived.txt
 

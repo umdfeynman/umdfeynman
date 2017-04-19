@@ -1,0 +1,49 @@
+Phase 3 - GitHub Procedures
+
+	- To create or update files
+		- In the Slack channel file_checkout, send a message stating "CO <modulename>"
+		- If Creating
+			- Go to the GitHub page of the folder where you want to create the file
+			- Click Create new file
+			- Enter the filename & folder location you wish to create 
+			- Enter data in the file you wish to create
+		- If Updating
+			- Download the file(s) from GitHub, and make any desired changes
+			- Go to the GitHub page of the folder containing the file you wish to modify or where you want to create the file
+			- Click Upload files
+			- Select desired folder
+			- Drag and drop desired file(s) in
+		- In both cases
+			- Fill out as normal, except select "Create a new branch for this commit and start a pull request"
+				**NOTE:  This only creates the branch, it does not create a pull request, confusingly.
+			- Name the module you are working on and use that as the branch name, if modifying, try to descriptively specify what your changes are
+			- Submit the branch creation request
+			- Click Pull Requests
+			- Click New Pull Request
+			- Choose the "base" as the place you want your change to take effect *IN*
+			- Choose the "compare" as the place you want your changes to come *FROM*
+			- Click Create pull request twice
+			- Inform the other team you have a pull request ready to go, can they please check it out?
+			- Once the request has been accepted and the code has been merged, in the Slack channel file_checkout, send a message stating "FI <modulename>"
+
+	- To approve pull request & commit to master
+		- From UMDFeynman GitHub Page
+			- Click Pull Requests
+			- Open pull requests should be automatically displayed
+			- Find the pull request you want to approve
+			- Confirm there are no conflicts
+			- Click Merge Pull Request
+			- Enter any pertinent comments
+			- Click Confirm merge
+			- Delete the branch from the pull request
+				- This should be displayed automatically
+				- If not
+					- Go back to Pull Requests
+					- Click where it says # closed
+					- Click the pull request description
+					- Click delete branch
+			- Notify the requestor the pull request has been approved & merge has been completed
+
+
+	- Merge conflicts
+		- In case of merge conflicts, do not attempt to resolve them yourself.  Send a message to all Team Feynman members (not PMs) that you are experiencing a merge conflict and as a team we will work out how to resolve it.
