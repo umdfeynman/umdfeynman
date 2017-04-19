@@ -1,9 +1,8 @@
 #include <iostream>
 #include <string>
+#include "PMACS_String.h"
 
 using namespace std;
-
-
 
 /*
 //start 01/01/2017
@@ -329,44 +328,6 @@ string Date::sGetYear()
 	string a = StringZeroFill(4, year);								//assumes 4 digit years
 	return a;
 };
-
-
-//takes a length and a numnber
-//doesnt check if length is longer than digits. so dont be stupid.
-//number given is preceeded by zeros to make length given
-string Date::StringZeroFill(int length, int number)
-{
-	int fill = length - 1;
-	string a = "0";
-	string b = to_string(number);
-
-	//adds 0's to fill string
-	for (int x = 0; x < fill; x++)
-	{
-		a += to_string(0);
-	}
-
-	//writes digits in reverse order
-	for (int x = b.length() - 1; x >= 0; x--)
-	{
-		a[fill] = b[x];
-		fill--;
-	}
-	return a;
-};
-
-//takes a length and a string
-//doesnt check if length is longer than string. so dont be stupid.
-//fills string with spaces until string length is the length provided
-string Date::StringSpaceFill(int length, string fillMe)
-{
-	for (int x = fillMe.length(); x < length; x++)
-	{
-		fillMe += " ";
-	}
-	return fillMe;
-}
-
 
 //header format
 //HD<space>SEQ#(4 digits - zero fill)<6 spaces>YYYY - MM - DD<remainder of line to file record size is spaces>
