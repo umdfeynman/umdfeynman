@@ -3,6 +3,6 @@
 
 using namespace std;
 
-string StringZeroFill(int required_field_length, int number);
-string StringSpaceFill(int length, string fillMe);
+string StringZeroFill(int required_field_length, int in_number);
+string StringSpaceFill(int required_field_length, string in_string);
 #endif
