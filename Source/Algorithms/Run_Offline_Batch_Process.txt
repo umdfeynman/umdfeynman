@@ -1,4 +1,5 @@
 TODO:
+**// Maximum size for long int is 2,000,000,000, make sure any fields 10 characters are less than this
 **// Track current date and increment each time we successfully complete batch process
 **// Method to 'fake date' for testing refills = **// Set system date
 **// RECONCILE ALL NAMES W/ FIND&REPLACE
