@@ -33,46 +33,46 @@ class StoreInventory
 	bool accustock_direction = 0; T = H, F = L
     int accustock_frequency = 0; // # of days elapsed
     //int default_quantity = 0;
-    int reorder_level = 0;
-    int reorder_quantity = 0;
+    int reorder_level = -1;
+    int reorder_quantity = -1;
 };
 
 class StoreData
 {
-    char store_status; // D, O, C - Deactivated, open, or closed
-    int store_priority;
-    int store_number; // Key 1
-	std::string street_address;
-	std::string city_name;
-	std::string state_name;
-	int zip_code;
+    char store_status = 'O'; // D, O, C - Deactivated, open, or closed
+    int store_priority = -1;
+    int store_number = -1; // Key 1
+	std::string street_address = "";
+	std::string city_name = "";
+	std::string state_name = "";
+	int zip_code = -1;
 };
 
 class Customer
 {
-    int account_number;
-    std::string address;
-    std::string name;   
+    int account_number = -1;
+    std::string address = "";
+    std::string name = "";   
     std::vector<int> cust_items;  // Same index as item_dates
-    std::vector<date> item_dates; // Same index as cust_items	
+    std::vector<std::string> item_dates; // Same index as cust_items	
 };
 
 class Coupon
 {
-    int coupon_number;
-    int discount_pct;
+    int coupon_number = -1;
+    int discount_pct = 0;
 }
 
 class Transactions
 {
-    int order_number;  // Key 1
-    int originating_cashier_number;
-    int approving_cashier_number;
-    int store_number;
-    Date transaction_date;
-    int account_number;
-    int discount_pct;  // Discount percent from coupon
-    double grand_total;  // Transaction total after all discounts applied, for easy generation of grand totals in reporting
+    int order_number = -1;  // Key 1
+    int originating_cashier_number = -1;
+    int approving_cashier_number = -1;
+    int store_number = -1;
+    std::string transaction_date = "";
+    int account_number = -1;
+    int discount_pct = -1;  // Discount percent from coupon
+    double grand_total = -1.0;  // Transaction total after all discounts applied, for easy generation of grand totals in reporting
     std::vector<int> transaction_item;
     std::vector<int> transaction_item_quantity;
     std::vector<double> transaction_item_price;  // Item price after individual item discount 
@@ -141,6 +141,7 @@ class Merge_Add_Online_Batch_Event
     int requested_quantity; 
 }
 
+// Vendor for vector of vendors with item sublist as vector
 class vendor_report_vendor
 {
     int vendor_number;
