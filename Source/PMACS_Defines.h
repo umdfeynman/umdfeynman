@@ -2,17 +2,18 @@
 #define PMACS_DEFINES_H
 
 // Sequence number array indices
-#define adddeletestore 0
-#define storeupdate 1
-#define itemreceived 2
-#define vendororder 3 
-#define items 4
-#define reports 5
-#define returnitems 6
-#define addstoreitems 7
-#define batchreplenish 8
-#define onlineinvrequest 9
-#define vendorrequest 10
+#define adddeletestore_seq 0
+#define storeupdate_seq 1
+#define itemreceived_seq 2
+#define vendororder_seq 3 
+#define items_seq 4
+#define reports_seq 5
+#define returnitems_seq 6
+#define addstoreitems_seq 7
+#define batchreplenish_seq 8
+#define onlineinvrequest_seq 9
+#define vendorrequest_seq 10
+#define leftovers_seq 11
 
 // **FILE FIELD LENGTH AND POSITION**
 // Positions are 0-based
