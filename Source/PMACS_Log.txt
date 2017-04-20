@@ -1,0 +1,2 @@
+Apr 19 21:56:22	[LOGGER] Logfile opened successfully.
+Apr 19 21:56:32	[LOGGER] Logfile opened successfully.

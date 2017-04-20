@@ -13,8 +13,6 @@ Logger::Logger(std::string filename)
 
 		if (!logFile)
 			throw 1;
-		else
-			good = true;
 	}
 	catch (int e)
 	{

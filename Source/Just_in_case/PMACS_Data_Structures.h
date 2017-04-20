@@ -1,5 +1,3 @@
-#include <string>
-#include <vector>
 #ifndef PMACS_DATA_STRUCTURES_H
 #define PMACS_DATA_STRUCTURES_H
 
@@ -8,7 +6,6 @@
 
 class WarehouseItemData
 {   
-public:
     char item_status = 'A'; // 'D' or 'A'
 	int item_number = -1; // Key
     int vendor_number = -1;
@@ -26,15 +23,14 @@ public:
 
 class StoreInventory
 {	
-public:
-    char item_status = 'A'; //'D' or 'A'
+    char item_status = 'A'; 'D' or 'A'
 	int item_number = -1; // can pull item_data information using this field, Key 1
     int store_number = -1; // Key 2
     int quantity = -1; // Quantity on-hand
     int high_threshold = -1; // Low reorder level threshold
     int low_threshold = -1; // High reorder level threshold
     int accustock_pct_change = 0; // Change applied based on H/L
-	bool accustock_direction = 0; //T = H, F = L
+	bool accustock_direction = 0; T = H, F = L
     int accustock_frequency = 0; // # of days elapsed
     //int default_quantity = 0;
     int reorder_level = -1;
@@ -43,7 +39,6 @@ public:
 
 class StoreData
 {
-public:
     char store_status = 'O'; // D, O, C - Deactivated, open, or closed
     int store_priority = -1;
     int store_number = -1; // Key 1
@@ -55,7 +50,6 @@ public:
 
 class Customer
 {
-public:
     int account_number = -1;
     std::string address = "";
     std::string name = "";   
@@ -65,14 +59,12 @@ public:
 
 class Coupon
 {
-public:
     int coupon_number = -1;
     int discount_pct = 0;
-};
+}
 
-class Transaction
+class Transactions
 {
-public:
     int order_number = -1;  // Key 1
     int originating_cashier_number = -1;
     int approving_cashier_number = -1;
@@ -84,17 +76,16 @@ public:
     std::vector<int> transaction_item;
     std::vector<int> transaction_item_quantity;
     std::vector<double> transaction_item_price;  // Item price after individual item discount 
-};
+}
 
 class Add_Delete_Store_Event
 {
-public:
     //Date date;  // Per Steiner:  Date not used
-    char action_type; // 'A' 'D' 'I' 'C'
+    char action_type; 'A' 'D' 'I' 'C'
     int store_id;
-	std::string street_address;
-	std::string city_name;
-	std::string state_name;
+    std::string street_address
+    std::string city_name
+    std::string state_name
     int zip_code;
     int store_priority_level;
     int item_number;
@@ -102,12 +93,11 @@ public:
     int store_reorder_level;
     int store_reorder_quantity;
     int store_overall_item_count;   
-};
+}
 
 class Update_Item_Data_Event
 {
-public:
-    char action_type; //'A' 'C' 'D' 'N'
+    char action_type; 'A' 'C' 'D' 'N'
     int item_number;
     std::string item_name;
     std::string item_description;
@@ -116,14 +106,13 @@ public:
     int vendor_number;
     int warehouse_reorder_quantity;
     std::string expected_delivery_time;
-    char specific_action_designation; // {A, D, C} immediately following 'N'
+    char specific action_designation; // {A, D, C} immediately following 'N'
     int update_item_action_count; // Number of rows for each 'A' 'C' or 'D'
-};
+}
 
 class Change_Data_Event
 {
-public:
-    std::string action_type; //'A' 'C' 'D' 'N'
+    std::string action_type; 'A' 'C' 'D' 'N'
     std::string item_number;
     std::string item_name;
     std::string item_description;
@@ -132,34 +121,31 @@ public:
     std::string vendor_number;
     std::string warehouse_reorder_quantity;
     std::string expected_delivery_time;
-    std::string specific_action_designation; // {A, D, C} immediately following 'N'
+    std::string specific action_designation; // {A, D, C} immediately following 'N'
     std::string update_item_action_count; // Number of rows for each 'A' 'C' or 'D'
-};
+}
 
 class Merge_Vendor_Return_Event
 {
-public:
     int vendor_number;
     int item_number;
     int incoming_quantity;
-};
+}
 
 class Merge_Add_Online_Batch_Event
 {
-public:
     char source_code;
     int store_number;
     int store_priority;
     int item_number;
     int requested_quantity; 
-};
+}
 
 // Vendor for vector of vendors with item sublist as vector
 class vendor_report_vendor
 {
-public:
     int vendor_number;
-	std::vector<WarehouseItemData> vendor_report_items;
-};
+    std::vector<warehouse_item_level> vendor_report_items
+}
 
 #endif

@@ -18,11 +18,10 @@ class Logger
 		~Logger();
 		void setContext(std::string newcontext);
 		std::string getContext();
-		bool good = false;
 	private:
 		std::ofstream logFile;
 		std::string context;
-		std::string getTime();
+		std::string getTime();	
 };
 
 #endif
