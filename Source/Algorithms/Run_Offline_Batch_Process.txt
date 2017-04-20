@@ -10,7 +10,7 @@ TODO:
 			// *NOTE*:  ONLY TRIM SPACES WHEN EVALUATING... EX:  SEARCH, MATCH, ETC.
 			DO IF TIME:
 			// *NOTE*:  ONLY UPPERCASE WHEN EVALUATING... EX:  SEARCH, MATCH, ETC.
-**// Anywhere an item gets added, set:
+**// Anywhere an item gets added to the store, set:
 		// High Threshold = 1.15 * reorder_level
 		// Low Threshold = 0.85 * reorder_level
 **// Implement 'empty months' in sales reports
@@ -30,6 +30,8 @@ TODO:
 **//- Change code to take into account D/A flags for store_inventory and warehouse_item_data
 **//- Differing error messages for if an add is attempted and the item number already exists, for
 active and inactive item
+
+RAINY DAY
 **//- Functionality to enable inventory manager to activate items
 
 			
@@ -173,7 +175,7 @@ Offline Batch Process:
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						continue				
-					Store item_code in Add_Delete_Store_Event
+					Store item_number in Add_Delete_Store_Event
 					input_string = input_line.substr(adddeletestore_txt_i_store_default_quantity_pos,adddeletestore_txt_i_store_default_quantity_len)
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
@@ -250,9 +252,9 @@ Offline Batch Process:
 							
 							//Create a line in returnitem.txt:
 								//Zero-filled vendor number (warehouse_item_data.vendor_number)
-								//Zero-filled item code (warehouse_item_data.item_number)
+								//Zero-filled item number (warehouse_item_data.item_number)
 								//Zero-filled quantity (store_inventory.quantity)
-							WriteReturnItems(returnitems_txt, vendor_number, item_code, quantity)
+							WriteReturnItems(returnitems_txt, vendor_number, item_number, quantity)
 								
 							Set the item in store_inventory to 'D'							
 						Set the item in store_data to 'D'				
@@ -283,7 +285,7 @@ Offline Batch Process:
 							continue						
 						
 						Create instance of store_inventory
-						Set store_inventory.item_code to item.item_code
+						Set store_inventory.item_number to item.item_number
 						Set store_inventory.store_default_quantity to item.store_default_quantity
 						Set store_inventory.store_reorder_level to item.store_reorder_level
 						Set store_inventory.store_reorder_quantity to item.store_reorder_quantity
@@ -293,7 +295,7 @@ Offline Batch Process:
 						'A'
 						Leading zeroes + store id
 						Leading zeroes + store priority level
-						Leading zeroes + item code
+						Leading zeroes + item number
 						Leading zeroes + default_quantity
 						Carriage return / nextline
 						Move to next item (curr_item++)
@@ -398,16 +400,16 @@ Offline Batch Process:
 			// If at trailer, proceed to next batch subprogram				
 			
 			std::string input_string
-			input_string = input_line.substr(returnitems_txt_vendor_code_pos,returnitems_txt_vendor_code_len) // store_number_length is global designating store_number field length
+			input_string = input_line.substr(returnitems_txt_vendor_number_pos,returnitems_txt_vendor_number_len) // store_number_length is global designating store_number field length
 			if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						continue			
-			Store vendor_code in Merge_Add_Online_Batch_Event
-			input_string = input_line.substr(returnitems_txt_item_code_pos,returnitems_txt_item_code_len) // store_number_length is global designating store_number field length
+			Store vendor_number in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(returnitems_txt_item_number_pos,returnitems_txt_item_number_len) // store_number_length is global designating store_number field length
 			if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						continue			
-			Store item_code in Merge_Add_Online_Batch_Event
+			Store item_number in Merge_Add_Online_Batch_Event
 			input_string = input_line.substr(returnitems_txt_incoming_quantity_pos,returnitems_txt_incoming_quantity_len) // store_number_length is global designating store_number field length
 			if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
@@ -423,16 +425,16 @@ Offline Batch Process:
 			// If at trailer, proceed to next batch subprogram
 				
 			std::string input_string
-			input_string = input_line.substr(vendororder_txt_vendor_code_pos,vendororder_txt_vendor_code_len) // store_number_length is global designating store_number field length
+			input_string = input_line.substr(vendororder_txt_vendor_number_pos,vendororder_txt_vendor_number_len) // store_number_length is global designating store_number field length
 			if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						continue
-			Store vendor_code in Merge_Add_Online_Batch_Event
-			input_string = input_line.substr(vendororder_txt_item_code_pos,vendororder_txt_item_code_len) // store_number_length is global designating store_number field length
+			Store vendor_number in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(vendororder_txt_item_number_pos,vendororder_txt_item_number_len) // store_number_length is global designating store_number field length
 			if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						continue		
-			Store item_code in Merge_Add_Online_Batch_Event
+			Store item_number in Merge_Add_Online_Batch_Event
 			input_string = input_line.substr(vendororder_txt_incoming_quantity_pos,vendororder_txt_incoming_quantity_len) // store_number_length is global designating store_number field length
 			if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
@@ -443,8 +445,8 @@ Offline Batch Process:
 		CreateFile(itemreceived.txt, 2)
 	(B)	For curr_item = 0 to count of Merge_Add_Online_Batch_Event
 			Write to file:
-						Leading zeroes + vendor_code
-						Leading zeroes + item_code
+						Leading zeroes + vendor_number
+						Leading zeroes + item_number
 						Leading zeroes + incoming_quantity
 						"2017-11-17" (hard-coded string) (DURWIN IS NOT ALLOWED TO CODE THIS SECTION)
 						Carriage return / nextline		
@@ -483,10 +485,10 @@ Offline Batch Process:
 			// If at trailer, proceed to next batch subprogram				
 			
 			std::string input_string
-			input_string = input_line.substr(returnitems_txt_vendor_code_pos,returnitems_txt_vendor_code_len) // store_number_length is global designating store_number field length
-			Store vendor_code in Merge_Add_Online_Batch_Event
-			input_string = input_line.substr(returnitems_txt_item_code_pos,returnitems_txt_item_code_len) // store_number_length is global designating store_number field length
-			Store item_code in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(returnitems_txt_vendor_number_pos,returnitems_txt_vendor_number_len) // store_number_length is global designating store_number field length
+			Store vendor_number in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(returnitems_txt_item_number_pos,returnitems_txt_item_number_len) // store_number_length is global designating store_number field length
+			Store item_number in Merge_Add_Online_Batch_Event
 			input_string = input_line.substr(returnitems_txt_incoming_quantity_pos,returnitems_txt_incoming_quantity_len) // store_number_length is global designating store_number field length
 			Store incoming_quantity in Merge_Add_Online_Batch_Event
 			item_counter++	
@@ -552,7 +554,7 @@ Offline Batch Process:
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						continue
-					Store item_code in Update_Item_Data_Event instance
+					Store item_number in Update_Item_Data_Event instance
 					Push_back Update_Item_Data_Event instance to d_event
 				Case 'A'
 					Store 'A' action_type in Update_Item_Data_Event              
@@ -560,7 +562,7 @@ Offline Batch Process:
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						continue
-					Store item_code in Update_Item_Data_Event instance				
+					Store item_number in Update_Item_Data_Event instance				
 					input_string = input_line.substr(items_txt_a_item_name_pos,items_txt_a_item_name_len)
 					Store item_name in Update_Item_Data_Event instance
 					input_string = input_line.substr(items_txt_a_item_description_pos,items_txt_a_item_description_len)
@@ -572,11 +574,11 @@ Offline Batch Process:
 						log error "Store number is negative on line [curr_item index]"
 						continue
 					Store warehouse_reorder_level in Update_Item_Data_Event instance
-					input_string = input_line.substr(items_txt_a_vendor_code_pos,items_txt_a_vendor_code_len)
+					input_string = input_line.substr(items_txt_a_vendor_number_pos,items_txt_a_vendor_number_len)
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						continue
-					Store vendor_code in Update_Item_Data_Event
+					Store vendor_number in Update_Item_Data_Event
 					input_string = input_line.substr(items_txt_a_warehouse_reorder_quantity_pos,items_txt_a_warehouse_reorder_quantity_len)
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
@@ -591,7 +593,7 @@ Offline Batch Process:
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						continue
-					Store item_code in Change_Data_Event instance
+					Store item_number in Change_Data_Event instance
 					input_string = input_line.substr(items_txt_c_item_name_pos,items_txt_c_item_name_len)
 					Store item_name in Change_Data_Event instance
 					input_string = input_line.substr(items_txt_c_item_description_pos,items_txt_c_item_description_len)
@@ -603,11 +605,11 @@ Offline Batch Process:
 						log error "Store number is negative on line [curr_item index]"
 						continue
 					Store warehouse_reorder_level in Change_Data_Event instance
-					input_string = input_line.substr(items_txt_c_vendor_code_pos,items_txt_c_vendor_code_len)
+					input_string = input_line.substr(items_txt_c_vendor_number_pos,items_txt_c_vendor_number_len)
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
 						continue
-					Store vendor_code in Change_Data_Event
+					Store vendor_number in Change_Data_Event
 					input_string = input_line.substr(items_txt_c_warehouse_reorder_quantity_pos,items_txt_c_warehouse_reorder_quantity_len)
 					if (StringToInt(input_string) < 0)
 						log error "Store number is negative on line [curr_item index]"
@@ -966,12 +968,12 @@ Offline Batch Process:
 			std::string input_string
 			input_string = input_line.substr(storeupdate_txt_source_code_pos,storeupdate_txt_source_code_len) // store_number_length is global designating store_number field length
 			Store source_code in Merge_Add_Online_Batch_Event
-			input_string = input_line.substr(storeupdate_txt_store_number_pos,storeupdate_store_number_code_len) // store_number_length is global designating store_number field length
+			input_string = input_line.substr(storeupdate_txt_store_number_pos,storeupdate_txt_store_number_len) // store_number_length is global designating store_number field length
 			Store store_number in Merge_Add_Online_Batch_Event
 			input_string = input_line.substr(storeupdate_txt_store_priority_pos,storeupdate_txt_store_priority_len) // store_number_length is global designating store_number field length
 			Store store_priority in Merge_Add_Online_Batch_Event
-			input_string = input_line.substr(storeupdate_txt_item_code_pos,storeupdate_txt_item_code_len) // store_number_length is global designating store_number field length
-			Store item_code in Merge_Add_Online_Batch_Event
+			input_string = input_line.substr(storeupdate_txt_item_number_pos,storeupdate_txt_item_number_len) // store_number_length is global designating store_number field length
+			Store item_number in Merge_Add_Online_Batch_Event
 			input_string = input_line.substr(storeupdate_txt_requested_quantity_pos,storeupdate_txt_requested_quantity_len) // store_number_length is global designating store_number field length
 			Store requested_quantity in Merge_Add_Online_Batch_Event
 		
@@ -1046,12 +1048,6 @@ Offline Batch Process:
 			<thing.vendor_report_items.reorder_quantity>
 			<thing.report_items.expected_delivery_time>"
 		
-		
-			
-	
-	
-	
-
 ////  Vendor order report generation
 	
 	// Try to read file "vendorrequest.txt"
