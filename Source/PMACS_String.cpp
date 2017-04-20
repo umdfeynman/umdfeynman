@@ -1,56 +1,62 @@
-#define CATCH_CONFIG_MAIN
+//#define CATCH_CONFIG_MAIN
+//#include "catch.hpp"
+#include <iostream>
 #include <sstream>
+#include <iomanip>
+#include <string>
 #include "PMACS_String.h"
-#include "catch.hpp"
 
-//takes a length and a numnber
-//doesnt check if length is longer than digits. so dont be stupid.
-//number given is preceeded by zeros to make length given
-string Date::StringZeroFill(int length, int number)
-{
-	int fill = length - 1;
-	string a = "0";
-	string b = to_string(number);
-
-	//adds 0's to fill string
-	for (int x = 0; x < fill; x++)
-	{
-		a += to_string(0);
-	}
-
-	//writes digits in reverse order
-	for (int x = b.length() - 1; x >= 0; x--)
-	{
-		a[fill] = b[x];
-		fill--;
-	}
-	return a;
-};
-
+/*
 TEST_CASE("IntZeroFillTest")
 {
-	std::string required = "00000000000000009999"
-	REQUIRE(Date::StringZeroFill(20, 9999) == required)
-}
-
-string Date::StringZeroFill(int required_field_length, int number)
+	std::string required = "00000000000000009999";
+	REQUIRE(StringZeroFill(20, 9999) == required);
+	cout << required;
+}*/
+/*TEST_CASE("IntZeroFillTest", "Number length > field length")
 {
+	// Validated "Error" displayed when in_number > field length
+}*/
+
+
+std::string StringZeroFill(int required_field_length, int in_number)
+{
+	std::stringstream test_num_length;
+	test_num_length << in_number;
+	test_num_length.seekg(0, ios::end);
+	int size = test_num_length.tellg();
+
+	if (size > required_field_length)
+		std::cout << "StringZeroFill Error - input number length exceeds required field length\n";		
+	
 	std::stringstream output_string;
-	output_string << std::setw(required_field_length) << std::setfill('0') << number;
+	output_string << std::setw(required_field_length) << std::setfill('0') << in_number;
 	output_string.flush();
 	return output_string.str();
 }
 
-
-
-//takes a length and a string
-//doesnt check if length is longer than string. so dont be stupid.
-//fills string with spaces until string length is the length provided
-string Date::StringSpaceFill(int length, string fillMe)
+/*TEST_CASE("StringSpaceFillTest")
 {
-	for (int x = fillMe.length(); x < length; x++)
-	{
-		fillMe += " ";
-	}
-	return fillMe;
+	std::string required = "          tenspaces!";
+	std::string pass_in = "tenspaces!";
+	cout << "|" << StringSpaceFill(20, pass_in) << "|\n";
+	REQUIRE(StringSpaceFill(9, pass_in) == "tenspaces!");	
+}*/
+
+/*TEST_CASE("StringSpaceFillTest", "String length > field length")
+{
+	// Validated "Error" displayed when in_string > field length
+}*/
+
+std::string StringSpaceFill(int required_field_length, std::string in_string)
+{
+		
+	if (in_string.size() > required_field_length)
+		std::cout << "StringSpaceFill Error - input string length exceeds required field length\n";
+
+
+	std::stringstream output_string;
+	output_string << std::setw(required_field_length) << std::setfill(' ') << in_string;
+	output_string.flush();
+	return output_string.str();
 }
