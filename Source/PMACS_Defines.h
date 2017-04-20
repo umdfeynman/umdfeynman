@@ -164,4 +164,14 @@
 #define onlineinvrequest_txt_requested_quantity_pos 17
 #define onlineinvrequest_txt_requested_quantity_len 10
 
+// leftovers.txt
+#define leftovers_txt_store_number_pos 1
+#define leftovers_txt_store_number_len 5
+#define leftovers_txt_store_priority_pos 6    
+#define leftovers_txt_store_priority_len 2
+#define leftovers_txt_item_number_pos 8 
+#define leftovers_txt_item_number_len 9
+#define leftovers_txt_requested_quantity_pos 17
+#define leftovers_txt_requested_quantity_len 10
+
 #endif
