@@ -1,8 +1,21 @@
 #ifndef PMACS_DEFINES_H
 #define PMACS_DEFINES_H
 
-// Positions are 0-based
+// Sequence number array indices
+#define adddeletestore 0
+#define storeupdate 1
+#define itemreceived 2
+#define vendororder 3 
+#define items 4
+#define reports 5
+#define returnitems 6
+#define addstoreitems 7
+#define batchreplenish 8
+#define onlineinvrequest 9
+#define vendorrequest 10
 
+// **FILE FIELD LENGTH AND POSITION**
+// Positions are 0-based
 // adddeletestore.txt
 // 'A' records
 #define adddeletestore_txt_a_store_number_pos 1
