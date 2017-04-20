@@ -1,4 +1,7 @@
 TODO:
+
+** NOTE ** Items that have a ==REVIEW== at the beginning require review
+
 **// Maximum size for long int is 2,000,000,000, make sure any fields 10 characters are less than this
 **// Track current date and increment each time we successfully complete batch process
 **// Method to 'fake date' for testing refills = **// Set system date
@@ -984,41 +987,9 @@ Offline Batch Process:
 			Store requested_quantity in leftovers
 			
 			store_inventory_events.push_back(leftovers)
-		
-		(B)	For curr_item = 0 to count of Merge_Add_Online_Batch_Event vector items				
-				
-				int store_index = FindStore(store_data, int store_number)				
-				if (store_index == -1)
-					Log Error "Store <store_number> does not exist"
-					continue
-				int store_item_index = FindStoreItem(store_inventory, item_number)
-				if (store_item_index == -1)
-					Log Error "Item <item_number> does not exist at store <store_number>"
-					continue
-				if (store_data[store_index].store_priority != item.priority)
-					Log Error "Item <item_number> priority does not match store <store_number>'s"
-					continue
-				int warehouse_item_index = findWarehouseItem(warehouse_item_data, item_number)
-				// Qtycheck
-				if (warehouse_item_data[warehouse_item_index].quantity == item.quantity)
-				{
-					store_inventory[store_item_index].quantity += item.quantity
-					warehouse_item_data[warehouse_item_index] = 0
-					// Batch replenishment handles
-				}
-				if (warehouse_item_data[warehouse_item_index].quantity < item.quantity)
-				{
-					item.quantity = item.quantity - warehouse_item_data[warehouse_item_index]
-					store_inventory[store_item_index].quantity += warehouse_item_data[warehouse_item_index].quantity
-					warehouse_item_data[warehouse_item_index] = 0
-					overall_leftovers.push_back(item)					
-				}				
-				
-				store_inventory[store_item_index].quantity = item.quantity
-				warehouse_item_data[warehouse_item_index] -= item.quantity				
 				
 		Close leftovers.txt
-		Increment sequence_numbers[leftovers] by 1
+
 
 	//// Process storeupdate.txt next
 	// Try to read file "storeupdate.txt"
@@ -1042,7 +1013,7 @@ Offline Batch Process:
             //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
             // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
 		
-		Create vector of Merge_Add_Online_Batch_Event
+		Create vector of Merge_Add_Online_Batch_Event merged
 		
 		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
 			Read a line from file as as a string - input_line
@@ -1061,8 +1032,35 @@ Offline Batch Process:
 			Store item_number in Merge_Add_Online_Batch_Event
 			input_string = input_line.substr(storeupdate_txt_requested_quantity_pos,storeupdate_txt_requested_quantity_len) // store_number_length is global designating store_number field length
 			Store requested_quantity in Merge_Add_Online_Batch_Event
+			
+			store_inventory_events.push_back(merged)
 		
-		std::sort Merge_Add_Online_Batch_Event based on store_priority (1 = highest)		
+		std::sort store_inventory_events based on store_priority (1 = highest)
+		
+		Sort Algo:
+		
+			//	struct less_than_source_code
+			//{
+			//	inline bool operator() (const TestClass& class1, const TestClass& class2)
+			//	{
+			//		return (class1.source_code < class2.source_code);
+			//	}
+			//};
+			//
+			//std::vector<TestClass> priorityArray[16];
+			//For each item in blah (events)
+			//	 For each number bleh in priorityArray
+			//		if item.priority == bleh
+			//			priorityArray[bleh].push_back(item)
+
+			//For each number bleh in priorityArray
+			//	 std::sort(priorityArray[bleh].begin(), priorityArray[bleh].end(), less_than_source_code) */
+
+			//For each number bleh in priorityArray
+			//	For each item bleep in priorityArray[bleh]
+			//		// Process
+		
+		Create vector of Merge_Add_Online_Batch_Event leftovers
 		
 		(B)	For curr_item = 0 to count of Merge_Add_Online_Batch_Event vector items				
 				int store_index = FindStore(store_data, int store_number)				
@@ -1087,7 +1085,7 @@ Offline Batch Process:
 					item.quantity = item.quantity - warehouse_item_data[warehouse_item_index]
 					store_inventory[store_item_index].quantity += warehouse_item_data[warehouse_item_index].quantity
 					warehouse_item_data[warehouse_item_index] = 0
-					overall_leftovers.push_back(item)
+					leftovers.push_back(item)
 				}
 				
 				store_inventory[store_item_index].quantity = item.quantity
@@ -1096,18 +1094,23 @@ Offline Batch Process:
 		Close storeupdate.txt
 		
 		Delete leftovers.txt // Or create another CreateFile that does overwrite
-	
+		Increment sequenceArray[leftovers_seq]
 		
-		CreateFile("leftovers.txt", leftovers)
-		InsertHeader("leftovers.txt", leftovers)
+		CreateFile("leftovers.txt", leftovers_seq)
+		InsertHeader("leftovers.txt", leftovers_seq)
 		
-		For each item in overall_leftovers
+		int item_counter = 0
+		
+		For each item in leftovers
+			item_counter++
 			Write to leftovers.txt:
+				item.source_code
 				Zero-filled item.store_number
 				Zero-filled item.store_priority_level
 				Zero-filled item.item_number
 				Zero-filled item.requested_quantity
-			
+		
+		InsertTrailer("leftovers.txt", item_counter)			
 	
 ////  Vendor order generation (Request more inventory)
 
