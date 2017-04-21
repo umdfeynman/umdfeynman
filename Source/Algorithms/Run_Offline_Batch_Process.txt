@@ -292,6 +292,8 @@ Offline Batch Process:
 						Set store_inventory.store_default_quantity to item.store_default_quantity
 						Set store_inventory.store_reorder_level to item.store_reorder_level
 						Set store_inventory.store_reorder_quantity to item.store_reorder_quantity
+						Set high_threshold = 1.15 * item.store_reorder_level // AccuStock
+						Set low_threshold = 0.85 * item.store_reorder_level // AccuStock						
 						Push back store_inventory item to store_inventory table
 													
 						Write to addstoreitems.txt:
@@ -1066,12 +1068,31 @@ Offline Batch Process:
 					Log Error "Store <store_number> does not exist"
 					continue
 				int store_item_index = FindStoreItem(store_inventory, item_number)
-				if (store_item_index == -1)
+				if (store_item_index == -1 && item.source_code != 'A')
 					Log Error "Item <item_number> does not exist at store <store_number>"
 					continue
 				if (store_data[store_index].store_priority != item.priority)
 					Log Error "Item <item_number> priority does not match store <store_number>'s"
 					continue
+				
+				// If it never existed
+				if (store_item_index = -1 && item_source_code == 'A')
+				{
+					Create instance of item class
+					Copy values from item to item class
+					Set quantity to 0
+					Set high_threshold to 
+					Push_back instance										
+				}
+				// If it exists but is deactivated
+				if (store_inventory[store_item_index].item_status = 'D' && item_source_code == 'A')
+				{
+					Copy values from item to item class
+					Set quantity to 0													
+				}
+				
+				
+				
 				if (warehouse_item_data[warehouse_item_index].quantity == item.quantity)
 				{
 					store_inventory[store_item_index].quantity += item.quantity
