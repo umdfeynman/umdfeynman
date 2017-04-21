@@ -5,6 +5,11 @@ int StringToInt(std::string input_string)
 	a = stoi(input_string);
 	return a;
 	
+long long StringToLongLong(std::string input_string)
+	long long a;
+	a = stoll(input_string);
+	return a;
+
 double StringToDouble (std::string input_string)
 	double a;
 	a = stod(input_string);

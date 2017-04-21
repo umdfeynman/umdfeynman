@@ -17,10 +17,10 @@ public:
     int item_discount_percent = 0;
     std::string item_name = "";
 	std::string item_description = "";
-    int reorder_quantity = -1;  // Default reorder amount
-	int reorder_level = -1;  // When warehouse quantity gets below this, order reorder_quantity
+    long long reorder_quantity = -1;  // Default reorder amount
+	long long reorder_level = -1;  // When warehouse quantity gets below this, order reorder_quantity
     std::string expected_delivery_time = "";  // Number of days will take be back in stock
-    int quantity = -1;
+    long long quantity = -1;
 	double price = 5.0;
 };
 
@@ -30,15 +30,15 @@ public:
     char item_status = 'A'; //'D' or 'A'
 	int item_number = -1; // can pull item_data information using this field, Key 1
     int store_number = -1; // Key 2
-    int quantity = -1; // Quantity on-hand
-    int high_threshold = -1; // Low reorder level threshold
-    int low_threshold = -1; // High reorder level threshold
+    long long quantity = -1; // Quantity on-hand
+    long long high_threshold = -1; // Low reorder level threshold
+    long long low_threshold = -1; // High reorder level threshold
     int accustock_pct_change = 0; // Change applied based on H/L
 	bool accustock_direction = 0; //T = H, F = L
     int accustock_frequency = 0; // # of days elapsed
     //int default_quantity = 0;
-    int reorder_level = -1;
-    int reorder_quantity = -1;
+    long long reorder_level = -1;
+    long long reorder_quantity = -1;
 };
 
 class StoreData
@@ -82,7 +82,7 @@ public:
     int discount_pct = -1;  // Discount percent from coupon
     double grand_total = -1.0;  // Transaction total after all discounts applied, for easy generation of grand totals in reporting
     std::vector<int> transaction_item;
-    std::vector<int> transaction_item_quantity;
+    std::vector<long long> transaction_item_quantity;
     std::vector<double> transaction_item_price;  // Item price after individual item discount 
 };
 
@@ -98,9 +98,9 @@ public:
     int zip_code;
     int store_priority_level;
     int item_number;
-    int store_default_quantity;
-    int store_reorder_level;
-    int store_reorder_quantity;
+    long long store_default_quantity;
+    long long store_reorder_level;
+    long long store_reorder_quantity;
     int store_overall_item_count;   
 };
 
@@ -112,9 +112,9 @@ public:
     std::string item_name;
     std::string item_description;
     std::string item_dosage;
-    int warehouse_reorder_level;
+    long long warehouse_reorder_level;
     int vendor_number;
-    int warehouse_reorder_quantity;
+    long long warehouse_reorder_quantity;
     std::string expected_delivery_time;
     char specific_action_designation; // {A, D, C} immediately following 'N'
     int update_item_action_count; // Number of rows for each 'A' 'C' or 'D'
@@ -141,7 +141,7 @@ class Merge_Vendor_Return_Event
 public:
     int vendor_number;
     int item_number;
-    int incoming_quantity;
+    long long incoming_quantity;
 };
 
 class Merge_Add_Online_Batch_Event
@@ -151,7 +151,7 @@ public:
     int store_number;
     int store_priority;
     int item_number;
-    int requested_quantity; 
+    long long requested_quantity; 
 };
 
 // Vendor for vector of vendors with item sublist as vector
