@@ -11,9 +11,6 @@
 // Classes?  Functions?  Modules?  Non-define variables?
 // Should tables be globals?  Or in Main?
 
-// Attempt to open log file
-Logger pmacs_log("PMACS_Log.txt");
-
 int displayMainMenu()
 {
 	// If success return 0
@@ -23,7 +20,9 @@ int displayMainMenu()
 
 int main()
 {
-	
+	int readResult = readTransaction();
+
+	std::cout << transaction_table.size();
 	
 	// Attempt to open database files, create if they don't exist
 		// If they exist, Perform trailer / record check on database files

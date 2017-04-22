@@ -8,12 +8,12 @@ bool readStoreInventory();
 bool readStoreData();
 bool readCustomer();
 bool readCoupon();
-bool readTransactions();
+bool readTransaction();
 bool saveWarehouseItemData();
 bool saveStoreInventory();
 bool saveStoreData();
 bool saveCustomer();
 bool saveCoupon();
-bool saveTransactions();
+bool saveTransaction();
 
 #endif 

@@ -60,3 +60,18 @@ std::string StringSpaceFill(int required_field_length, std::string in_string)
 	output_string.flush();
 	return output_string.str();
 }
+
+int StringToInt(std::string in_string)
+{
+	return stoi(in_string);
+}
+
+long long StringToLongLong(std::string in_string)
+{
+	return stoll(in_string);
+}
+
+double StringToDouble(std::string in_string)
+{
+	return stod(in_string);
+}
