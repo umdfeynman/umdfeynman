@@ -39,6 +39,19 @@ bool loadDatabaseIntoMemory()
 		return false;
 	}
 
+	lastResult = readStoreData();
+	if (!lastResult)
+	{
+		Plog.logError("loadDatabaseIntoMemory", "Unable to load store data database.  Bailing.");
+		return false;
+	}
+
+	//lastResult = readCoupon();
+	if (!lastResult)
+	{
+		Plog.logError("loadDatabaseIntoMemory", "Unable to load coupon database.  Bailing.");
+		return false;
+	}
 		
 	return true;
 }
@@ -469,7 +482,7 @@ bool readStoreInventory()
 
 	if (!storeInvFile || !storeInvFile.good())
 	{
-		Plog.logError("readstoreInventory", "Failed to read database file.  Bailing.");
+		Plog.logError("readStoreInventory", "Failed to read database file.  Bailing.");
 		return false;
 	}
 
@@ -478,13 +491,13 @@ bool readStoreInventory()
 
 	if (readLine.substr(0, 9) != "HSTOREINV")
 	{
-		Plog.logError("readstoreInventory", "Failed to find header in file.  Bailing.");
+		Plog.logError("readStoreInventory", "Failed to find header in file.  Bailing.");
 		return false;
 	}
 
 	if (storeInvFile.eof())
 	{
-		Plog.logWarn("readstoreInventory", "Empty database file.  Continuing.");
+		Plog.logWarn("readStoreInventory", "Empty database file.  Continuing.");
 		return true;
 	}
 
@@ -540,6 +553,94 @@ bool readStoreInventory()
 
 	storeInvFile.close();
 	return true;
+}
+
+bool readStoreData()
+{
+	std::ifstream storeDataFile;
+	storeDataFile.open(g_storedata_file);
+
+	if (!storeDataFile || !storeDataFile.good())
+	{
+		Plog.logError("readstoreData", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	std::string readLine;
+	std::getline(storeDataFile, readLine);
+
+	if (readLine.substr(0, 10) != "HSTOREDATA")
+	{
+		Plog.logError("readstoreData", "Failed to find header in file.  Bailing.");
+		return false;
+	}
+
+	if (storeDataFile.eof())
+	{
+		Plog.logWarn("readstoreData", "Empty database file.  Continuing.");
+		return true;
+	}
+
+	while (!storeDataFile.eof() || !storeDataFile)
+	{
+
+		std::string s_storeStatus;
+		std::string s_storePriority;
+		std::string s_storeNumber;
+		std::string s_streetAddress;
+		std::string s_cityName;
+		std::string s_stateName;
+		std::string s_zipCode;
+				
+		std::getline(storeDataFile, readLine);
+		s_storeStatus = readLine;
+		std::getline(storeDataFile, readLine);
+		s_storePriority = readLine;
+		std::getline(storeDataFile, readLine);
+		s_storeNumber = readLine;
+		std::getline(storeDataFile, readLine);
+		s_streetAddress = readLine;
+		std::getline(storeDataFile, readLine);
+		s_cityName = readLine;
+		std::getline(storeDataFile, readLine);
+		s_stateName = readLine;
+		std::getline(storeDataFile, readLine);
+		s_zipCode = readLine;
+		
+		StoreData inStoreData;
+
+		inStoreData.store_status = s_storeStatus[0];
+		inStoreData.store_priority = StringToInt(s_storePriority);
+		inStoreData.store_number = StringToInt(s_storeNumber);
+		inStoreData.street_address = s_streetAddress;
+		inStoreData.city_name = s_cityName;
+		inStoreData.state_name = s_stateName;
+		inStoreData.zip_code = StringToInt(s_zipCode);
+		
+		store_data_table.push_back(inStoreData);
+
+		std::getline(storeDataFile, readLine); // Read past separator
+
+	}
+
+	storeDataFile.close();
+	return true;
+
+	/*
+	class StoreData
+		{
+		public:
+			char store_status = 'O'; // D, O, C - Deactivated, open, or closed
+			int store_priority = -1;
+			int store_number = -1; // Key 1
+			std::string street_address = "";
+			std::string city_name = "";
+			std::string state_name = "";
+			int zip_code = -1;
+		};
+	
+	
+	*/
 }
 
 // Note:  Skipping record length check due to file structure, assuming files are immaculate

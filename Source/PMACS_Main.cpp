@@ -39,7 +39,8 @@ int main()
 		return 1;
 	}
 	
-	std::cout << "Sweet man!" << transaction_table.size() << customer_table.size() << warehouse_table.size() << std::endl;	
+	std::cout << "Sweet man!" << transaction_table.size() << customer_table.size() << warehouse_table.size() << store_inventory_table.size() << 
+		store_data_table.size() << std::endl;	
 	
 	// Display main menu
 	/* DisplayMainMenu();
