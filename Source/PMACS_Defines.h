@@ -22,7 +22,7 @@
 #define g_storedata_file "storedata.db"
 #define g_customer_file "customer.db"
 #define g_coupon_file "coupon.db"
-
+#define g_sequence_file "sequence.db"
 
 // storeupdate.txt source codes wannabe enum
 #define g_source_code_batch 1

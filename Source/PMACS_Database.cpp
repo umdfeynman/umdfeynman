@@ -8,6 +8,44 @@
 #include "PMACS_Input.h"
 #include "PMACS_String.h"
 
+bool readSequenceNumbers()
+{
+	std::ifstream sequenceFile;
+	sequenceFile.open(g_sequence_file);
+
+	if (!sequenceFile || !sequenceFile.good())
+	{
+		Plog.logError("readSequence", "Failed to read sequence file.  Bailing.");
+		return false;
+	}
+
+	std::string readLine;
+	std::getline(sequenceFile, readLine);
+
+	if (readLine.substr(0, 9) != "HSEQUENCE")
+	{
+		Plog.logError("readSequence", "Failed to find header in file.  Bailing.");
+		return false;
+	}
+
+	if (sequenceFile.eof())
+	{
+		Plog.logWarn("readSequence", "Empty database file.  Continuing.");
+		return true;
+	}
+		
+	int i = 0;
+	while (!sequenceFile.eof() || !sequenceFile || i < 12)	
+	{		
+		std::getline(sequenceFile, readLine);
+		sequenceNumber[i] = StringToInt(readLine);
+		i++;
+	}
+
+	sequenceFile.close();
+	return true;
+}
+
 bool loadDatabaseIntoMemory()
 {
 	

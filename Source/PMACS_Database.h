@@ -8,6 +8,7 @@ bool readStoreData();
 bool readCustomer();
 bool readCoupon();
 bool readTransaction();
+bool readSequenceNumbers();
 bool saveWarehouseItemData();
 bool saveStoreInventory();
 bool saveStoreData();

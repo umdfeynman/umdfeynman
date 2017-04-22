@@ -32,6 +32,14 @@ int main()
 	// Attempt to open database files, create if they don't exist
 	// If they exist, Perform trailer / record check on database files
 	// If they exist, Perform record size check on each line in database files
+	int rsResult = readSequenceNumbers();
+	if (!rsResult)
+	{
+		Plog.logError("Main", "Unable to successfully load sequence numbers.  Bailing");
+		return 1;
+	}
+
+
 	int ldResult = loadDatabaseIntoMemory();
 	if (!ldResult)
 	{
@@ -40,7 +48,7 @@ int main()
 	}
 	
 	std::cout << "Sweet man!" << transaction_table.size() << customer_table.size() << warehouse_table.size() << store_inventory_table.size() << 
-		store_data_table.size() << std::endl;	
+		store_data_table.size() << coupon_table.size() << sequenceNumber[0] << std::endl;	
 	
 	// Display main menu
 	/* DisplayMainMenu();

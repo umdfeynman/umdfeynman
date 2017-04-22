@@ -8,6 +8,6 @@ std::vector<Customer> customer_table;
 std::vector<Coupon> coupon_table;
 std::vector<Transaction> transaction_table;
 Logger Plog("PMACS_Log.txt");
-
+int sequenceNumber[12];
 
 
