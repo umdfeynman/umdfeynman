@@ -3,6 +3,7 @@
 #ifndef PMACS_DATABASE_H
 #define PMACS_DATABASE_H
 
+bool loadDatabaseIntoMemory();
 bool readWarehouseItemData();
 bool readStoreInventory();
 bool readStoreData();

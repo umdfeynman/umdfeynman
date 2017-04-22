@@ -8,6 +8,20 @@
 #include "PMACS_Input.h"
 #include "PMACS_String.h"
 
+bool loadDatabaseIntoMemory()
+{
+	Plog.setContext("loadDatabaseIntoMemory");
+	
+	bool lastResult = readTransaction();
+	if (!lastResult)
+	{
+		Plog.logError("Unable to load transaction database.  Bailing.");
+		return false;
+	}
+		
+	return true;
+}
+
 bool readTransaction()
 {
     Plog.setContext("readTransaction");
@@ -76,7 +90,8 @@ bool readTransaction()
 		while (readLine[0] != 'E')
 		{
 			std::getline(transactionFile, readLine);
-			s_transactionItemNumber.push_back(readLine);
+			if (readLine[0] != 'E')
+				s_transactionItemNumber.push_back(readLine);
 		}
 
 		std::getline(transactionFile, readLine);
@@ -90,7 +105,8 @@ bool readTransaction()
 		while (readLine[0] != 'E')
 		{
 			std::getline(transactionFile, readLine);
-			s_transactionItemQuantity.push_back(readLine);
+			if (readLine[0] != 'E')
+				s_transactionItemQuantity.push_back(readLine);
 		}
 
 		std::getline(transactionFile, readLine);
@@ -104,7 +120,8 @@ bool readTransaction()
 		while (readLine[0] != 'E')
 		{
 			std::getline(transactionFile, readLine);
-			s_transactionItemPrice.push_back(readLine);
+			if (readLine[0] != 'E')
+				s_transactionItemPrice.push_back(readLine);
 		}
 
 		Transaction inTransaction;
@@ -116,30 +133,27 @@ bool readTransaction()
 		inTransaction.transaction_date = s_transactionDate;
 		inTransaction.account_number = StringToInt(s_accountNumber);
 		inTransaction.discount_pct= StringToInt(s_discountPct);
-		inTransaction.grand_total= StringToDouble(s_grandTotal);  // Transaction total after all discounts applied, for easy generation of grand totals in reporting
+		inTransaction.grand_total= StringToDouble(s_grandTotal);
 
-		//std::vector<int> transactionItemNumber;
+	
 		for (int i = 0; i < s_transactionItemNumber.size(); i++)
-		{
-			//transactionItemNumber.push_back(StringToInt(s_transactionItemNumber[i]));
+		{			
 			inTransaction.transaction_item_number.push_back(StringToInt(s_transactionItemNumber[i]));
 		}
 
-		//std::vector<long long> transactionItemQuantity;
 		for (int i = 0; i < s_transactionItemQuantity.size(); i++)
 		{
-			//transactionItemQuantity.push_back(StringToInt(s_transactionItemQuantity[i]));
-			inTransaction.transaction_item_quantity.push_back(StringToInt(s_transactionItemQuantity[i]));
+			inTransaction.transaction_item_quantity.push_back(StringToLongLong(s_transactionItemQuantity[i]));
 		}
-
-		//std::vector<double> transactionItemPrice;
+	
 		for (int i = 0; i < s_transactionItemPrice.size(); i++)
 		{
-			//transactionItemPrice.push_back(StringToInt(s_transactionItemPrice[i]));
-			inTransaction.transaction_item_price.push_back(StringToInt(s_transactionItemPrice[i]));
+			inTransaction.transaction_item_price.push_back(StringToDouble(s_transactionItemPrice[i]));
 		}
 
 		transaction_table.push_back(inTransaction);
+		
+		std::getline(transactionFile, readLine); // Read past separator
 
 	}
         
@@ -203,7 +217,7 @@ public:
 // - FIELD
 // - FIELD
 //E - END ARRAY
-
+//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ (\ * 40)
 
 
 
