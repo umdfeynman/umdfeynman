@@ -1,19 +1,19 @@
 #ifndef PMACS_DEFINES_H
 #define PMACS_DEFINES_H
 
-// Sequence number array indices
-#define g_adddeletestore_seq 0
-#define g_storeupdate_seq 1
-#define g_itemreceived_seq 2
-#define g_vendororder_seq 3 
-#define g_items_seq 4
-#define g_reports_seq 5
-#define g_returnitems_seq 6
-#define g_addstoreitems_seq 7
-#define g_batchreplenish_seq 8
-#define g_onlineinvrequest_seq 9
-#define g_vendorrequest_seq 10
-#define g_leftovers_seq 11
+// Sequence number / record length array indices
+#define g_adddeletestore 0
+#define g_storeupdate 1
+#define g_itemreceived 2
+#define g_vendororder 3 
+#define g_items 4
+#define g_reports 5
+#define g_returnitems 6
+#define g_addstoreitems 7
+#define g_batchreplenish 8
+#define g_onlineinvrequest 9
+#define g_vendorrequest 10
+#define g_leftovers 11
 
 // Database filenames
 #define g_transaction_file "transaction.db"
