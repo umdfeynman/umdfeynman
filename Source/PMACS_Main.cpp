@@ -32,15 +32,14 @@ int main()
 	// Attempt to open database files, create if they don't exist
 	// If they exist, Perform trailer / record check on database files
 	// If they exist, Perform record size check on each line in database files
-	Plog.setContext("Main");	
 	int ldResult = loadDatabaseIntoMemory();
 	if (!ldResult)
 	{
-		Plog.logError("Unable to successfully load all databases.  Bailing");
+		Plog.logError("Main", "Unable to successfully load all databases.  Bailing");
 		return 1;
 	}
 	
-	std::cout << "Sweet man!" << transaction_table.size() << customer_table.size() << std::endl;	
+	std::cout << "Sweet man!" << transaction_table.size() << customer_table.size() << warehouse_table.size() << std::endl;	
 	
 	// Display main menu
 	/* DisplayMainMenu();

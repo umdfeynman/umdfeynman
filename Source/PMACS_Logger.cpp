@@ -44,27 +44,17 @@ std::string Logger::getTime()
 	return trimYear;
 }
 
-void Logger::logError(std::string message)
+void Logger::logError(std::string context, std::string message)
 {
-	logFile << getTime() << "\t[ERROR] [" << getContext() << "] " << message << "\n";
+	logFile << getTime() << "\t[ERROR] [" << context << "] " << message << "\n";
 }
 
-void Logger::logWarn(std::string message)
+void Logger::logWarn(std::string context, std::string message)
 {
-	logFile << getTime() << "\t[WARN] [" << getContext() << "] " << message << "\n";
+	logFile << getTime() << "\t[WARN] [" << context << "] " << message << "\n";
 }
 
-void Logger::logInfo(std::string message)
+void Logger::logInfo(std::string context, std::string message)
 {
-	logFile << getTime() << "\t[INFO] [" << getContext() << "] " << message << "\n";
-}
-
-void Logger::setContext(std::string newcontext)
-{
-	context = newcontext;
-}
-
-std::string Logger::getContext()
-{
-	return context;
+	logFile << getTime() << "\t[INFO] [" << context << "] " << message << "\n";
 }

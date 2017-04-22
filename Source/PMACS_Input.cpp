@@ -2,6 +2,7 @@
 //#include "catch.hpp"
 #include <string>
 #include "PMACS_Logger.h"
+#include "PMACS_Globals.h"
 #include "PMACS_Input.h"
 
 /*TEST_CASE("ValidateStrToTypeBySize types test")
@@ -17,7 +18,7 @@
 }*/
 
 // Utility function to confirm that a type we are converting from a string fits into the type we are targeting.
-bool validateStrToTypeBySize(Logger* logger, std::string input, int expected_type)
+bool validateStrToTypeBySize(std::string input, int expected_type)
 {
 	long long int input_size_int;	
 
@@ -27,7 +28,7 @@ bool validateStrToTypeBySize(Logger* logger, std::string input, int expected_typ
 		input_size_int = std::stoll(input);
 		if (input_size_int > INT_MAX)
 		{
-			logger->logError("validateInputTypeBySize (int) failed: \"" + input + "\" larger than int max bytes (" + std::to_string(INT_MAX) + ")\n");
+			Plog.logError("validateInputTypeBySize", "(int) failed: \"" + input + "\" larger than int max bytes (" + std::to_string(INT_MAX) + ")\n");
 			return false;
 		}
 		return true;
@@ -35,17 +36,17 @@ bool validateStrToTypeBySize(Logger* logger, std::string input, int expected_typ
 	case input_type_char:
 		if (input.size() > 1)
 		{
-			logger->logError("validateInputTypeBySize (char) failed: \"" + input + "\" larger than char max bytes (1)\n");
+			Plog.logError("validateInputTypeBySize", "(char) failed: \"" + input + "\" larger than char max bytes (1)\n");
 			return false;
 		}
 		return true;
 		break;
 	default:
-		logger->logError("validateInputTypeBySize failed:  Invalid expected_type specifier.\n");
+			Plog.logError("validateInputTypeBySize", "failed:  Invalid expected_type specifier.\n");
 		return false;
 		break;
 	}
 
-	logger->logError("validateInputTypeBySize failed:  WOW.  Somehow you circumvented the switch statement that convered all cases.  WTF?");
+	Plog.logError("validateInputTypeBySize", "failed:  WOW.  Somehow you circumvented the switch statement that convered all cases.  WTF?");
 	return false;		
 }

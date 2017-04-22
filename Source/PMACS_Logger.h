@@ -11,17 +11,14 @@
 class Logger
 {
 	public:
-		void logInfo(std::string message);
-		void logWarn(std::string message);
-		void logError(std::string message);
+		void logInfo(std::string context, std::string message);
+		void logWarn(std::string context, std::string message);
+		void logError(std::string context, std::string message);
 		Logger(std::string filename);
 		~Logger();
-		void setContext(std::string newcontext);
-		std::string getContext();
 		bool good = false;
 	private:
 		std::ofstream logFile;
-		std::string context;
 		std::string getTime();
 };
 

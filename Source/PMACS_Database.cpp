@@ -10,52 +10,56 @@
 
 bool loadDatabaseIntoMemory()
 {
-	Plog.setContext("loadDatabaseIntoMemory");	
+	
 	bool lastResult = readTransaction();
 	if (!lastResult)
 	{
-		Plog.logError("Unable to load transaction database.  Bailing.");
+		Plog.logError("loadDatabaseIntoMemory", "Unable to load transaction database.  Bailing.");
 		return false;
 	}
 
-	Plog.setContext("loadDatabaseIntoMemory");
 	lastResult = readCustomer();
 	if (!lastResult)
 	{
-		Plog.logError("Unable to load customer database.  Bailing.");
+		Plog.logError("loadDatabaseIntoMemory","Unable to load customer database.  Bailing.");
 		return false;
 	}
+
+	lastResult = readWarehouseItemData();
+	if (!lastResult)
+	{
+		Plog.logError("loadDatabaseIntoMemory", "Unable to load warehouse database.  Bailing.");
+		return false;
+	}
+
 		
 	return true;
 }
 
 bool readTransaction()
-{
-	int lineNumber = 0;
-	
-	Plog.setContext("readTransaction");
+{	
     std::ifstream transactionFile;
     transactionFile.open(g_transaction_file);
     
     if (!transactionFile || !transactionFile.good())
     {
-        Plog.logError("Failed to read database file.  Bailing.");
+        Plog.logError("readTransaction", "Failed to read database file.  Bailing.");
         return false;
     }
     
     std::string readLine;
     std::getline(transactionFile, readLine);
-	lineNumber++;
+	
     
     if (readLine.substr(0, 6) != "HTRANS")
     {
-		Plog.logError("Failed to find header in file.  Bailing.");
+		Plog.logError("readTransaction", "Failed to find header in file.  Bailing.");
         return false;
     }
     
     if (transactionFile.eof())
     {
-		Plog.logWarn("Empty database file.  Continuing.");
+		Plog.logWarn("readTransaction", "Empty database file.  Continuing.");
         return true;
     }
     
@@ -71,36 +75,28 @@ bool readTransaction()
 		std::string s_discountPct;
 		std::string s_grandTotal;
 
-		std::getline(transactionFile, readLine);
-		lineNumber++;
+		std::getline(transactionFile, readLine);		
 		s_orderNumber = readLine;
-		std::getline(transactionFile, readLine);
-		lineNumber++;
+		std::getline(transactionFile, readLine);		
 		s_originatingCashierNumber = readLine;
-		std::getline(transactionFile, readLine);
-		lineNumber++;
+		std::getline(transactionFile, readLine);		
 		s_approvingCashierNumber = readLine;
-		std::getline(transactionFile, readLine);
-		lineNumber++;
+		std::getline(transactionFile, readLine);		
 		s_storeNumber = readLine;
-		std::getline(transactionFile, readLine);
-		lineNumber++;
+		std::getline(transactionFile, readLine);		
 		s_transactionDate = readLine;
-		std::getline(transactionFile, readLine);
-		lineNumber++;
+		std::getline(transactionFile, readLine);		
 		s_accountNumber = readLine;
-		std::getline(transactionFile, readLine);
-		lineNumber++;
+		std::getline(transactionFile, readLine);		
 		s_discountPct = readLine;
-		std::getline(transactionFile, readLine);
-		lineNumber++;
+		std::getline(transactionFile, readLine);		
 		s_grandTotal = readLine;
 
 		std::getline(transactionFile, readLine);
-		lineNumber++;
+		
 		if (readLine[0] != 'S')
 		{
-			Plog.logError("Expected S record.  Bailing.  Line number:" + lineNumber);
+			Plog.logError("readTransaction", "Expected S record.  Bailing.  Line number:");
 			return false;
 		}
 
@@ -109,16 +105,16 @@ bool readTransaction()
 		while (readLine[0] != 'E')
 		{
 			std::getline(transactionFile, readLine);
-			lineNumber++;
+			
 			if (readLine[0] != 'E')
 				s_transactionItemNumber.push_back(readLine);
 		}
 
 		std::getline(transactionFile, readLine);
-		lineNumber++;
+		
 		if (readLine[0] != 'S')
 		{
-			Plog.logError("Expected S record.  Bailing.  Line number:" + lineNumber);
+			Plog.logError("readTransaction", "Expected S record.  Bailing.  Line number:");
 			return false;
 		}
 
@@ -126,16 +122,16 @@ bool readTransaction()
 		while (readLine[0] != 'E')
 		{
 			std::getline(transactionFile, readLine);
-			lineNumber++;
+			
 			if (readLine[0] != 'E')
 				s_transactionItemQuantity.push_back(readLine);
 		}
 
 		std::getline(transactionFile, readLine);
-		lineNumber++;
+		
 		if (readLine[0] != 'S')
 		{
-			Plog.logError("Expected S record.  Bailing.  Line number: " + lineNumber);
+			Plog.logError("readTransaction", "Expected S record.  Bailing.  Line number: ");
 			return false;
 		}
 
@@ -143,7 +139,7 @@ bool readTransaction()
 		while (readLine[0] != 'E')
 		{
 			std::getline(transactionFile, readLine);
-			lineNumber++;
+			
 			if (readLine[0] != 'E')
 				s_transactionItemPrice.push_back(readLine);
 		}
@@ -227,34 +223,32 @@ bool readTransaction()
 	// - FIELD
 	// - FIELD
 	//E - END ARRAY
-	//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ (\ * 40)
-	//Z - END OF FILE
+	//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ (\ * 40) RECORD SEPARATOR
 }
 
 bool readCustomer()
 {
-	Plog.setContext("readCustomer");
 	std::ifstream customerFile;
 	customerFile.open(g_customer_file);
 
 	if (!customerFile || !customerFile.good())
 	{
-		Plog.logError("Failed to read database file.  Bailing.");
+		Plog.logError("readCustomer", "Failed to read database file.  Bailing.");
 		return false;
 	}
 
 	std::string readLine;
 	std::getline(customerFile, readLine);
 
-	if (readLine.substr(0, 6) != "HCUST")
+	if (readLine.substr(0, 5) != "HCUST")
 	{
-		Plog.logError("Failed to find header in file.  Bailing.");
+		Plog.logError("readCustomer", "Failed to find header in file.  Bailing.");
 		return false;
 	}
 
 	if (customerFile.eof())
 	{
-		Plog.logWarn("Empty database file.  Continuing.");
+		Plog.logWarn("readCustomer", "Empty database file.  Continuing.");
 		return true;
 	}
 
@@ -275,7 +269,7 @@ bool readCustomer()
 		std::getline(customerFile, readLine);
 		if (readLine[0] != 'S')
 		{
-			Plog.logError("Expected S record.  Bailing.");
+			Plog.logError("readCustomer", "Expected S record.  Bailing.");
 			return false;
 		}
 
@@ -291,7 +285,7 @@ bool readCustomer()
 		std::getline(customerFile, readLine);
 		if (readLine[0] != 'S')
 		{
-			Plog.logError("Expected S record.  Bailing.");
+			Plog.logError("readCustomer", "Expected S record.  Bailing.");
 			return false;
 		}
 
@@ -344,6 +338,123 @@ bool readCustomer()
 
 
 }
+
+bool readWarehouseItemData()
+{
+	std::ifstream warehouseFile;
+	warehouseFile.open(g_warehouse_file);
+
+	if (!warehouseFile || !warehouseFile.good())
+	{
+		Plog.logError("readWarehouseItemData", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	std::string readLine;
+	std::getline(warehouseFile, readLine);
+
+	if (readLine.substr(0, 10) != "HWAREHOUSE")
+	{
+		Plog.logError("readWarehouseItemData", "Failed to find header in file.  Bailing.");
+		return false;
+	}
+
+	if (warehouseFile.eof())
+	{
+		Plog.logWarn("readWarehouseItemData", "Empty database file.  Continuing.");
+		return true;
+	}
+
+	while (!warehouseFile.eof() || !warehouseFile)
+	{
+
+		std::string s_itemStatus;
+		std::string s_itemNumber;
+		std::string s_vendorNumber;
+		std::string s_itemDosage;
+		std::string s_coupledItemNumber;
+		std::string s_itemDiscountPercent;
+		std::string s_itemName;
+		std::string s_itemDescription;
+		std::string s_reorderQuantity;
+		std::string s_reorderLevel;
+		std::string s_expectedDeliveryTime;
+		std::string s_quantity;
+		std::string s_price;
+		
+		std::getline(warehouseFile, readLine);
+		s_itemStatus = readLine;
+		std::getline(warehouseFile, readLine);
+		s_itemNumber = readLine;
+		std::getline(warehouseFile, readLine);
+		s_vendorNumber = readLine;
+		std::getline(warehouseFile, readLine);
+		s_itemDosage = readLine;
+		std::getline(warehouseFile, readLine);
+		s_coupledItemNumber = readLine;
+		std::getline(warehouseFile, readLine);
+		s_itemDiscountPercent = readLine;
+		std::getline(warehouseFile, readLine);
+		s_itemName = readLine;
+		std::getline(warehouseFile, readLine);
+		s_itemDescription = readLine;
+		std::getline(warehouseFile, readLine);
+		s_reorderQuantity = readLine;
+		std::getline(warehouseFile, readLine);
+		s_reorderLevel = readLine;
+		std::getline(warehouseFile, readLine);
+		s_expectedDeliveryTime = readLine;
+		std::getline(warehouseFile, readLine);
+		s_quantity = readLine;
+		std::getline(warehouseFile, readLine);
+		s_price = readLine;		
+
+		WarehouseItemData inWarehouse;
+
+		inWarehouse.item_status = s_itemStatus[0];
+		inWarehouse.item_number = StringToInt(s_itemNumber);
+		inWarehouse.vendor_number = StringToInt(s_vendorNumber);
+		inWarehouse.item_dosage = s_itemDosage;
+		inWarehouse.coupled_item_number = StringToInt(s_coupledItemNumber);
+		inWarehouse.item_discount_percent = StringToInt(s_itemDiscountPercent);
+		inWarehouse.item_name = s_itemName;
+		inWarehouse.item_description = s_itemDescription;
+		inWarehouse.reorder_quantity = StringToLongLong(s_reorderQuantity);
+		inWarehouse.reorder_level = StringToLongLong(s_reorderLevel);
+		inWarehouse.expected_delivery_time = s_expectedDeliveryTime;
+		inWarehouse.quantity = StringToLongLong(s_quantity);
+		inWarehouse.price = StringToDouble(s_price);
+		
+		warehouse_table.push_back(inWarehouse);
+
+		std::getline(warehouseFile, readLine); // Read past separator
+
+	}
+
+	/*
+	class WarehouseItemData
+	{
+	public:
+		char item_status = 'A'; // 'D' or 'A'
+		int item_number = -1; // Key
+		int vendor_number = -1;
+		std::string item_dosage = ""; // mg
+		int coupled_item_number = -1;
+		int item_discount_percent = 0;
+		std::string item_name = "";
+		std::string item_description = "";
+		long long reorder_quantity = -1;  // Default reorder amount
+		long long reorder_level = -1;  // When warehouse quantity gets below this, order reorder_quantity
+		std::string expected_delivery_time = "";  // Number of days will take be back in stock
+		long long quantity = -1;
+		double price = 5.0;
+	};*/
+
+
+	warehouseFile.close();
+	return true;	
+}
+
 
 // Note:  Skipping record length check due to file structure, assuming files are immaculate
 // Record checks
