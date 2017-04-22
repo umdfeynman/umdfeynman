@@ -1,0 +1,17 @@
+// test file bad1 items.txt
+// item name too long
+
+HD 0001      2017-03-12 
+D008675309
+D000005796
+D900482046 
+ND 0003 
+C000006546awesome name that our competitors just cant beat                                                                                                                                                                      
+C000000300                    this medicine rocks                 
+C000046908                                                                                                                                                                                                                                                                                                                                    00000046890465                     
+C000000010                                                                                                                        70mg 
+NC 0004 
+A000000478coolname            description                                                                                         50mg                00040067805642000012345610days
+A456789123secondbestmed       description                                                                                         7mg                 0000046800305400004608012weeks
+NC 0002 
+T 0009

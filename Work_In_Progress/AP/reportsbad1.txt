@@ -1,0 +1,8 @@
+// test file bad1 reports.txt
+// bad trailer
+HD 0001      2017-03-11 
+I000080040
+I090004000
+I000000009
+I000000053
+T 0001

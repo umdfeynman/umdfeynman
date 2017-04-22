@@ -1,0 +1,6 @@
+// test file good1 reports.txt
+
+HD 0001      2017-03-11 
+I000000012
+I000000003 
+T 0002

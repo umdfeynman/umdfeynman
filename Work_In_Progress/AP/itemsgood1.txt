@@ -1,0 +1,16 @@
+// test file good1 items.txt
+
+HD 0001      2017-03-12 
+D000070200 
+D000046806 
+D000007240 
+ND 0003 
+C000002100                    new description way better                                                                                                                                                                                                                     
+C000000300bestnewname         change description again                                                                                                                                                             
+C086753090                                                                                                                        5mg                                                             
+C000000010change name again                                                                                                                                                                       
+NC 0004 
+A000053498bestmed             description                                                                                         10mg                0000000213001200000004022days                                                                          50mg
+A456789123secondbestmed       description                                                                                         7mg                 0000000043012300000045129days               
+NC 0002 
+T 0009
