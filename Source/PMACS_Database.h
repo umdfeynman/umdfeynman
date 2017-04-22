@@ -1,5 +1,3 @@
-#include<string>
-#include<vector>
 #ifndef PMACS_DATABASE_H
 #define PMACS_DATABASE_H
 

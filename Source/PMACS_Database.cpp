@@ -32,6 +32,13 @@ bool loadDatabaseIntoMemory()
 		return false;
 	}
 
+	lastResult = readStoreInventory();
+	if (!lastResult)
+	{
+		Plog.logError("loadDatabaseIntoMemory", "Unable to load store inventory database.  Bailing.");
+		return false;
+	}
+
 		
 	return true;
 }
@@ -455,6 +462,85 @@ bool readWarehouseItemData()
 	return true;	
 }
 
+bool readStoreInventory()
+{
+	std::ifstream storeInvFile;
+	storeInvFile.open(g_storeinv_file);
+
+	if (!storeInvFile || !storeInvFile.good())
+	{
+		Plog.logError("readstoreInventory", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	std::string readLine;
+	std::getline(storeInvFile, readLine);
+
+	if (readLine.substr(0, 9) != "HSTOREINV")
+	{
+		Plog.logError("readstoreInventory", "Failed to find header in file.  Bailing.");
+		return false;
+	}
+
+	if (storeInvFile.eof())
+	{
+		Plog.logWarn("readstoreInventory", "Empty database file.  Continuing.");
+		return true;
+	}
+
+	while (!storeInvFile.eof() || !storeInvFile)
+	{
+
+		std::string s_itemStatus;
+		std::string s_itemNumber;
+		std::string s_reorderQuantity;
+		std::string s_reorderLevel;
+		std::string s_quantity;
+		std::string s_storeNumber;
+		std::string s_highThreshold;
+		std::string s_lowThreshold;
+		std::string s_accustockDirection;		
+
+		std::getline(storeInvFile, readLine);
+		s_itemStatus = readLine;
+		std::getline(storeInvFile, readLine);
+		s_itemNumber = readLine;
+		std::getline(storeInvFile, readLine);
+		s_reorderQuantity = readLine;
+		std::getline(storeInvFile, readLine);
+		s_reorderLevel = readLine;
+		std::getline(storeInvFile, readLine);
+		s_quantity = readLine;
+		std::getline(storeInvFile, readLine);
+		s_storeNumber = readLine;
+		std::getline(storeInvFile, readLine);
+		s_highThreshold = readLine;
+		std::getline(storeInvFile, readLine);
+		s_lowThreshold = readLine;
+		std::getline(storeInvFile, readLine);
+		s_accustockDirection = readLine;
+
+		StoreInventory inStoreInv;
+
+		inStoreInv.item_status = s_itemStatus[0];
+		inStoreInv.item_number = StringToInt(s_itemNumber);
+		inStoreInv.reorder_quantity = StringToLongLong(s_reorderQuantity);
+		inStoreInv.reorder_level = StringToLongLong(s_reorderLevel);
+		inStoreInv.quantity = StringToLongLong(s_quantity);
+		inStoreInv.store_number = StringToInt(s_storeNumber);
+		inStoreInv.high_threshold = StringToLongLong(s_highThreshold);
+		inStoreInv.low_threshold = StringToLongLong(s_lowThreshold);
+		inStoreInv.accustock_direction = StringToLongLong(s_accustockDirection);
+
+		store_inventory_table.push_back(inStoreInv);
+
+		std::getline(storeInvFile, readLine); // Read past separator
+
+	}
+
+	storeInvFile.close();
+	return true;
+}
 
 // Note:  Skipping record length check due to file structure, assuming files are immaculate
 // Record checks

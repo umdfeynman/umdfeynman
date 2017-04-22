@@ -33,9 +33,9 @@ public:
     long long quantity = -1; // Quantity on-hand
     long long high_threshold = -1; // Low reorder level threshold
     long long low_threshold = -1; // High reorder level threshold
-    int accustock_pct_change = 0; // Change applied based on H/L
-	bool accustock_direction = 0; //T = H, F = L
-    int accustock_frequency = 0; // # of days elapsed
+    //int accustock_pct_change = 0; // Change applied based on H/L
+	long long accustock_direction = 0; //T = H, F = L
+    //int accustock_frequency = 0; // # of days elapsed
     //int default_quantity = 0;
     long long reorder_level = -1;
     long long reorder_quantity = -1;
