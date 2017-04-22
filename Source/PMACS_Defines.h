@@ -15,6 +15,15 @@
 #define vendorrequest_seq 10
 #define leftovers_seq 11
 
+// Database filenames
+#define transaction_file "transaction.db"
+#define warehouse_file "warehouse.db"
+#define storeinv_file "storeinv.db"
+#define storedata_file "storedata.db"
+#define customer_file "customer.db"
+#define coupon_file "coupon.db"
+
+
 // storeupdate.txt source codes wannabe enum
 #define source_code_batch 1
 #define source_code_online 2
