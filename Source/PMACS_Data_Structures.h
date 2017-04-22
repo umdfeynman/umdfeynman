@@ -147,7 +147,8 @@ public:
 class Merge_Add_Online_Batch_Event
 {
 public:
-    char source_code;
+    int source_code;  // Uses #defines source_code_add, source_code_online, source_code_batch
+    //char source_code;
     int store_number;
     int store_priority;
     int item_number;

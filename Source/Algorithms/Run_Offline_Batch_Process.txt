@@ -1,4 +1,8 @@
 TODO:
+**// File sequence globals are now <name>_seq, replace
+// Since add store happens before batch replenishment, doesn't this mean that 
+// batch replenishment will attempt to replenish the store's inventory because it will be
+// empty?
 ==DONE==**// Modify StringZeroFill to use long longs
 ==DONE==**// Maximum size for long int is 2,000,000,000, make sure any fields 10 characters are less than this
 **// Track current date and increment each time we successfully complete batch process
@@ -737,7 +741,7 @@ Offline Batch Process:
 		InsertTrailer("batchreplenish.txt" item_counter)
 		Close batchreplenish.txt
 
-/// Merge of addstoreitems, batchreplenish, onlineinvrequest
+/// Merge of addstoreitems, batchreplenish, onlineinvrequest, leftovers
 		
 	// Try to read file "addstoreitems.txt"
 		    If file does not exist, log & proceed to next batch subprogram
@@ -801,18 +805,43 @@ Offline Batch Process:
             //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
             //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
             // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
+			
+		// Try to read file "leftovers.txt"
+		    If file does not exist, SKIP READ OF THIS FILE
+        HeaderCheck
+            If header is bad proceed to next subprogram
+			//	First two characters != 'HD'
+			//	Third character != <space>				
+			// Then log error "Header read failed" & proceed to next batch subprogram				
+		SequenceCheck
+			If out of sequence proceed to next batch subprogram
+			//If out of sequence, log error "<Batch job name> <Filename> Sequence validation failed, expected [stored_num] but encountered [file_num] " 
+			//& proceed to next batch subprogram
+            //sequence_numbers[adddeletestore] = <filesequencenumber>                
+        TrailerCheck
+			If no rows in file 
+				UpdateSequenceNumber()
+				proceed to next batch subprogram
+			If issue reading trailer log error
+            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
+            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
+            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)		
 		
-		Create vector of Merge_Add_Online_Batch_Event
+		Create vector of Merge_Add_Online_Batch_Event merged_events
 		
 		Move to record immediately following header for addstoreitems
 		Move to record immediately following header for batchreplenish
 		Move to record immediately following header for onlineinvrequest
+		Move to record immediately following header for leftovers
+		
     (A) Get input from files
 		int item_counter = 0
 		
 		// Read from addstoreitems.txt
 		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
 			Read a line from file as as a string - input_line
+			
+			Create an instance of Merge_Add_Online_Batch_Event
 			
 			// Input section
 			// If at trailer, proceed to next batch subprogram				
@@ -839,11 +868,15 @@ Offline Batch Process:
 						log error "Store number is negative on line [curr_item index]"
 						continue		
 			Store requested_quantity in Merge_Add_Online_Batch_Event
+			
+			merged_events.push_back(Merge_Add_Online_Batch_Event)
 			item_counter++
 			
 		// Read from batchreplenish.txt
 		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
 			Read a line from file as as a string - input_line
+			
+			Create an instance of Merge_Add_Online_Batch_Event
 			
 			// Input section
 			// If at trailer, proceed to next batch subprogram				
@@ -870,11 +903,14 @@ Offline Batch Process:
 						log error "Store number is negative on line [curr_item index]"
 						continue		
 			Store requested_quantity in Merge_Add_Online_Batch_Event
+			merged_events.push_back(Merge_Add_Online_Batch_Event)
 			item_counter++
 
 		// Read from onlineinvrequest.txt
 		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
 			Read a line from file as as a string - input_line
+			
+			Create an instance of Merge_Add_Online_Batch_Event
 			
 			// Input section
 			// If at trailer, proceed to next batch subprogram				
@@ -901,7 +937,38 @@ Offline Batch Process:
 						log error "Store number is negative on line [curr_item index]"
 						continue		
 			Store requested_quantity in Merge_Add_Online_Batch_Event
-			item_counter++		
+			merged_events.push_back(Merge_Add_Online_Batch_Event)
+			item_counter++	
+		
+		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
+						
+			Read a line from file as as a string - input_line
+			
+			Create an instance of Merge_Add_Online_Batch_Event
+			
+			// Input section
+			// If at trailer, proceed to next batch subprogram				
+			
+			std::string input_string
+			input_string = input_line.substr(leftovers_txt_source_code_pos,leftovers_txt_source_code_len) // store_number_length is global designating store_number field length
+			Store source_code in merged_events
+			input_string = input_line.substr(leftovers_txt_store_number_pos,leftovers_txt_store_number_len) // store_number_length is global designating store_number field length
+			Store store_number in merged_events
+			input_string = input_line.substr(leftovers_txt_store_priority_pos,leftovers_txt_store_priority_len) // store_number_length is global designating store_number field length
+			Store store_priority in merged_events
+			input_string = input_line.substr(leftovers_txt_item_number_pos,leftovers_txt_item_number_len) // store_number_length is global designating store_number field length
+			Store item_number in merged_events
+			input_string = input_line.substr(leftovers_txt_requested_quantity_pos,leftovers_txt_requested_quantity_len) // store_number_length is global designating store_number field length
+			Store requested_quantity in merged_events
+			
+			merged_events.push_back(Merge_Add_Online_Batch_Event)
+			item_counter++
+				
+		Close files:
+			leftovers.txt
+			addstoreitems.txt
+			batchreplenish.txt
+			onlineinvrequest.txt
 
 		CreateFile(storeupdate.txt, 2)
 	(B)	For curr_item = 0 to count of Merge_Add_Online_Batch_Event
@@ -917,8 +984,7 @@ Offline Batch Process:
 
 //// AccuStock
 
-	// Changes reorder_level based on consecutive measurements based on reorder_level
-	
+	// Changes reorder_level based on consecutive measurements based on reorder_level	
 
 	For each item in store_inventory where item.item_number == thing.item_number && item.store_number == thing.store_number
 		If item.qty > item.high_threshold
@@ -942,54 +1008,6 @@ Offline Batch Process:
 //// Store inventory generation
 	
 	Create vector of Merge_Add_Online_Batch_Event store_inventory_events
-	
-	//// Read in leftovers.txt
-	// Try to read file "leftovers.txt"
-		    If file does not exist, PROCEED TO MERGED FILE PROCESSING
-        HeaderCheck
-            If header is bad proceed to next subprogram
-			//	First two characters != 'HD'
-			//	Third character != <space>				
-			// Then log error "Header read failed" & proceed to next batch subprogram				
-		SequenceCheck
-			If out of sequence proceed to next batch subprogram
-			//If out of sequence, log error "<Batch job name> <Filename> Sequence validation failed, expected [stored_num] but encountered [file_num] " 
-			//& proceed to next batch subprogram
-            //sequence_numbers[adddeletestore] = <filesequencenumber>                
-        TrailerCheck
-			If no rows in file 
-				UpdateSequenceNumber()
-				proceed to next batch subprogram
-			If issue reading trailer log error
-            //If next line is trailer & trailer says 0 rows, log "Empty file", update sequence number (adddeletestore.txt) & proceed to next batch subprogram
-            //If next line is trailer & trailer says >0 rows, log error "Trailer row count mismatch, trailer says [trailer_rows] & [file_rows] in file" & proceed to next batch subprogram
-            // Read rows until trailer row, store in num_rows  // Unnecessary? (Case 'T' has same functionality)
-		
-				
-		while(ifstream.good() & !eof)  // While we can read from the file and are not at the end
-			
-			Create instance of Merge_Add_Online_Batch_Event leftovers
-			Read a line from file as as a string - input_line
-			
-			// Input section
-			// If at trailer, proceed to next batch subprogram				
-			
-			std::string input_string
-			input_string = input_line.substr(leftovers_txt_source_code_pos,leftovers_txt_source_code_len) // store_number_length is global designating store_number field length
-			Store source_code in leftovers
-			input_string = input_line.substr(leftovers_txt_store_number_pos,leftovers_txt_store_number_len) // store_number_length is global designating store_number field length
-			Store store_number in leftovers
-			input_string = input_line.substr(leftovers_txt_store_priority_pos,leftovers_txt_store_priority_len) // store_number_length is global designating store_number field length
-			Store store_priority in leftovers
-			input_string = input_line.substr(leftovers_txt_item_number_pos,leftovers_txt_item_number_len) // store_number_length is global designating store_number field length
-			Store item_number in leftovers
-			input_string = input_line.substr(leftovers_txt_requested_quantity_pos,leftovers_txt_requested_quantity_len) // store_number_length is global designating store_number field length
-			Store requested_quantity in leftovers
-			
-			store_inventory_events.push_back(leftovers)
-				
-		Close leftovers.txt
-
 
 	//// Process storeupdate.txt next
 	// Try to read file "storeupdate.txt"
@@ -1033,10 +1051,8 @@ Offline Batch Process:
 			input_string = input_line.substr(storeupdate_txt_requested_quantity_pos,storeupdate_txt_requested_quantity_len) // store_number_length is global designating store_number field length
 			Store requested_quantity in Merge_Add_Online_Batch_Event
 			
-			store_inventory_events.push_back(merged)
-		
-		std::sort store_inventory_events based on store_priority (1 = highest)
-		
+			store_inventory_events.push_back(merged)			
+				
 		Sort Algo:
 		
 			//	struct less_than_source_code
@@ -1047,69 +1063,68 @@ Offline Batch Process:
 			//	}
 			//};
 			//
-			//std::vector<TestClass> priorityArray[16];
-			//For each item in blah (events)
-			//	 For each number bleh in priorityArray
-			//		if item.priority == bleh
-			//			priorityArray[bleh].push_back(item)
+			//std::vector<Merge_Add_Online_Batch_Event> priorityArray[16];
+			//For each item in store_inventory_events
+			//	 For each number num in priorityArray
+			//		if item.priority == num
+			//			priorityArray[num].push_back(item)
 
-			//For each number bleh in priorityArray
-			//	 std::sort(priorityArray[bleh].begin(), priorityArray[bleh].end(), less_than_source_code) */
+			//For each number num in priorityArray
+			//	 std::sort(priorityArray[num].begin(), priorityArray[num].end(), less_than_source_code) */
 
-			//For each number bleh in priorityArray
-			//	For each item bleep in priorityArray[bleh]
-			//		// Process
+			
+		
+			// Add -> Online -> Batch
+			// Batch, check to see if quantity >= reorder_level
+			// Add puts 3000 units of item 1 in store 500
+			// Online puts 4000 units of item 1 in store 500
+			// reorder_level 6000
+			// 
+		
 		
 		Create vector of Merge_Add_Online_Batch_Event leftovers
 		
-		(B)	For curr_item = 0 to count of Merge_Add_Online_Batch_Event vector items				
-				int store_index = FindStore(store_data, int store_number)				
-				if (store_index == -1)
-					Log Error "Store <store_number> does not exist"
-					continue
-				int store_item_index = FindStoreItem(store_inventory, item_number)
-				if (store_item_index == -1 && item.source_code != 'A')
-					Log Error "Item <item_number> does not exist at store <store_number>"
-					continue
-				if (store_data[store_index].store_priority != item.priority)
-					Log Error "Item <item_number> priority does not match store <store_number>'s"
-					continue
+		(B)	For each number num in priorityArray
+				For each item in priorityArray[num]			
+					int store_index = FindStore(store_data, int store_number)				
+					if (store_index == -1)
+						Log Error "Store <store_number> does not exist"
+						continue
+					int store_item_index = FindStoreItem(store_inventory, item_number)
+					else if (store_item_index == -1)
+						Log Error "Item <item_number> does not exist at store <store_number>"
+						continue
+					else if (store_inventory[store_item_index].status = 'D')
+						Log Error "Item <item_number> exists at store <store_number> but is deactivated"
+						continue
+					else if (store_data[store_index].store_priority != item.priority)
+						Log Error "Item <item_number> priority does not match store <store_number>'s"
+						continue
+					else if (item.source_code = 'B' && store_inventory[store_item_index].quantity > reorder)				
+						continue // skip this item, we have enough, no need to reorder
 				
-				// If it never existed
-				if (store_item_index = -1 && item_source_code == 'A')
-				{
-					Create instance of item class
-					Copy values from item to item class
-					Set quantity to 0
-					Set high_threshold to 
-					Push_back instance										
-				}
-				// If it exists but is deactivated
-				if (store_inventory[store_item_index].item_status = 'D' && item_source_code == 'A')
-				{
-					Copy values from item to item class
-					Set quantity to 0													
-				}
-				
-				
-				
-				if (warehouse_item_data[warehouse_item_index].quantity == item.quantity)
-				{
-					store_inventory[store_item_index].quantity += item.quantity
-					warehouse_item_data[warehouse_item_index] = 0
-					// Batch replenishment handles next time
-				}
-				if (warehouse_item_data[warehouse_item_index].quantity < item.quantity)
-				{
-					item.quantity = item.quantity - warehouse_item_data[warehouse_item_index]
-					store_inventory[store_item_index].quantity += warehouse_item_data[warehouse_item_index].quantity
-					warehouse_item_data[warehouse_item_index] = 0
-					leftovers.push_back(item)
-				}
-				
-				store_inventory[store_item_index].quantity = item.quantity
-				warehouse_item_data[warehouse_item_index] -= item.quantity					
-				
+					if (warehouse_item_data[warehouse_item_index].quantity == item.quantity)
+					{
+						store_inventory[store_item_index].quantity += item.quantity
+						warehouse_item_data[warehouse_item_index] = 0
+						// Batch replenishment handles next time
+					}
+					else if (warehouse_item_data[warehouse_item_index].quantity < item.quantity)
+					{
+						// Not enough quantity, reset item quantity to what we still need after we fulfill from warehouse.
+						item.quantity = item.quantity - warehouse_item_data[warehouse_item_index]
+						leftovers.push_back(item)
+						
+						store_inventory[store_item_index].quantity += warehouse_item_data[warehouse_item_index].quantity
+						warehouse_item_data[warehouse_item_index] = 0
+						
+					}
+					else if (warehouse_item_data[warehouse_item_index].quantity > item.quantity)
+					{
+						store_inventory[store_item_index].quantity += item.quantity
+						warehouse_item_data[warehouse_item_index] -= item.quantity				
+					}				
+					
 		Close storeupdate.txt
 		
 		Delete leftovers.txt // Or create another CreateFile that does overwrite
@@ -1129,7 +1144,8 @@ Offline Batch Process:
 				Zero-filled item.item_number
 				Zero-filled item.requested_quantity
 		
-		InsertTrailer("leftovers.txt", item_counter)			
+		InsertTrailer("leftovers.txt", item_counter)
+		close leftovers.txt		
 	
 ////  Vendor order generation (Request more inventory)
 

@@ -15,6 +15,11 @@
 #define vendorrequest_seq 10
 #define leftovers_seq 11
 
+// storeupdate.txt source codes wannabe enum
+#define source_code_batch 1
+#define source_code_online 2
+#define source_code_add 3
+
 // **FILE FIELD LENGTH AND POSITION**
 // Positions are 0-based
 // adddeletestore.txt
