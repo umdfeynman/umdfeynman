@@ -81,7 +81,7 @@ public:
     int account_number = -1;
     int discount_pct = -1;  // Discount percent from coupon
     double grand_total = -1.0;  // Transaction total after all discounts applied, for easy generation of grand totals in reporting
-    std::vector<int> transaction_item;
+    std::vector<int> transaction_item_number;
     std::vector<long long> transaction_item_quantity;
     std::vector<double> transaction_item_price;  // Item price after individual item discount 
 };
