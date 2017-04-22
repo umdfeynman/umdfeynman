@@ -60,7 +60,7 @@ public:
     std::string address = "";
     std::string name = "";   
     std::vector<int> cust_items;  // Same index as item_dates
-    std::vector<std::string> item_dates; // Same index as cust_items	
+    std::vector<int> item_dates; // Same index as cust_items	
 };
 
 class Coupon

@@ -38,8 +38,9 @@ int main()
 	{
 		Plog.logError("Unable to successfully load all databases.  Bailing");
 		return 1;
-	}	
+	}
 	
+	std::cout << "Sweet man!" << transaction_table.size() << customer_table.size() << std::endl;	
 	
 	// Display main menu
 	/* DisplayMainMenu();
