@@ -46,7 +46,7 @@ bool loadDatabaseIntoMemory()
 		return false;
 	}
 
-	//lastResult = readCoupon();
+	lastResult = readCoupon();
 	if (!lastResult)
 	{
 		Plog.logError("loadDatabaseIntoMemory", "Unable to load coupon database.  Bailing.");
@@ -641,6 +641,58 @@ bool readStoreData()
 	
 	
 	*/
+}
+
+bool readCoupon()
+{
+	std::ifstream couponFile;
+	couponFile.open(g_coupon_file);
+
+	if (!couponFile || !couponFile.good())
+	{
+		Plog.logError("readCoupon", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	std::string readLine;
+	std::getline(couponFile, readLine);
+
+	if (readLine.substr(0, 7) != "HCOUPON")
+	{
+		Plog.logError("readCoupon", "Failed to find header in file.  Bailing.");
+		return false;
+	}
+
+	if (couponFile.eof())
+	{
+		Plog.logWarn("readCoupon", "Empty database file.  Continuing.");
+		return true;
+	}
+
+	while (!couponFile.eof() || !couponFile)
+	{
+
+		std::string s_couponNumber;
+		std::string s_couponDiscountPercent;
+		
+		std::getline(couponFile, readLine);
+		s_couponNumber = readLine;
+		std::getline(couponFile, readLine);
+		s_couponDiscountPercent = readLine;
+		
+		Coupon inCoupon;
+
+		inCoupon.coupon_number = StringToInt(s_couponNumber);
+		inCoupon.discount_pct = StringToInt(s_couponDiscountPercent);
+		
+		coupon_table.push_back(inCoupon);
+
+		std::getline(couponFile, readLine); // Read past separator
+
+	}
+
+	couponFile.close();
+	return true;
 }
 
 // Note:  Skipping record length check due to file structure, assuming files are immaculate
