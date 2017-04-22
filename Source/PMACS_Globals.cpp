@@ -8,5 +8,7 @@ std::vector<StoreData> store_data_table;
 std::vector<Customer> customer_table;
 std::vector<Coupon> coupon_table;
 std::vector<Transaction> transaction_table;
+Logger log("PMACS_Log.txt");
+
 
 

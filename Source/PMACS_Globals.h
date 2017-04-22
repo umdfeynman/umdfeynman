@@ -7,3 +7,4 @@ extern std::vector<StoreData> store_data_table;
 extern std::vector<Customer> customer_table;
 extern std::vector<Coupon> coupon_table;
 extern std::vector<Transaction> transaction_table;
+extern Logger log;
