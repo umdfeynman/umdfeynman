@@ -11,5 +11,6 @@ extern std::vector<Coupon> coupon_table;
 extern std::vector<Transaction> transaction_table;
 extern Logger Plog;
 extern int sequenceNumber[12];
+extern int recordLength[12];
 extern Date systemDate;
 #endif
