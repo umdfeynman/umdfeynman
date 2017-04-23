@@ -77,7 +77,7 @@ bool sequenceCheck(ifstream& input_file, int seq_index)
     return true;
 }
 
-bool trailerCheck(ifstream& input_file)
+int trailerCheck(ifstream& input_file)
 {
     // Go to beginning of file
     input_file.seekg(0);
@@ -101,7 +101,7 @@ bool trailerCheck(ifstream& input_file)
     if (readLine[0] != 'T' || readLine[1] != ' ')
     {
         Plog.logError("trailerCheck", "Unable to locate trailer");
-        return false;
+        return -1;
     }
     
 	std::string s_trailerCount = readLine.substr(2, 4);
@@ -110,10 +110,13 @@ bool trailerCheck(ifstream& input_file)
     if (rowCount != trailerCount)
     {
         Plog.logError("trailerCheck", "Trailer count number " + s_trailerCount + " does not match item count number " + std::to_string(rowCount));
-        return false;
+		return -1;
     }
     
-    return true;
+	if (trailerCount == 0)
+		return 0;
+
+	return trailerCount;
 }
 
 void positionFileForRecords(ifstream& input_file)
