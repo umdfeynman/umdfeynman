@@ -5,7 +5,7 @@
 #include "PMACS_Utility.h"
 #include <string>
 
-bool createFile(string file_name, int file_index, ofstream& the_file)
+bool createFile(string file_name, ofstream& the_file)
 {
     the_file.open(file_name, ios::out);
     if (!the_file.good())
@@ -13,7 +13,7 @@ bool createFile(string file_name, int file_index, ofstream& the_file)
 		Plog.logError("existenceCheck", "Unable to create file.");
 		return false;
 	}
-    the_file << endl;
+    
     return true;
 }
 
@@ -130,10 +130,10 @@ void insertTrailer(ofstream& output_file, int num_items)
     output_file << "T " << StringZeroFill(4, num_items);
 }
 
-void InsertHeader(ostream& input_file, int file_index)
+void insertHeader(ostream& input_file, int file_index)
 {
-    //std::string header = systemDate.GetHeader(getSequenceNumber(file_index), getRecordLength(file_index));
-    //input_file << header;
+    std::string header = systemDate.GetHeader(getSequenceNumber(file_index), getRecordLength(file_index));
+    input_file << header << std::endl;
 }
 
 

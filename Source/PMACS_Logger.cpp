@@ -46,15 +46,15 @@ std::string Logger::getTime()
 
 void Logger::logError(std::string context, std::string message)
 {
-	logFile << getTime() << "\t[ERROR] [" << context << "] " << message << "\n";
+	logFile << getTime() << "\t[ERROR] [" << context << "] " << message << "\n" << std::flush;	
 }
 
 void Logger::logWarn(std::string context, std::string message)
 {
-	logFile << getTime() << "\t[WARN] [" << context << "] " << message << "\n";
+	logFile << getTime() << "\t[WARN] [" << context << "] " << message << "\n" << std::flush;
 }
 
 void Logger::logInfo(std::string context, std::string message)
 {
-	logFile << getTime() << "\t[INFO] [" << context << "] " << message << "\n";
+	logFile << getTime() << "\t[INFO] [" << context << "] " << message << "\n" << std::flush;
 }

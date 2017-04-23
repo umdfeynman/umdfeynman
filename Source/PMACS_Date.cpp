@@ -10,6 +10,7 @@ Date::Date(string info)
 	baseDate = info;
 	NewDate(info);
 };
+
 Date::~Date()
 {
 
@@ -77,7 +78,7 @@ void Date::NewDate(string info)
 	//get year
 	x = 0;
 	temp = "    ";
-	while (info[index] != ' ')
+	while (index < info.size())
 	{
 		temp[x] = info[index];
 		index++;
@@ -160,7 +161,6 @@ int Date::ProjectDate(int days)
 	return value;
 };
 
-
 //return string of date state in class-read format
 string Date::GetDateStream()
 {
@@ -174,7 +174,6 @@ string Date::GetDateStream()
 	send += to_string(month);
 	send += " ";
 	send += to_string(year);
-	send += " ";
 
 	return send;
 };
