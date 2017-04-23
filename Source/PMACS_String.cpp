@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iomanip>
 #include <string>
+#include <locale>
 #include "PMACS_String.h"
 
 /*
@@ -74,4 +75,16 @@ long long StringToLongLong(std::string in_string)
 double StringToDouble(std::string in_string)
 {
 	return stod(in_string);
+}
+
+std::string upperCase(std::string in_string)
+{
+	std::string out_string;
+	std::locale loc;
+	for (int i = 0; i < in_string.length(); ++i)
+	{
+		out_string += std::toupper(in_string[i], loc);
+	}
+
+	return out_string;
 }
