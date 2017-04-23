@@ -33,4 +33,15 @@ int findStoreItem(int item_number)
 	return -1;
 }
 
+int findWarehouseItem(int item_number)
+{
+	for (int i = 0; i < warehouse_table.length(); i++)
+	{
+		if (warehouse_table[i].item_number == item_number)
+			return i;
+	}
+
+	return -1;
+}
+
 
