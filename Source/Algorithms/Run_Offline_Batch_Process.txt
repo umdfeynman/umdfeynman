@@ -83,7 +83,7 @@ Offline Batch Process:
 			
 	// Add/Delete Store Batch Subprocess
 	//	Try to read file "adddeletestore.txt"
-        ExistenceCheck
+        openFile
             If file does not exist, log & proceed to next batch subprogram
         HeaderCheck
             If header is bad proceed to next subprogram
@@ -521,7 +521,7 @@ Offline Batch Process:
 		
 ////// En masse inventory item updates
 		//	Try to read file "items.txt"
-        ExistenceCheck
+        openFile
             If file does not exist, log & proceed to next batch subprogram
         HeaderCheck
             If header is bad proceed to next subprogram

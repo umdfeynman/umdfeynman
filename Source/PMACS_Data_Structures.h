@@ -47,7 +47,7 @@ public:
     char store_status = 'O'; // D, O, C - Deactivated, open, or closed
     int store_priority = -1;
     int store_number = -1; // Key 1
-	std::string street_address = "";
+	std::string address = "";
 	std::string city_name = "";
 	std::string state_name = "";
 	int zip_code = -1;
@@ -92,7 +92,7 @@ public:
     //Date date;  // Per Steiner:  Date not used
     char action_type; // 'A' 'D' 'I' 'C'
     int store_number;
-	std::string street_address;
+	std::string address;
 	std::string city_name;
 	std::string state_name;
     int zip_code;
