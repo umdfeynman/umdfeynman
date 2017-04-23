@@ -1,0 +1,41 @@
+bool writeStoreInventory()
+{
+	std::ofstream storeInvFile;
+	storeInvFile.open(g_storeinv_file, ios::out);
+
+	//check file opened properly
+	if (!storeInvFile || !storeInvFile.good())
+	{
+		Plog.logError("writeStoreInventory", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	//write header
+	storeInvFile << "HSTOREINV" << endl;
+	
+	//for each store inv entry, write to file
+	for (int x = 0; x < store_inventory_table.size(); x ++)
+	{
+		storeInvFile << store_inventory_table[x].item_status;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].item_number;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].reorder_quantity;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].reorder_level;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].quantity;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].store_number;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].high_threshold;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].low_threshold;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].accustock_direction;
+		storeInvFile << endl;
+		storeInvFile << "/////////////////////////////////////////////////////////////////////////////";
+		storeInvFile << endl;
+	}
+	return true;
+}

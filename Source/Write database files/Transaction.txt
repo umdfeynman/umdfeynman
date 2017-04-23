@@ -1,0 +1,70 @@
+bool writeTransaction()
+{
+	std::ofstream transactionFile;
+	transactionFile.open(g_transaction_file, ios::out);
+
+	if (!transactionFile || !transactionFile.good())
+	{
+		Plog.logError("writeTransaction", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	//transaction_table
+	
+
+	transactionFile << "HTRANS" << endl;
+
+	for (int x = 0; x < transaction_table.size(); x++)
+	{
+			transactionFile << transaction_table[x].order_number;
+			transactionFile << endl;
+			transactionFile << transaction_table[x].originating_cashier_number;
+			transactionFile << endl;
+			transactionFile << transaction_table[x].approving_cashier_number;
+			transactionFile << endl;
+			transactionFile << transaction_table[x].store_number;
+			transactionFile << endl;
+			transactionFile << transaction_table[x].transaction_date;
+			transactionFile << endl;
+			transactionFile << transaction_table[x].account_number;
+			transactionFile << endl;
+			transactionFile << transaction_table[x].discount_pct;
+			transactionFile << endl;
+			transactionFile << transaction_table[x].grand_total;
+			transactionFile << endl;
+
+			transactionFile << "S";
+			transactionFile << endl;
+			for (int y = 0; y < transaction_table[x].transaction_item_number.size(); y++)
+			{
+				transactionFile << transaction_table[x].transaction_item_number[y];
+				transactionFile << endl;
+			}	
+			transactionFile << "E";
+			transactionFile << endl;
+
+			transactionFile << "S";
+			transactionFile << endl;
+			for (int y = 0; y < transaction_table[x].transaction_item_quantity.size(); y++)
+			{
+				transactionFile << transaction_table[x].transaction_item_quantity[y];
+				transactionFile << endl;
+			}	
+			transactionFile << "E";
+			transactionFile << endl;
+
+			transactionFile << "S";
+			transactionFile << endl;
+			for (int y = 0; y < transaction_table[x].transaction_item_price.size(); y++)
+			{
+				transactionFile << transaction_table[x].transaction_item_price[y];
+				transactionFile << endl;
+			}
+			transactionFile << "E";
+			transactionFile << endl;
+			transactionFile << "//////////////////////////////////////////////////////////////////////////////////";
+			transactionFile << endl;
+	}
+ transactionFile.close();
+	return true;
+}

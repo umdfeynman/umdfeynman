@@ -1,0 +1,35 @@
+bool writeStoreData()
+{
+	std::ofstream storeDataFile;
+	storeDataFile.open(g_storedata_file, ios::out);
+
+	if (!storeDataFile || !storeDataFile.good())
+	{
+		Plog.logError("writestoreData", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	storeDataFile << "HSTOREDATA" << endl;
+	
+	for (int x = 0; x < store_data_table.size(); x++)
+	{
+		storeDataFile << store_data_table[x].store_status;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].store_priority;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].store_number;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].street_address;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].city_name;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].state_name;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].zip_code;
+		storeDataFile << endl;
+		storeDataFile << "///////////////////////////////////////////////////////////////";
+		storeDataFile << endl;
+
+	}
+	return true;
+}

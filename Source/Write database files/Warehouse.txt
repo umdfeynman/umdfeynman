@@ -1,0 +1,51 @@
+bool writeWarehouseItemData()
+{
+	//open file for writing
+	std::ofstream warehouseFile;
+	warehouseFile.open(g_warehouse_file, ios::out);
+
+	//check to make sure file opens properly
+	if (!warehouseFile || !warehouseFile.good())
+	{
+		Plog.logError("writeWarehouseItemData", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	//header
+	warehouseFile << "HWAREHOUSE" << endl;
+
+
+
+	for (int x = 0; x < warehouse_table.size(); x++)
+	{
+		warehouseFile << warehouse_table[x].item_status;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].coupled_item_number;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].vendor_number;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].item_dosage;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].coupled_item_number;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].item_discount_percent;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].item_name;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].item_description;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].reorder_quantity;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].reorder_level;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].expected_delivery_time;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].quantity;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].price;
+		warehouseFile << endl; 
+		warehouseFile << "////////////////////////////////////////////////////////////////////////////";
+		warehouseFile << endl;
+	}
+	return true;
+};

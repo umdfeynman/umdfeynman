@@ -1,0 +1,47 @@
+bool writeCustomer()
+{
+	std::ofstream customerFile;
+	customerFile.open(g_customer_file, , ios::out);
+
+	if (!customerFile || !customerFile.good())
+	{
+		Plog.logError("writeCustomer", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	customerFile << "HCUST" << endl;
+	
+	for (int x = 0; x < customer_table.size(); x++)
+	{
+		customerFile << customer_table[x].account_number;
+		customerFile << endl;
+		customerFile << customer_table[x].address;
+		customerFile << endl;
+		customerFile << customer_table[x].name;
+		customerFile << endl;
+
+		customerFile << "S";
+		customerFile << endl;
+		for (int y = 0; y < customer_table[x].cust_items.size(); y++)
+		{
+			customerFile << customer_table[x].cust_items[y];
+			customerFile << endl;
+		}
+		customerFile << "E";
+		customerFile << endl;
+
+		customerFile << "S";
+		customerFile << endl;
+		for (int z = 0; z < customer_table[x].item_dates.size(); z++)
+		{
+			customerFile << customer_table[x].item_dates[z];
+			customerFile << endl;
+		}
+		customerFile << "E";
+		customerFile << endl;
+		customerFile << "///////////////////////////////////////////////////////////////////////////////////////////////";
+		customerFile << endl;
+	}
+		customerFile.close();
+		return true;
+}

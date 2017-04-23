@@ -1,0 +1,26 @@
+bool writeCoupon()
+{
+	std::ofstream couponFile;
+	couponFile.open(g_coupon_file, ios::out);
+
+	if (!couponFile || !couponFile.good())
+	{
+		Plog.logError("writeCoupon", "Failed to read database file.  Bailing.");
+		return false;
+	}
+	//coupon_table
+	couponFile << "HCOUPON" << endl;
+
+	for (int x = 0; x < coupon_table.size(); x++)
+	{
+		couponFile << coupon_table[x].coupon_number;
+		couponFile << endl;
+		couponFile << coupon_table[x].discount_pct;
+		couponFile << endl;
+		couponFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
+		couponFile << endl;
+	}
+
+	couponFile.close();
+	return true;
+}
