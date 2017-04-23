@@ -7,6 +7,6 @@
 #define input_type_char 3
 
 // Validates conversion from string (from file input)
-bool validateStrToTypeBySize(Logger* logger, std::string input, int expected_type);
+bool validateStrToTypeBySize(std::string input, int expected_type);
 
 #endif
