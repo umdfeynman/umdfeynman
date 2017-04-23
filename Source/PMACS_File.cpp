@@ -130,7 +130,7 @@ void positionFileForRecords(ifstream& input_file)
 
 void insertTrailer(ofstream& output_file, int num_items)
 {
-    output_file << "T " << StringZeroFill(4, num_items);
+    output_file << "T " << StringIntZeroFill(4, num_items);
 }
 
 void insertHeader(ostream& input_file, int file_index)

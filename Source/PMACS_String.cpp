@@ -22,7 +22,7 @@ TEST_CASE("IntZeroFillTest")
 }*/
 
 
-std::string StringZeroFill(int required_field_length, int in_number)
+std::string StringIntZeroFill(int required_field_length, int in_number)
 {
 	std::stringstream test_num_length;
 	test_num_length << in_number;
@@ -30,13 +30,30 @@ std::string StringZeroFill(int required_field_length, int in_number)
 	int size = test_num_length.tellg();
 
 	if (size > required_field_length)
-		Plog.logError("StringZeroFill", "Error - input string length exceeds required field length");	
+		Plog.logError("StringIntZeroFill", "Error - input string length exceeds required field length");	
 	
 	std::stringstream output_string;
 	output_string << std::setw(required_field_length) << std::setfill('0') << in_number;
 	output_string.flush();
 	return output_string.str();
 }
+
+std::string StringLongLongZeroFill(int required_field_length, long long in_number)
+{
+	std::stringstream test_num_length;
+	test_num_length << in_number;
+	test_num_length.seekg(0, ios::end);
+	int size = test_num_length.tellg();
+
+	if (size > required_field_length)
+		Plog.logError("StringLongLongZeroFill", "Error - input string length exceeds required field length");
+
+	std::stringstream output_string;
+	output_string << std::setw(required_field_length) << std::setfill('0') << in_number;
+	output_string.flush();
+	return output_string.str();
+}
+
 
 /*TEST_CASE("StringSpaceFillTest")
 {

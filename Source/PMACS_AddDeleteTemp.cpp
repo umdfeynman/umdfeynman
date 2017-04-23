@@ -4,6 +4,7 @@
 #include "PMACS_Globals.h"
 #include "PMACS_Utility.h"
 #include "PMACS_String.h"
+#include "PMACS_Data_Structures.h"
 
 bool addDeleteStore()
 {
@@ -211,41 +212,224 @@ bool addDeleteStore()
 		else
 		{
 			Plog.logError("addDeleteStore", "Row [" + std::to_string(rowCounter) + "]: Invalid action code");
-		}   
+		}
         
-    }   
+    }
+    
+
+
+    // Create the files
+    ofstream addStoreItemsFile;
+    ofstream returnItemsFile;
+    
+    createFile("addstoreitems.txt", addStoreItemsFile); 
+    insertHeader(addStoreItemsFile, g_addstoreitems);
+    
+    createFile("returnitems.txt", returnItemsFile);
+    insertHeader(returnItemsFile, g_returnitems);
+    
+    // Process & cleanup
+    
+    Add_Delete_Store_Event prevItem;
+    prevItem.action_type='Z';
+    int currStore = 0;
+    int addItemCounter = 0;
+    int deleteItemCounter = 0;
+    
+    for (int i = 0; i < ADS_Events.size(); i++)
+    {
+    	if (ADS_Events[i].action_type == 'A')
+    	{
+    		if (prevItem.action_type == 'A' || prevItem.action_type == 'I')
+    		{
+    			Plog.logError("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Item Code [" + std::to_string(ADS_Events[i].action_type) + "]: previous item was [" + std::to_string(prevItem.action_type) + "] - out of sequence, skipping");
+    			continue;
+    		}
+    		
+    		// Check if store exists and is active
+    		int findResult = findStore(ADS_Events[i].store_number);
+    		if (findResult != -1 && (store_data_table[findResult].store_status == 'O' || store_data_table[findResult].store_status == 'C'))
+    		{
+    			Plog.logError("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Store [" + std::to_string(ADS_Events[i].store_number) + "] already exists and is active, skipping");
+    			continue;
+    		}
+
+    		// Check if store exists but is deactivated
+    		if (findResult != -1 && store_data_table[findResult].store_status == 'D')
+    		{
+    			Plog.logError("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Store [" + std::to_string(ADS_Events[i].store_number) + "] already exists and is inactive - please create store with a different store number, skipping");
+    			continue;
+    		}
+    		
+    		currStore = ADS_Events[i].store_number;
+    		StoreData storeDataInstance;
+			storeDataInstance.store_status = 'O';
+    		storeDataInstance.store_priority = ADS_Events[i].store_priority_level;
+    		storeDataInstance.store_number = ADS_Events[i].store_number;
+    		storeDataInstance.address = ADS_Events[i].address;
+    		storeDataInstance.city_name = ADS_Events[i].city_name;
+    		storeDataInstance.state_name = ADS_Events[i].state_name;
+    		storeDataInstance.zip_code = ADS_Events[i].zip_code;
+    		
+    		store_data_table.push_back(storeDataInstance);
+    	}
+    	else if (ADS_Events[i].action_type == 'D')
+    	{
+    		if (prevItem.action_type == 'A' || prevItem.action_type == 'I')
+    		{
+    			Plog.logError("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Item Code [" + std::to_string(ADS_Events[i].action_type) + "]: previous item was [" + std::to_string(prevItem.action_type) + "] - out of sequence, skipping");
+    			continue;
+    		}
+    		
+    		// Check if store does not exist
+    		int findResult = findStore(ADS_Events[i].store_number);
+    		if (findResult == -1)
+    		{
+    			Plog.logError("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Store [" + std::to_string(ADS_Events[i].store_number) + "] does not exist, skipping");
+    			continue;
+    		}
+    		
+    		// Check if store exists but is deactivated
+    		if (findResult != -1 &&
+    		store_data_table[findResult].store_status == 'D')
+    		{
+    			Plog.logError("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Store [" + std::to_string(ADS_Events[i].store_number) + "] already exists and is inactive(deleted), skipping");
+    			continue;
+    		}
+
+    		// Check if store exists but any field doesn't match
+    		if (findResult != -1 &&
+    			(
+    				(store_data_table[findResult].store_priority != ADS_Events[i].store_priority_level) ||
+    				(store_data_table[findResult].store_number != ADS_Events[i].store_number) ||
+    				(store_data_table[findResult].address != ADS_Events[i].address) || 
+    				(store_data_table[findResult].city_name != ADS_Events[i].city_name) ||
+    				(store_data_table[findResult].state_name != ADS_Events[i].state_name) ||
+    				(store_data_table[findResult].zip_code != ADS_Events[i].zip_code)
+    			)
+    		)
+    		{
+    			Plog.logError("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Store [" + std::to_string(ADS_Events[i].store_number) + "]: delete request field mismatch, skipping");
+    			continue;
+    		}
+    		
+    		
+    		for (int j = 0; j < store_inventory_table.size(); j++)
+    		{
+    			if (store_inventory_table[i].store_number == ADS_Events[i].store_number)
+    			{
+    				deleteItemCounter++;
+    				
+					int warehouseItemResult = findWarehouseItem(store_inventory_table[i].item_number);
+
+    				returnItemsFile << StringIntZeroFill(4, warehouse_table[warehouseItemResult].vendor_number) <<
+    				StringIntZeroFill(9, store_inventory_table[i].item_number) <<
+    				StringLongLongZeroFill(10, store_inventory_table[i].quantity) << std::endl << std::flush;
+    				
+					store_inventory_table[i].item_status = 'D';
+    			}
+    		}
+    		
+    		store_data_table[i].store_status = 'D';
+    	}
+    	else if (ADS_Events[i].action_type == 'I')
+    	{
+    		if (prevItem.action_type != 'A' && prevItem.action_type != 'I')
+    		{
+    			Plog.logError("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Item Code [" + std::to_string(ADS_Events[i].action_type) + "]: previous item was [" + std::to_string(prevItem.action_type) + "] - out of sequence, skipping");
+    			continue;
+    		}
+    		
+    		// Check if item exists at warehouse
+    		if (findWarehouseItem(ADS_Events[i].item_number) == -1)
+    		{
+    			Plog.logError("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Item Code [" + std::to_string(ADS_Events[i].action_type) + "]: Item Number [" + std::to_string(ADS_Events[i].item_number) + "] does not exist in item data, skipping");
+    			continue;
+    		}
+    		
+    		addItemCounter++;
+    		
+    		StoreInventory storeInventoryInstance;
+    		storeInventoryInstance.item_number = ADS_Events[i].item_number;
+    		storeInventoryInstance.reorder_level = ADS_Events[i].store_reorder_level;
+    		storeInventoryInstance.reorder_quantity = ADS_Events[i].store_reorder_quantity;
+    		storeInventoryInstance.high_threshold = (float)ADS_Events[i].store_reorder_level * 1.15f;
+    		storeInventoryInstance.low_threshold = (float)ADS_Events[i].store_reorder_level * 0.85f;
+    		
+    		store_inventory_table.push_back(storeInventoryInstance);
+    		
+    		addStoreItemsFile << 'A' << StringIntZeroFill(5, ADS_Events[i].store_number) <<
+    		StringIntZeroFill(2, ADS_Events[i].store_priority_level) <<
+    		StringIntZeroFill(9, ADS_Events[i].item_number) <<
+    		StringLongLongZeroFill(10, ADS_Events[i].store_default_quantity) << std::endl << std::flush;
+    	}
+    	else if (ADS_Events[i].action_type == 'C')
+    	{
+    		if (prevItem.action_type != 'I')
+    		{
+    			Plog.logError("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Item Code [" + std::to_string(ADS_Events[i].action_type) + "]: previous item was [" + std::to_string(prevItem.action_type) + "] - out of sequence, skipping");
+    			continue;
+    		}
+    		
+    		if (ADS_Events[i].store_overall_item_count != addItemCounter)
+    		{
+    			Plog.logWarn("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Control record count [" + std::to_string(ADS_Events[i].store_overall_item_count) + "]: not equal to number of items: [" + std::to_string(addItemCounter) + "]");
+    			continue;
+    		}
+    		
+    		addItemCounter = 0;
+    		currStore = 0;
+    	}
+    	else
+    	{
+    		Plog.logError("addDeleteStore", "Event Item [" + std::to_string(i) + "]: Invalid Item Code [" + std::to_string(ADS_Events[i].action_type) + "], skipping");
+    	}
+    	
+    	prevItem = ADS_Events[i];
+    	
+    }
+    
+    
     
 	std::cout << ADS_Events.size();
+	
+
+	insertTrailer(returnItemsFile, deleteItemCounter);
+	returnItemsFile.close();
+	insertTrailer(addStoreItemsFile, addItemCounter);
+	addStoreItemsFile.close();
+
 	return true;
 }
 
+
+
 /*
-Add_Delete_Store_Event prevItem
-prevItem.action = 'Z'
-int currStore = 0
-int itemCounter = 0
-For each item in Add_Delete_Store_Event
-	if item.action == A
-		If prevItem.action == I | A
-			Out of sequence, log
-		currStore = item.store_number
-		Add store based on item
-	if item.action == D
-		If prevItem.action == I | A
-			Out of sequence, log
-		Delete store based on item
-	if item.action == I
-		If prevItem.action != A || I
-			Out of sequence, don't process (break)
-		itemCounter++
-		Process I based on item under currStore (add to store inventory)
-	if item.action == C
-		If prevItem.action != I
-			Out of sequence, don't process (break)
-		Process C (record count)
-		itemCounter = 0
-		currStore = 0
-	else
-		Log error "invalid action code"
-	prevItem = item
+
+xint currStore = 0
+xint itemCounter = 0
+xFor each item in Add_Delete_Store_Event
+x	xif item.action == A
+x		If prevItem.action == I | A
+x			Out of sequence, log
+x		currStore = item.store_number
+x		Add store based on item
+x	if item.action == D
+x		If prevItem.action == I | A
+x			Out of sequence, log
+x		Delete store based on item
+x	if item.action == I
+x		If prevItem.action != A || I
+x			Out of sequence, don't process (break)
+x		itemCounter++
+x		Process I based on item under currStore (add to store inventory)
+x	if item.action == C
+x		If prevItem.action != I
+x			Out of sequence, don't process (break)
+x		Process C (record count)
+x		itemCounter = 0
+x		currStore = 0
+x	else
+x		Log error "invalid action code"
+x	prevItem = item
 */

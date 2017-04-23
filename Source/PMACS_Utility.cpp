@@ -13,7 +13,7 @@ int getRecordLength(int rec_index)
 // UNTESTED !!!!!!
 int findStore(int store_number)
 {
-	for (int i = 0; i < store_data_table.length(); i++)
+	for (int i = 0; i < store_data_table.size(); i++)
 	{
 		if (store_data_table[i].store_number == store_number)
 			return i;		
@@ -24,7 +24,7 @@ int findStore(int store_number)
 
 int findStoreItem(int item_number)
 {
-	for (int i = 0; i < store_inventory_table.length(); i++)
+	for (int i = 0; i < store_inventory_table.size(); i++)
 	{
 		if (store_inventory_table[i].item_number == item_number)
 			return i;
@@ -35,7 +35,7 @@ int findStoreItem(int item_number)
 
 int findWarehouseItem(int item_number)
 {
-	for (int i = 0; i < warehouse_table.length(); i++)
+	for (int i = 0; i < warehouse_table.size(); i++)
 	{
 		if (warehouse_table[i].item_number == item_number)
 			return i;
