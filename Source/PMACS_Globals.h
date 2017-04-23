@@ -3,6 +3,7 @@
 #include <vector>
 #include "PMACS_Data_Structures.h"
 #include "PMACS_Logger.h"
+#include "PMACS_Date.h"
 extern std::vector<WarehouseItemData> warehouse_table;
 extern std::vector<StoreInventory> store_inventory_table;
 extern std::vector<StoreData> store_data_table;

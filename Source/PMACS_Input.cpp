@@ -1,7 +1,7 @@
 //#define CATCH_CONFIG_MAIN
 //#include "catch.hpp"
 #include <string>
-#include "PMACS_Logger.h"
+//#include "PMACS_Logger.h"
 #include "PMACS_Globals.h"
 #include "PMACS_Input.h"
 
