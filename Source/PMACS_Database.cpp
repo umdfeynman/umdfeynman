@@ -650,7 +650,7 @@ bool readStoreData()
 		inStoreData.store_status = s_storeStatus[0];
 		inStoreData.store_priority = StringToInt(s_storePriority);
 		inStoreData.store_number = StringToInt(s_storeNumber);
-		inStoreData.street_address = s_streetAddress;
+		inStoreData.address = s_streetAddress;
 		inStoreData.city_name = s_cityName;
 		inStoreData.state_name = s_stateName;
 		inStoreData.zip_code = StringToInt(s_zipCode);

@@ -68,7 +68,7 @@
 #define g_adddeletestore_txt_i_store_reorder_quantity_pos 30
 #define g_adddeletestore_txt_i_store_reorder_quantity_len 10
 // 'C' records
-#define g_adddeletestore_txt_c_store_overall_item_count_pos 1
+#define g_adddeletestore_txt_c_store_overall_item_count_pos 2
 #define g_adddeletestore_txt_c_store_overall_item_count_len 4
 
 // storeupdate.txt

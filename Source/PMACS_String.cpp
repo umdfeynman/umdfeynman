@@ -6,6 +6,8 @@
 #include <string>
 #include <locale>
 #include "PMACS_String.h"
+#include "PMACS_Logger.h"
+#include "PMACS_Globals.h"
 
 /*
 TEST_CASE("IntZeroFillTest")
