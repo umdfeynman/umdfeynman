@@ -1,18 +1,18 @@
 TODO:
-**// File sequence globals are now <name>_seq, replace
-// Since add store happens before batch replenishment, doesn't this mean that 
-// batch replenishment will attempt to replenish the store's inventory because it will be
-// empty?
+==DONE==**// File sequence globals are now <name>_seq, replace
+==DONE==// Since add store happens before batch replenishment, doesn't this mean that 
+==DONE==// batch replenishment will attempt to replenish the store's inventory because it will be
+==DONE==// empty?
 ==DONE==**// Modify StringZeroFill to use long longs
 ==DONE==**// Maximum size for long int is 2,000,000,000, make sure any fields 10 characters are less than this
 **// Track current date and increment each time we successfully complete batch process
-**// Method to 'fake date' for testing refills = **// Set system date
+==DONE==**// Method to 'fake date' for testing refills = **// Set system date
 ==DONE==**// RECONCILE ALL NAMES W/ FIND&REPLACE
 ==DONE==**// TYPE CONVERSION:  String to whatever type
 **// CONVERSION FUNCTIONS FOR Event DATA STRUCTURES
-**// "STORE" - IMPLIES TYPE CONVERSION, THIS NEEDS TO BE DONE
+**// "STORE" - IMPLIES TYPE CONVERSION, THIS NEEDS TO BE DONE  EX:  "Store state in Add_Delete_Store_Event"
 ==DONE==**// AddDeleteStore -- Populate price with randomly generated # between 1.0-40.0
-**// Add warehouse item functionality in online portion pending on Steiner response
+==DONE==**// Add warehouse item functionality in online portion pending on Steiner response
 			// *NOTE*:  ONLY TRIM SPACES WHEN EVALUATING... EX:  SEARCH, MATCH, ETC.
 			DO IF TIME:
 			// *NOTE*:  ONLY UPPERCASE WHEN EVALUATING... EX:  SEARCH, MATCH, ETC.
@@ -20,17 +20,17 @@ TODO:
 		// High Threshold = 1.15 * reorder_level
 		// Low Threshold = 0.85 * reorder_level
 **// Implement 'empty months' in sales reports
-**// Make sure any 'default' values in data structures are pre-initialized (constructors?)
+==DONE== **// Make sure any 'default' values in data structures are pre-initialized (constructors?)
 **// Validation for field length & central storage of field name, type, length
 **// Did we check to make sure items were active (vs deactivated)?  Double check
-**// Online inventory request & add delete store inventory allocation produce 'recycle' files which get included as input in the warehouse to store
+==DONE==**// Online inventory request & add delete store inventory allocation produce 'recycle' files which get included as input in the warehouse to store
 	inventory generation merge process
 **// Separate vendor report generation & order generation into two functions
-**// Make sure "C" record in adddeletestore and "NA,NC,ND" in items.txt don't count for TrailerCheck
+==DONE==**// Make sure "C" record in adddeletestore and "NA,NC,ND" in items.txt don't count for TrailerCheck
 **// Make sure header adds spaces to fill out record size
 **// Double check handling for "empty files" row count = 0
 **// Sequence number rollover
-**//- Create globals for field position & length
+==DONE==**//- Create globals for field position & length
 **//- Make sure all "final reads" update sequence numbers
 **//- Determine default values for all sequence numbers
 **//- Change code to take into account D/A flags for store_inventory and warehouse_item_data
@@ -729,7 +729,7 @@ Offline Batch Process:
 		
 		For each store
 			For each item
-				If (item.quantity <= item.reorder_level)
+				If (item.quantity <= item.reorder_level && item_quantity >= 0)
 					Write:
 						'B'
 						Zero-filled store.store_number
