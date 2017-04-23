@@ -28,7 +28,7 @@ std::string StringZeroFill(int required_field_length, int in_number)
 	int size = test_num_length.tellg();
 
 	if (size > required_field_length)
-		std::cout << "StringZeroFill Error - input number length exceeds required field length\n";		
+		Plog.logError("StringZeroFill", "Error - input string length exceeds required field length");	
 	
 	std::stringstream output_string;
 	output_string << std::setw(required_field_length) << std::setfill('0') << in_number;
@@ -53,8 +53,7 @@ std::string StringSpaceFill(int required_field_length, std::string in_string)
 {
 		
 	if (in_string.size() > required_field_length)
-		std::cout << "StringSpaceFill Error - input string length exceeds required field length\n";
-
+		Plog.logError("StringSpaceFill", "Error - input string length exceeds required field length");
 
 	std::stringstream output_string;
 	output_string << std::setw(required_field_length) << std::setfill(' ') << in_string;
@@ -87,4 +86,19 @@ std::string upperCase(std::string in_string)
 	}
 
 	return out_string;
+}
+
+bool validateAllLetters(std::string in_string)
+{
+	for (int i = 0; i < in_string.length(); i++)
+	{
+		if (!((in_string[i] >= 65 && in_string[i] <= 90) || (in_string[i] >= 97 && in_string[i] <= 122)))
+		{
+			Plog.logError("validateAllLetters", "Found a non-letter!");
+			return false;
+		}
+
+	}
+
+	return true;
 }
