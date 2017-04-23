@@ -3,5 +3,6 @@
 
 int getSequenceNumber(int seq_index);
 int getRecordLength(int rec_index);
+int findStore(int store_number);
 
 #endif

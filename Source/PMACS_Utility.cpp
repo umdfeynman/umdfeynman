@@ -9,3 +9,28 @@ int getRecordLength(int rec_index)
 {
 	return recordLength[rec_index];
 }
+
+// UNTESTED !!!!!!
+int findStore(int store_number)
+{
+	for (int i = 0; i < store_data_table.length(); i++)
+	{
+		if (store_data_table[i].store_number == store_number)
+			return i;		
+	}
+
+	return -1;
+}
+
+int findStoreItem(int item_number)
+{
+	for (int i = 0; i < store_inventory_table.length(); i++)
+	{
+		if (store_inventory_table[i].item_number == item_number)
+			return i;
+	}
+
+	return -1;
+}
+
+
