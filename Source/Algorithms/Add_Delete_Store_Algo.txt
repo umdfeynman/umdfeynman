@@ -1,6 +1,7 @@
 Add_Delete_Store_Event prevItem
 prevItem.action = 'Z'
-Int currStore = 0
+int currStore = 0
+int itemCounter = 0
 For each item in Add_Delete_Store_Event
 	if item.action == A
 		If prevItem.action == I | A
@@ -14,11 +15,13 @@ For each item in Add_Delete_Store_Event
 	if item.action == I
 		If prevItem.action != A || I
 			Out of sequence, don't process (break)
+		itemCounter++
 		Process I based on item under currStore (add to store inventory)
 	if item.action == C
 		If prevItem.action != I
 			Out of sequence, don't process (break)
 		Process C (record count)
+		itemCounter = 0
 		currStore = 0
 	else
 		Log error "invalid action code"

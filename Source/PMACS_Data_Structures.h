@@ -91,7 +91,7 @@ class Add_Delete_Store_Event
 public:
     //Date date;  // Per Steiner:  Date not used
     char action_type; // 'A' 'D' 'I' 'C'
-    int store_id;
+    int store_number;
 	std::string street_address;
 	std::string city_name;
 	std::string state_name;
