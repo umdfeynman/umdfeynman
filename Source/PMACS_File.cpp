@@ -77,7 +77,7 @@ bool sequenceCheck(ifstream& input_file, int seq_index)
     return true;
 }
 
-int trailerCheck(ifstream& input_file)
+int trailerCheck(ifstream& input_file, bool count_c_records)
 {
     // Go to beginning of file
     input_file.seekg(0);
@@ -93,7 +93,7 @@ int trailerCheck(ifstream& input_file)
         
         if (readLine[0] != 'H' &&
             readLine[0] != 'T' &&
-            readLine[0] != 'C' &&
+            (readLine[0] != 'C' || (readLine[0] == 'C' && count_c_records == true)) &&
             readLine[0] != 'N')
             rowCount++;
     }
