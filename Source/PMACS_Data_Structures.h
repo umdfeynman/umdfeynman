@@ -132,7 +132,7 @@ public:
     std::string vendor_number;
     std::string warehouse_reorder_quantity;
     std::string expected_delivery_time;
-    std::string specific_action_designation; // {A, D, C} immediately following 'N'
+    //std::string specific_action_designation; // {A, D, C} immediately following 'N'
     std::string update_item_action_count; // Number of rows for each 'A' 'C' or 'D'
 };
 
