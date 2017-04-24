@@ -32,7 +32,7 @@ bool addDeleteStore()
     }
     
     int trailerResult;
-    trailerResult = trailerCheck(addDeleteFile);
+    trailerResult = trailerCheck(addDeleteFile, false);
     
     if(trailerResult == -1)
     {
