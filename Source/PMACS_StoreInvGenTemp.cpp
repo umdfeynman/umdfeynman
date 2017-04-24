@@ -2,7 +2,7 @@
 #include <string>
 #include <algorithm>
 #include "PMACS_Defines.h"
-#include "PMACS_StoreInvGen.h"
+#include "PMACS_StoreInvGenTemp.h"
 #include "PMACS_Globals.h"
 #include "PMACS_File.h"
 #include "PMACS_Logger.h"
@@ -52,7 +52,7 @@ bool storeInventoryGeneration()
 		return true;
 	}
     
-    Merge_Add_Online_Batch_Event store_inventory_events;
+    std::vector<Merge_Add_Online_Batch_Event> store_inventory_events;
     
     std::string inputLine;
     std::string inputString;
@@ -98,7 +98,7 @@ bool storeInventoryGeneration()
     {
         for(int j = 1; j< 16; j++)
         {
-            if(store_inventory_events.priority == j)
+            if(store_inventory_events[i].store_priority == j)
             {
                 priorityArray[j].push_back(store_inventory_events[i]);
             }
@@ -111,7 +111,7 @@ bool storeInventoryGeneration()
     }
 
     
-    Merge_Add_Online_Batch_Event leftovers;
+    std::vector<Merge_Add_Online_Batch_Event> leftovers;
     
     for (int i = 1; i < 16; i++)
     {
@@ -149,34 +149,34 @@ bool storeInventoryGeneration()
             }
             else if (store_data_table[store_index].store_priority != priorityArray[i][j].store_priority)
             {
-                Plog.logError("storeInventoryGeneration", "Item [" + std::to_string(priorityArray[i][j].item_number) + "] priority [" + std::to_string(store_data_table[store_index].store_priority) "] does not match store [" + std::to_string(priorityArray[i][j].store_number) + "] priority [" + std::to_string(store_data_table[store_index].store_priority) + "], skipping");
+                Plog.logError("storeInventoryGeneration", "Item [" + std::to_string(priorityArray[i][j].item_number) + "] priority [" + std::to_string(store_data_table[store_index].store_priority) + "] does not match store [" + std::to_string(priorityArray[i][j].store_number) + "] priority [" + std::to_string(store_data_table[store_index].store_priority) + "], skipping");
                 continue;
             }
-            else if (priorityArray[i][j].source_code == 'B' && (store_inventory_table[store_item_index].quantity > store_inventory_table[store_item_index].reorder_level)
+            else if (priorityArray[i][j].source_code == 'B' && (store_inventory_table[store_item_index].quantity > store_inventory_table[store_item_index].reorder_level))
             {
-                Plog.logInfo("storeInventoryGeneration", "Automated replenishment:  Item [" + std::to_string(priorityArray[i][j].item_number) + "] at store [" + std::to_string(priorityArray[i][j].store_number) + "] has quantity [" + std::to_string(store_inventory_table[store_inventory_index].quantity) + "] which exceeds reorder level of [" + std::to_string(store_inventory_table[store_inventory_index].reorder_level) + "], skipping");
+                Plog.logInfo("storeInventoryGeneration", "Automated replenishment:  Item [" + std::to_string(priorityArray[i][j].item_number) + "] at store [" + std::to_string(priorityArray[i][j].store_number) + "] has quantity [" + std::to_string(store_inventory_table[store_item_index].quantity) + "] which exceeds reorder level of [" + std::to_string(store_inventory_table[store_item_index].reorder_level) + "], skipping");
                 continue;
             }
             
-            if (warehouse_table[warehouse_item_index].quantity == priorityArray[i][j].quantity)
+            if (warehouse_table[warehouse_item_index].quantity == priorityArray[i][j].requested_quantity)
             {
-                store_inventory_table[store_item_index].quantity += priorityArray[i][j].quantity;
-                warehouse_item_data[warehouse_item_index] = 0;
+                store_inventory_table[store_item_index].quantity += priorityArray[i][j].requested_quantity;
+                warehouse_table[warehouse_item_index].quantity = 0;
                 // Batch replenishment handles next time
             }
-            else if (warehouse_table[warehouse_item_index].quantity < priorityArray[i][j].quantity)
+            else if (warehouse_table[warehouse_item_index].quantity < priorityArray[i][j].requested_quantity)
             {
                 // Not enough quantity, reset item quantity to what we still need after we fulfill from warehouse.
-                priorityArray[i][j].quantity = priorityArray[i][j].quantity - warehouse_item_data[warehouse_item_index];
-                leftovers.push_back(priorityArray[i][j].quantity);
+                priorityArray[i][j].requested_quantity = priorityArray[i][j].requested_quantity - warehouse_table[warehouse_item_index].quantity;
+                leftovers.push_back(priorityArray[i][j]);
                 
                 store_inventory_table[store_item_index].quantity += warehouse_table[warehouse_item_index].quantity;
-                warehouse_item_data[warehouse_item_index] = 0;
+                warehouse_table[warehouse_item_index].quantity = 0;
             }
-            else if (warehouse_table[warehouse_item_index].quantity > priorityArray[i][j].quantity)
+            else if (warehouse_table[warehouse_item_index].quantity > priorityArray[i][j].requested_quantity)
             {
-                store_inventory_table[store_item_index].quantity += priorityArray[i][j].quantity;
-                warehouse_table[warehouse_item_index].quantity -= priorityArray[i][j].quantity;
+                store_inventory_table[store_item_index].quantity += priorityArray[i][j].requested_quantity;
+                warehouse_table[warehouse_item_index].quantity -= priorityArray[i][j].requested_quantity;
             }
             
             
@@ -187,21 +187,21 @@ bool storeInventoryGeneration()
 
     storeUpdateFile.close();
     
-    ofstream leftOversFile;
-    CreateFile("leftovers.txt",leftOversFile );
-    InsertHeader("leftovers.txt", g_leftovers);
+    ofstream leftoversFile;
+    createFile("leftovers.txt",leftoversFile );
+    insertHeader(leftoversFile, g_leftovers);
     
     int item_counter = 0;
-    for(int= i; i< leftovers.size(); i++)
+    for(int i=0 ; i< leftovers.size(); i++)
     {
         item_counter++;
-        leftOversFile<< leftovers[i].source_code<<
+        leftoversFile<< leftovers[i].source_code<<
         StringIntZeroFill(g_leftovers_txt_store_number_len,leftovers[i].store_number)<<
-        StringIntZeroFill(g_leftovers_txt_store_priority_len,leftovers[i].priority )<<
+        StringIntZeroFill(g_leftovers_txt_store_priority_len,leftovers[i].store_priority )<<
         StringIntZeroFill(g_leftovers_txt_item_number_len,leftovers[i].item_number )<<
         StringIntZeroFill(g_leftovers_txt_requested_quantity_len, leftovers[i].requested_quantity) << std::endl << std::flush;
     }
     
-    InsertTrailer("leftovers.txt", item_counter);
-    leftOversFile.close();
+    insertTrailer(leftoversFile, item_counter);
+    leftoversFile.close();
 }
