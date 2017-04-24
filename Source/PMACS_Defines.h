@@ -136,6 +136,8 @@
 #define	g_items_txt_c_warehouse_reorder_quantity_len 10
 #define	g_items_txt_c_expected_delivery_time_pos 174
 #define	g_items_txt_c_expected_delivery_time_len 20
+#define g_items_txt_n_item_action_count 3
+#define g_items_txt_n_item_action_count 4
 
 // reports.txt
 #define g_reports_txt_item_number_pos 1
