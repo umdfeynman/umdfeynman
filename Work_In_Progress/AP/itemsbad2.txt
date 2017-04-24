@@ -1,5 +1,3 @@
-// test file bad2 items.txt
-// incorrect trailer
 
 HD 0001      2017-03-12 
 D008675309
