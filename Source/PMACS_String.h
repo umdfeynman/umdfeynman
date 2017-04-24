@@ -11,4 +11,5 @@ long long StringToLongLong(std::string in_string);
 double StringToDouble(std::string in_string);
 std::string upperCase(std::string in_string);
 bool validateAllLetters(std::string in_string);
+bool StringAllSpaceCheck(string in_string);
 #endif

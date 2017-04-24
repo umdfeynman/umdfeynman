@@ -12,13 +12,13 @@
 /*
 TEST_CASE("IntZeroFillTest")
 {
-	std::string required = "00000000000000009999";
-	REQUIRE(StringZeroFill(20, 9999) == required);
-	cout << required;
+std::string required = "00000000000000009999";
+REQUIRE(StringZeroFill(20, 9999) == required);
+cout << required;
 }*/
 /*TEST_CASE("IntZeroFillTest", "Number length > field length")
 {
-	// Validated "Error" displayed when in_number > field length
+// Validated "Error" displayed when in_number > field length
 }*/
 
 
@@ -30,8 +30,8 @@ std::string StringIntZeroFill(int required_field_length, int in_number)
 	int size = test_num_length.tellg();
 
 	if (size > required_field_length)
-		Plog.logError("StringIntZeroFill", "Error - input string length exceeds required field length");	
-	
+		Plog.logError("StringIntZeroFill", "Error - input string length exceeds required field length");
+
 	std::stringstream output_string;
 	output_string << std::setw(required_field_length) << std::setfill('0') << in_number;
 	output_string.flush();
@@ -57,20 +57,20 @@ std::string StringLongLongZeroFill(int required_field_length, long long in_numbe
 
 /*TEST_CASE("StringSpaceFillTest")
 {
-	std::string required = "          tenspaces!";
-	std::string pass_in = "tenspaces!";
-	cout << "|" << StringSpaceFill(20, pass_in) << "|\n";
-	REQUIRE(StringSpaceFill(9, pass_in) == "tenspaces!");	
+std::string required = "          tenspaces!";
+std::string pass_in = "tenspaces!";
+cout << "|" << StringSpaceFill(20, pass_in) << "|\n";
+REQUIRE(StringSpaceFill(9, pass_in) == "tenspaces!");
 }*/
 
 /*TEST_CASE("StringSpaceFillTest", "String length > field length")
 {
-	// Validated "Error" displayed when in_string > field length
+// Validated "Error" displayed when in_string > field length
 }*/
 
 std::string StringSpaceFill(int required_field_length, std::string in_string)
 {
-		
+
 	if (in_string.size() > required_field_length)
 		Plog.logError("StringSpaceFill", "Error - input string length exceeds required field length");
 
@@ -121,3 +121,18 @@ bool validateAllLetters(std::string in_string)
 
 	return true;
 }
+
+bool StringAllSpaceCheck(string in_string)
+{
+	for (int x = 0; x < in_string.length(); x++)
+	{
+		if (in_string[x] != ' ')
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+
+
