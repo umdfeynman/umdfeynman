@@ -1,5 +1,4 @@
-// test file bad1 items.txt
-// item name too long
+
 
 HD 0001      2017-03-12 
 D008675309
