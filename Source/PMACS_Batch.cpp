@@ -1,7 +1,6 @@
 #include "PMACS_Batch.h"
 #include "PMACS_Logger.h"
 #include "PMACS_Globals.h"
-#include "PMACS_AddDeleteTemp.h"
 #include "PMACS_String.h"
 #include "PMACS_File.h"
 #include "PMACS_Utility.h"
@@ -30,6 +29,7 @@ bool addDeleteStore()
 	else
 	{
 		Plog.logWarn("adddeletestore.txt", "File does not exist or unable to read.");
+		return true;
 	}
 
 	if (!headerCheck(addDeleteFile))
@@ -53,7 +53,7 @@ bool addDeleteStore()
 	}
 	if (trailerResult == 0)
 	{
-		Plog.logInfo("adddeletestore.txt", "Trailer count it 0");
+		Plog.logInfo("adddeletestore.txt", "Trailer count is 0");
 		return true;
 	}
 
