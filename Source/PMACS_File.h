@@ -15,5 +15,6 @@ int trailerCheck(ifstream& input_file, bool count_c_records);
 void positionFileForRecords(ifstream& input_file);
 void insertTrailer(ofstream& output_file, int num_items);
 void insertHeader(ostream& input_file, int file_index);
+bool correctRecordLength(string record, int fileIndex, int lineNumber);
 
 #endif
