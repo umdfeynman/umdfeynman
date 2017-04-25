@@ -19,7 +19,7 @@ bool writeStoreData()
 		storeDataFile << endl;
 		storeDataFile << store_data_table[x].store_number;
 		storeDataFile << endl;
-		storeDataFile << store_data_table[x].street_address;
+		storeDataFile << store_data_table[x].address;
 		storeDataFile << endl;
 		storeDataFile << store_data_table[x].city_name;
 		storeDataFile << endl;
