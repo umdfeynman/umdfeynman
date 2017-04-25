@@ -1,7 +1,7 @@
 bool writeCustomer()
 {
 	std::ofstream customerFile;
-	customerFile.open(g_customer_file, , ios::out);
+	customerFile.open(g_customer_file, ios::out);
 
 	if (!customerFile || !customerFile.good())
 	{
