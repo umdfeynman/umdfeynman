@@ -20,7 +20,7 @@ Logger Plog("PMACS_Log.txt");
 int sequenceNumber[12];
 int recordLength[12] = { 59, 27, 33, 23, 194, 9, 23, 27, 27, 27, 23, 27 };
 string fileName[12] = { "adddeletestore.txt", "storeupdate.txt", "itemreceived.txt", "vendororder.txt", "items.txt", "reports.txt",
-						"returnitems.txt",	"addstoreitems.txt", "batchreplenish.txt", "onlineinvrequest.txt", "vendorrequest.txt", "leftovers.txt" };
+"returnitems.txt",	"addstoreitems.txt", "batchreplenish.txt", "onlineinvrequest.txt", "vendorrequest.txt", "leftovers.txt" };
 // AddDeleteStore = 1 + 5 + 20 + 20 + 2 + 9 + 2 = 59
 // StoreUpdate = 1 + 5 + 2 + 9 + 10 = 27
 // ItemReceived = 4 + 9 + 10 + 10 = 33

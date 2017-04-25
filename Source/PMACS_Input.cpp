@@ -7,20 +7,20 @@
 
 /*TEST_CASE("ValidateStrToTypeBySize types test")
 {
-	Logger theLog("test.txt");
-	std::string too_long_for_int = "3000000000";
-	std::string too_long_for_char = "HI";	
-	REQUIRE(validateStrToTypeBySize(&theLog, too_long_for_int, input_type_int) == false);
-	REQUIRE(validateStrToTypeBySize(&theLog, too_long_for_char, input_type_char) == false);
-	REQUIRE(validateStrToTypeBySize(&theLog, std::to_string(INT_MAX), input_type_int) == true);
-	REQUIRE(validateStrToTypeBySize(&theLog, "H", input_type_char) == true);
-	REQUIRE(validateStrToTypeBySize(&theLog, too_long_for_int, 4) == false);
+Logger theLog("test.txt");
+std::string too_long_for_int = "3000000000";
+std::string too_long_for_char = "HI";
+REQUIRE(validateStrToTypeBySize(&theLog, too_long_for_int, input_type_int) == false);
+REQUIRE(validateStrToTypeBySize(&theLog, too_long_for_char, input_type_char) == false);
+REQUIRE(validateStrToTypeBySize(&theLog, std::to_string(INT_MAX), input_type_int) == true);
+REQUIRE(validateStrToTypeBySize(&theLog, "H", input_type_char) == true);
+REQUIRE(validateStrToTypeBySize(&theLog, too_long_for_int, 4) == false);
 }*/
 
 // Utility function to confirm that a type we are converting from a string fits into the type we are targeting.
 bool validateStrToTypeBySize(std::string input, int expected_type)
 {
-	long long int input_size_int;	
+	long long int input_size_int;
 
 	switch (expected_type)
 	{
@@ -42,11 +42,11 @@ bool validateStrToTypeBySize(std::string input, int expected_type)
 		return true;
 		break;
 	default:
-			Plog.logError("validateInputTypeBySize", "failed:  Invalid expected_type specifier.\n");
+		Plog.logError("validateInputTypeBySize", "failed:  Invalid expected_type specifier.\n");
 		return false;
 		break;
 	}
 
 	Plog.logError("validateInputTypeBySize", "failed:  WOW.  Somehow you circumvented the switch statement that convered all cases.  WTF?");
-	return false;		
+	return false;
 }

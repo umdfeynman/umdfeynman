@@ -19,9 +19,9 @@ Logger::Logger(std::string filename)
 	catch (int e)
 	{
 		if (e == 1)
-			printf("Error.  Unable to open file %s!\n", filename.c_str());		
+			printf("Error.  Unable to open file %s!\n", filename.c_str());
 	}
-	
+
 	logFile << getTime() << "\t[LOGGER] Logfile opened successfully.\n";
 }
 
@@ -46,7 +46,7 @@ std::string Logger::getTime()
 
 void Logger::logError(std::string context, std::string message)
 {
-	logFile << getTime() << "\t[ERROR] [" << context << "] " << message << "\n" << std::flush;	
+	logFile << getTime() << "\t[ERROR] [" << context << "] " << message << "\n" << std::flush;
 }
 
 void Logger::logWarn(std::string context, std::string message)

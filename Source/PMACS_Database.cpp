@@ -33,10 +33,10 @@ bool readSequenceNumbers()
 		Plog.logWarn("readSequence", "Empty database file.  Continuing.");
 		return true;
 	}
-		
+
 	int i = 0;
-	while (!sequenceFile.eof() || !sequenceFile || i < 12)	
-	{		
+	while (!sequenceFile.eof() || !sequenceFile || i < 12)
+	{
 		std::getline(sequenceFile, readLine);
 		sequenceNumber[i] = StringToInt(readLine);
 		i++;
@@ -48,7 +48,7 @@ bool readSequenceNumbers()
 
 bool loadDatabaseIntoMemory()
 {
-	
+
 	bool lastResult = readTransaction();
 	if (!lastResult)
 	{
@@ -59,7 +59,7 @@ bool loadDatabaseIntoMemory()
 	lastResult = readCustomer();
 	if (!lastResult)
 	{
-		Plog.logError("loadDatabaseIntoMemory","Unable to load customer database.  Bailing.");
+		Plog.logError("loadDatabaseIntoMemory", "Unable to load customer database.  Bailing.");
 		return false;
 	}
 
@@ -90,37 +90,37 @@ bool loadDatabaseIntoMemory()
 		Plog.logError("loadDatabaseIntoMemory", "Unable to load coupon database.  Bailing.");
 		return false;
 	}
-		
+
 	return true;
 }
 
 bool readTransaction()
-{	
-    std::ifstream transactionFile;
-    transactionFile.open(g_transaction_file);
-    
-    if (!transactionFile || !transactionFile.good())
-    {
-        Plog.logError("readTransaction", "Failed to read database file.  Bailing.");
-        return false;
-    }
-    
-    std::string readLine;
-    std::getline(transactionFile, readLine);
-	
-    
-    if (readLine.substr(0, 6) != "HTRANS")
-    {
+{
+	std::ifstream transactionFile;
+	transactionFile.open(g_transaction_file);
+
+	if (!transactionFile || !transactionFile.good())
+	{
+		Plog.logError("readTransaction", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	std::string readLine;
+	std::getline(transactionFile, readLine);
+
+
+	if (readLine.substr(0, 6) != "HTRANS")
+	{
 		Plog.logError("readTransaction", "Failed to find header in file.  Bailing.");
-        return false;
-    }
-    
-    if (transactionFile.eof())
-    {
+		return false;
+	}
+
+	if (transactionFile.eof())
+	{
 		Plog.logWarn("readTransaction", "Empty database file.  Continuing.");
-        return true;
-    }
-    
+		return true;
+	}
+
 	while (!transactionFile.eof() || !transactionFile)
 	{
 
@@ -133,25 +133,25 @@ bool readTransaction()
 		std::string s_discountPct;
 		std::string s_grandTotal;
 
-		std::getline(transactionFile, readLine);		
+		std::getline(transactionFile, readLine);
 		s_orderNumber = readLine;
-		std::getline(transactionFile, readLine);		
+		std::getline(transactionFile, readLine);
 		s_originatingCashierNumber = readLine;
-		std::getline(transactionFile, readLine);		
+		std::getline(transactionFile, readLine);
 		s_approvingCashierNumber = readLine;
-		std::getline(transactionFile, readLine);		
+		std::getline(transactionFile, readLine);
 		s_storeNumber = readLine;
-		std::getline(transactionFile, readLine);		
+		std::getline(transactionFile, readLine);
 		s_transactionDate = readLine;
-		std::getline(transactionFile, readLine);		
+		std::getline(transactionFile, readLine);
 		s_accountNumber = readLine;
-		std::getline(transactionFile, readLine);		
+		std::getline(transactionFile, readLine);
 		s_discountPct = readLine;
-		std::getline(transactionFile, readLine);		
+		std::getline(transactionFile, readLine);
 		s_grandTotal = readLine;
 
 		std::getline(transactionFile, readLine);
-		
+
 		if (readLine[0] != 'S')
 		{
 			Plog.logError("readTransaction", "Expected S record.  Bailing.  Line number:");
@@ -163,13 +163,13 @@ bool readTransaction()
 		while (readLine[0] != 'E')
 		{
 			std::getline(transactionFile, readLine);
-			
+
 			if (readLine[0] != 'E')
 				s_transactionItemNumber.push_back(readLine);
 		}
 
 		std::getline(transactionFile, readLine);
-		
+
 		if (readLine[0] != 'S')
 		{
 			Plog.logError("readTransaction", "Expected S record.  Bailing.  Line number:");
@@ -180,13 +180,13 @@ bool readTransaction()
 		while (readLine[0] != 'E')
 		{
 			std::getline(transactionFile, readLine);
-			
+
 			if (readLine[0] != 'E')
 				s_transactionItemQuantity.push_back(readLine);
 		}
 
 		std::getline(transactionFile, readLine);
-		
+
 		if (readLine[0] != 'S')
 		{
 			Plog.logError("readTransaction", "Expected S record.  Bailing.  Line number: ");
@@ -197,25 +197,25 @@ bool readTransaction()
 		while (readLine[0] != 'E')
 		{
 			std::getline(transactionFile, readLine);
-			
+
 			if (readLine[0] != 'E')
 				s_transactionItemPrice.push_back(readLine);
 		}
 
 		Transaction inTransaction;
-		
+
 		inTransaction.order_number = StringToInt(s_orderNumber);
 		inTransaction.originating_cashier_number = StringToInt(s_originatingCashierNumber);
-		inTransaction.approving_cashier_number= StringToInt(s_approvingCashierNumber);
+		inTransaction.approving_cashier_number = StringToInt(s_approvingCashierNumber);
 		inTransaction.store_number = StringToInt(s_storeNumber);
 		inTransaction.transaction_date = s_transactionDate;
 		inTransaction.account_number = StringToInt(s_accountNumber);
-		inTransaction.discount_pct= StringToInt(s_discountPct);
-		inTransaction.grand_total= StringToDouble(s_grandTotal);
+		inTransaction.discount_pct = StringToInt(s_discountPct);
+		inTransaction.grand_total = StringToDouble(s_grandTotal);
 
-	
+
 		for (int i = 0; i < s_transactionItemNumber.size(); i++)
-		{			
+		{
 			inTransaction.transaction_item_number.push_back(StringToInt(s_transactionItemNumber[i]));
 		}
 
@@ -223,19 +223,19 @@ bool readTransaction()
 		{
 			inTransaction.transaction_item_quantity.push_back(StringToLongLong(s_transactionItemQuantity[i]));
 		}
-	
+
 		for (int i = 0; i < s_transactionItemPrice.size(); i++)
 		{
 			inTransaction.transaction_item_price.push_back(StringToDouble(s_transactionItemPrice[i]));
 		}
 
 		transaction_table.push_back(inTransaction);
-		
+
 		std::getline(transactionFile, readLine); // Read past separator
 
 	}
-        
-    transactionFile.close();
+
+	transactionFile.close();
 	return true;
 
 	/*
@@ -316,13 +316,13 @@ bool readCustomer()
 		std::string s_accountNumber;
 		std::string s_address;
 		std::string s_name;
-		
+
 		std::getline(customerFile, readLine);
 		s_accountNumber = readLine;
 		std::getline(customerFile, readLine);
 		s_address = readLine;
 		std::getline(customerFile, readLine);
-		s_name = readLine;		
+		s_name = readLine;
 
 		std::getline(customerFile, readLine);
 		if (readLine[0] != 'S')
@@ -354,10 +354,10 @@ bool readCustomer()
 			if (readLine[0] != 'E')
 				s_customerItemDate.push_back(readLine);
 		}
-		
+
 		Customer inCustomer;
 
-		inCustomer.account_number  = StringToInt(s_accountNumber);
+		inCustomer.account_number = StringToInt(s_accountNumber);
 		inCustomer.address = s_address;
 		inCustomer.name = s_name;
 
@@ -384,14 +384,14 @@ bool readCustomer()
 	class Customer
 	{
 	public:
-		int account_number = -1;
-		std::string address = "";
-		std::string name = "";   
-		std::vector<int> cust_items;  // Same index as item_dates
-		std::vector<std::string> item_dates; // Same index as cust_items	
+	int account_number = -1;
+	std::string address = "";
+	std::string name = "";
+	std::vector<int> cust_items;  // Same index as item_dates
+	std::vector<std::string> item_dates; // Same index as cust_items
 	};
-	
-	
+
+
 	*/
 
 
@@ -439,7 +439,7 @@ bool readWarehouseItemData()
 		std::string s_expectedDeliveryTime;
 		std::string s_quantity;
 		std::string s_price;
-		
+
 		std::getline(warehouseFile, readLine);
 		s_itemStatus = readLine;
 		std::getline(warehouseFile, readLine);
@@ -465,7 +465,7 @@ bool readWarehouseItemData()
 		std::getline(warehouseFile, readLine);
 		s_quantity = readLine;
 		std::getline(warehouseFile, readLine);
-		s_price = readLine;		
+		s_price = readLine;
 
 		WarehouseItemData inWarehouse;
 
@@ -482,7 +482,7 @@ bool readWarehouseItemData()
 		inWarehouse.expected_delivery_time = s_expectedDeliveryTime;
 		inWarehouse.quantity = StringToLongLong(s_quantity);
 		inWarehouse.price = StringToDouble(s_price);
-		
+
 		warehouse_table.push_back(inWarehouse);
 
 		std::getline(warehouseFile, readLine); // Read past separator
@@ -493,24 +493,24 @@ bool readWarehouseItemData()
 	class WarehouseItemData
 	{
 	public:
-		char item_status = 'A'; // 'D' or 'A'
-		int item_number = -1; // Key
-		int vendor_number = -1;
-		std::string item_dosage = ""; // mg
-		int coupled_item_number = -1;
-		int item_discount_percent = 0;
-		std::string item_name = "";
-		std::string item_description = "";
-		long long reorder_quantity = -1;  // Default reorder amount
-		long long reorder_level = -1;  // When warehouse quantity gets below this, order reorder_quantity
-		std::string expected_delivery_time = "";  // Number of days will take be back in stock
-		long long quantity = -1;
-		double price = 5.0;
+	char item_status = 'A'; // 'D' or 'A'
+	int item_number = -1; // Key
+	int vendor_number = -1;
+	std::string item_dosage = ""; // mg
+	int coupled_item_number = -1;
+	int item_discount_percent = 0;
+	std::string item_name = "";
+	std::string item_description = "";
+	long long reorder_quantity = -1;  // Default reorder amount
+	long long reorder_level = -1;  // When warehouse quantity gets below this, order reorder_quantity
+	std::string expected_delivery_time = "";  // Number of days will take be back in stock
+	long long quantity = -1;
+	double price = 5.0;
 	};*/
 
 
 	warehouseFile.close();
-	return true;	
+	return true;
 }
 
 bool readStoreInventory()
@@ -550,7 +550,7 @@ bool readStoreInventory()
 		std::string s_storeNumber;
 		std::string s_highThreshold;
 		std::string s_lowThreshold;
-		std::string s_accustockDirection;		
+		std::string s_accustockDirection;
 
 		std::getline(storeInvFile, readLine);
 		s_itemStatus = readLine;
@@ -629,7 +629,7 @@ bool readStoreData()
 		std::string s_cityName;
 		std::string s_stateName;
 		std::string s_zipCode;
-				
+
 		std::getline(storeDataFile, readLine);
 		s_storeStatus = readLine;
 		std::getline(storeDataFile, readLine);
@@ -644,7 +644,7 @@ bool readStoreData()
 		s_stateName = readLine;
 		std::getline(storeDataFile, readLine);
 		s_zipCode = readLine;
-		
+
 		StoreData inStoreData;
 
 		inStoreData.store_status = s_storeStatus[0];
@@ -654,7 +654,7 @@ bool readStoreData()
 		inStoreData.city_name = s_cityName;
 		inStoreData.state_name = s_stateName;
 		inStoreData.zip_code = StringToInt(s_zipCode);
-		
+
 		store_data_table.push_back(inStoreData);
 
 		std::getline(storeDataFile, readLine); // Read past separator
@@ -666,18 +666,18 @@ bool readStoreData()
 
 	/*
 	class StoreData
-		{
-		public:
-			char store_status = 'O'; // D, O, C - Deactivated, open, or closed
-			int store_priority = -1;
-			int store_number = -1; // Key 1
-			std::string street_address = "";
-			std::string city_name = "";
-			std::string state_name = "";
-			int zip_code = -1;
-		};
-	
-	
+	{
+	public:
+	char store_status = 'O'; // D, O, C - Deactivated, open, or closed
+	int store_priority = -1;
+	int store_number = -1; // Key 1
+	std::string street_address = "";
+	std::string city_name = "";
+	std::string state_name = "";
+	int zip_code = -1;
+	};
+
+
 	*/
 }
 
@@ -712,17 +712,17 @@ bool readCoupon()
 
 		std::string s_couponNumber;
 		std::string s_couponDiscountPercent;
-		
+
 		std::getline(couponFile, readLine);
 		s_couponNumber = readLine;
 		std::getline(couponFile, readLine);
 		s_couponDiscountPercent = readLine;
-		
+
 		Coupon inCoupon;
 
 		inCoupon.coupon_number = StringToInt(s_couponNumber);
 		inCoupon.discount_pct = StringToInt(s_couponDiscountPercent);
-		
+
 		coupon_table.push_back(inCoupon);
 
 		std::getline(couponFile, readLine); // Read past separator
@@ -735,18 +735,284 @@ bool readCoupon()
 
 // Note:  Skipping record length check due to file structure, assuming files are immaculate
 // Record checks
-    // Check record length
-    // Header check
-    
-    
+// Check record length
+// Header check
+
+
 // For each line
-    // Create an instance of of a single table item
-    // Using defines, store each field in its own string
-    // Convert string to proper type for table and store in instance
-    // Push instance to empty table
+// Create an instance of of a single table item
+// Using defines, store each field in its own string
+// Convert string to proper type for table and store in instance
+// Push instance to empty table
+
+
+bool saveWarehouseItemData()
+{
+	//open file for writing
+	std::ofstream warehouseFile;
+	warehouseFile.open(g_warehouse_file, ios::out);
+
+	//check to make sure file opens properly
+	if (!warehouseFile || !warehouseFile.good())
+	{
+		Plog.logError("writeWarehouseItemData", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	//header
+	warehouseFile << "HWAREHOUSE" << endl;
 
 
 
+	for (int x = 0; x < warehouse_table.size(); x++)
+	{
+		warehouseFile << warehouse_table[x].item_status;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].coupled_item_number;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].vendor_number;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].item_dosage;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].coupled_item_number;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].item_discount_percent;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].item_name;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].item_description;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].reorder_quantity;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].reorder_level;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].expected_delivery_time;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].quantity;
+		warehouseFile << endl;
+		warehouseFile << warehouse_table[x].price;
+		warehouseFile << endl;
+		warehouseFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
+		warehouseFile << endl;
+	}
+	return true;
+};
+bool saveStoreInventory()
+{
+	std::ofstream storeInvFile;
+	storeInvFile.open(g_storeinv_file, ios::out);
+
+	//check file opened properly
+	if (!storeInvFile || !storeInvFile.good())
+	{
+		Plog.logError("writeStoreInventory", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	//write header
+	storeInvFile << "HSTOREINV" << endl;
+
+	//for each store inv entry, write to file
+	for (int x = 0; x < store_inventory_table.size(); x++)
+	{
+		storeInvFile << store_inventory_table[x].item_status;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].item_number;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].reorder_quantity;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].reorder_level;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].quantity;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].store_number;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].high_threshold;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].low_threshold;
+		storeInvFile << endl;
+		storeInvFile << store_inventory_table[x].accustock_direction;
+		storeInvFile << endl;
+		storeInvFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
+		storeInvFile << endl;
+	}
+	return true;
+};
+bool saveStoreData()
+{
+		std::ofstream storeDataFile;
+		storeDataFile.open(g_storedata_file, ios::out);
+
+		if (!storeDataFile || !storeDataFile.good())
+		{
+			Plog.logError("writestoreData", "Failed to read database file.  Bailing.");
+			return false;
+		}
+
+		storeDataFile << "HSTOREDATA" << endl;
+
+		for (int x = 0; x < store_data_table.size(); x++)
+		{
+			storeDataFile << store_data_table[x].store_status;
+			storeDataFile << endl;
+			storeDataFile << store_data_table[x].store_priority;
+			storeDataFile << endl;
+			storeDataFile << store_data_table[x].store_number;
+			storeDataFile << endl;
+			storeDataFile << store_data_table[x].address;
+			storeDataFile << endl;
+			storeDataFile << store_data_table[x].city_name;
+			storeDataFile << endl;
+			storeDataFile << store_data_table[x].state_name;
+			storeDataFile << endl;
+			storeDataFile << store_data_table[x].zip_code;
+			storeDataFile << endl;
+			storeDataFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
+			storeDataFile << endl;
+
+		}
+		return true;
+};
+bool saveCustomer()
+{
+	std::ofstream customerFile;
+	customerFile.open(g_customer_file, ios::out);
+
+	if (!customerFile || !customerFile.good())
+	{
+		Plog.logError("writeCustomer", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	customerFile << "HCUST" << endl;
+
+	for (int x = 0; x < customer_table.size(); x++)
+	{
+		customerFile << customer_table[x].account_number;
+		customerFile << endl;
+		customerFile << customer_table[x].address;
+		customerFile << endl;
+		customerFile << customer_table[x].name;
+		customerFile << endl;
+
+		customerFile << "S";
+		customerFile << endl;
+		for (int y = 0; y < customer_table[x].cust_items.size(); y++)
+		{
+			customerFile << customer_table[x].cust_items[y];
+			customerFile << endl;
+		}
+		customerFile << "E";
+		customerFile << endl;
+
+		customerFile << "S";
+		customerFile << endl;
+		for (int z = 0; z < customer_table[x].item_dates.size(); z++)
+		{
+			customerFile << customer_table[x].item_dates[z];
+			customerFile << endl;
+		}
+		customerFile << "E";
+		customerFile << endl;
+		customerFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
+		customerFile << endl;
+	}
+	customerFile.close();
+	return true;
+};
+bool saveCoupon()
+{
+		std::ofstream couponFile;
+		couponFile.open(g_coupon_file, ios::out);
+
+		if (!couponFile || !couponFile.good())
+		{
+			Plog.logError("writeCoupon", "Failed to read database file.  Bailing.");
+			return false;
+		}
+		//coupon_table
+		couponFile << "HCOUPON" << endl;
+
+		for (int x = 0; x < coupon_table.size(); x++)
+		{
+			couponFile << coupon_table[x].coupon_number;
+			couponFile << endl;
+			couponFile << coupon_table[x].discount_pct;
+			couponFile << endl;
+			couponFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
+			couponFile << endl;
+		}
+
+		couponFile.close();
+		return true;
+};
+bool saveTransaction()
+{
+	std::ofstream transactionFile;
+	transactionFile.open(g_transaction_file, ios::out);
+
+	if (!transactionFile || !transactionFile.good())
+	{
+		Plog.logError("writeTransaction", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	//transaction_table
 
 
+	transactionFile << "HTRANS" << endl;
 
+	for (int x = 0; x < transaction_table.size(); x++)
+	{
+		transactionFile << transaction_table[x].order_number;
+		transactionFile << endl;
+		transactionFile << transaction_table[x].originating_cashier_number;
+		transactionFile << endl;
+		transactionFile << transaction_table[x].approving_cashier_number;
+		transactionFile << endl;
+		transactionFile << transaction_table[x].store_number;
+		transactionFile << endl;
+		transactionFile << transaction_table[x].transaction_date;
+		transactionFile << endl;
+		transactionFile << transaction_table[x].account_number;
+		transactionFile << endl;
+		transactionFile << transaction_table[x].discount_pct;
+		transactionFile << endl;
+		transactionFile << transaction_table[x].grand_total;
+		transactionFile << endl;
+
+		transactionFile << "S";
+		transactionFile << endl;
+		for (int y = 0; y < transaction_table[x].transaction_item_number.size(); y++)
+		{
+			transactionFile << transaction_table[x].transaction_item_number[y];
+			transactionFile << endl;
+		}
+		transactionFile << "E";
+		transactionFile << endl;
+
+		transactionFile << "S";
+		transactionFile << endl;
+		for (int y = 0; y < transaction_table[x].transaction_item_quantity.size(); y++)
+		{
+			transactionFile << transaction_table[x].transaction_item_quantity[y];
+			transactionFile << endl;
+		}
+		transactionFile << "E";
+		transactionFile << endl;
+
+		transactionFile << "S";
+		transactionFile << endl;
+		for (int y = 0; y < transaction_table[x].transaction_item_price.size(); y++)
+		{
+			transactionFile << transaction_table[x].transaction_item_price[y];
+			transactionFile << endl;
+		}
+		transactionFile << "E";
+		transactionFile << endl;
+		transactionFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
+		transactionFile << endl;
+	}
+	transactionFile.close();
+	return true;
+};

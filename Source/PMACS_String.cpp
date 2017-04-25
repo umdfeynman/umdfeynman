@@ -133,6 +133,3 @@ bool StringAllSpaceCheck(string in_string)
 	}
 	return true;
 }
-
-
-

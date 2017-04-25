@@ -11,11 +11,11 @@ using namespace std;
 //start 01/01/2017
 struct Date_Format
 {
-	unsigned int day = 01;			//2
-	unsigned int weekDay = 1;		//1
-	unsigned int weekNum = 01;		//2
-	unsigned int month = 01;		//2
-	unsigned int year = 01;			//4
+unsigned int day = 01;			//2
+unsigned int weekDay = 1;		//1
+unsigned int weekNum = 01;		//2
+unsigned int month = 01;		//2
+unsigned int year = 01;			//4
 };
 */
 
@@ -46,7 +46,7 @@ public:
 	Date CopyDate();								//return copy of date
 	string GetDateStream();							//return string of date in class read format
 
-	//int time return funcions
+													//int time return funcions
 	int GetDay();
 	int GetWeekDay();
 	int GetWeekNumber();

@@ -16,7 +16,7 @@ int findStore(int store_number)
 	for (int i = 0; i < store_data_table.size(); i++)
 	{
 		if (store_data_table[i].store_number == store_number)
-			return i;		
+			return i;
 	}
 
 	return -1;
@@ -43,5 +43,3 @@ int findWarehouseItem(int item_number)
 
 	return -1;
 }
-
-

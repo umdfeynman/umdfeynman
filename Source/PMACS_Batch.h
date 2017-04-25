@@ -4,5 +4,6 @@
 bool runOfflineBatchProcess();
 bool addDeleteStore();
 bool storeInventoryGeneration();
+bool massInventoryUpdates();
 
 #endif
