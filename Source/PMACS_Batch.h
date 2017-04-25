@@ -3,5 +3,6 @@
 
 bool runOfflineBatchProcess();
 bool addDeleteStore();
+bool storeInventoryGeneration();
 
 #endif

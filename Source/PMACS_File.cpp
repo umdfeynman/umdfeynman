@@ -76,7 +76,10 @@ bool sequenceCheck(ifstream& input_file, int seq_index)
 
 	return true;
 }
-
+// TODO:  Doesn't work when there are a bunch of blank rows after trailer
+// UPDATE:  Resolved by only taking the first trailer and stopping once it's found
+// REMAINING POTENTIAL ISSUE:  while loop only counts rows up until the trailer is found, if there are rows after, they will not be
+// counted.
 int trailerCheck(ifstream& input_file, bool count_c_records)
 {
 	// Go to beginning of file
@@ -87,7 +90,7 @@ int trailerCheck(ifstream& input_file, bool count_c_records)
 
 	int rowCount = 0;
 
-	while (!input_file.eof())
+	while (!input_file.eof() && readLine[0] != 'T')
 	{
 		std::getline(input_file, readLine);
 
@@ -96,6 +99,7 @@ int trailerCheck(ifstream& input_file, bool count_c_records)
 			(readLine[0] != 'C' || (readLine[0] == 'C' && count_c_records == true)) &&
 			readLine[0] != 'N')
 			rowCount++;
+		std::cout << input_file.tellg() << std::endl;
 	}
 
 	if (readLine[0] != 'T' || readLine[1] != ' ')

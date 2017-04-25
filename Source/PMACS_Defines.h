@@ -25,9 +25,9 @@
 #define g_sequence_file "sequence.db"
 
 // storeupdate.txt source codes wannabe enum
-#define g_source_code_batch 1
+#define g_source_code_batch 3
 #define g_source_code_online 2
-#define g_source_code_add 3
+#define g_source_code_add 1
 
 // **FILE FIELD LENGTH AND POSITION**
 // Positions are 0-based
