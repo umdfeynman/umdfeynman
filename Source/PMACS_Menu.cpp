@@ -216,7 +216,7 @@ void Menu::displayHeader()
 
 	std::cout << "Store Number: ";
 	if (currentStoreNumber == -1)
-		std::cout << "NO STORE SET";
+		std::cout << "NOT SET";
 	else
 		std::cout << currentStoreNumber;
 	
@@ -224,7 +224,7 @@ void Menu::displayHeader()
 
 	std::cout << "Cashier Number: ";
 	if (currentCashierNumber == -1)
-		std::cout << "NO STORE SET";
+		std::cout << "NOT SET";
 	else
 		std::cout << currentCashierNumber;
 
@@ -240,9 +240,17 @@ void Menu::displayHeader()
 
 	std::cout << "Customer Name: ";
 	if (currentCustomerNumber == -1)
-		std::cout << "NO CUSTOMER SET";
+		std::cout << "NOT SET";
 	else
 		std::cout << customer_table[currentCustomerIndex].name;
+
+	std::cout << std::endl;
+
+	std::cout << "Customer Address: ";
+	if (currentCustomerNumber == -1)
+		std::cout << "NOT SET";
+	else
+		std::cout << customer_table[currentCustomerIndex].address;
 
 	std::cout << std::endl;
 
