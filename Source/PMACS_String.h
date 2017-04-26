@@ -13,20 +13,12 @@ std::string upperCase(std::string in_string);
 bool validateAllLetters(std::string in_string);
 bool StringAllSpaceCheck(string in_string);
 bool validateAllNumbers(std::string in_string);
-//bool validateOnlyDoubleChars(std::string in_string);
 bool validateStringConversion(std::string in_string, int expected_type);
 std::string trimZeroes(std::string in_string, int expected_type);
-//bool validateOnePeriod(std::string in_string);
 bool validateDoubleAsString(std::string in_string);
 string StringTrimToSize(int length, string entry);
 int StringFindLastCharacter(string entry);
 string StringSpaceTrim(string entry);
 bool DigitCheck(char test);
-//bool StringComparison(string input, string database);
-
-
-
-
-
 
 #endif

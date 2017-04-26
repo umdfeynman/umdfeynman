@@ -634,7 +634,7 @@ bool storeInventoryGeneration()
 				continue;
 			}
 
-			int store_item_index = findStoreItem(priorityArray[i][j].item_number);
+			int store_item_index = findStoreItem(priorityArray[i][j].item_number, priorityArray[i][j].store_number);
 			if (store_item_index == -1)
 			{
 				Plog.logError("storeInventoryGeneration", "Item [" + std::to_string(priorityArray[i][j].item_number) + "] does not exist at store [" + std::to_string(priorityArray[i][j].store_number) + "] , skipping");
