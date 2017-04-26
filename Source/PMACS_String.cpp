@@ -361,14 +361,3 @@ bool DigitCheck(char test)
 	return false;											//else it is not accepted as a digit
 }
 
-bool StringIsNumber(string number)
-{
-	for (int x = 0; x < number.length(); x++)
-	{
-		if (!DigitCheck(number[x]))
-		{
-			return false;
-		}
-	}
-	return true;
-}
