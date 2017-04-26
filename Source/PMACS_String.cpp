@@ -324,15 +324,6 @@ string StringSpaceTrim(string entry)
 	return trimmedEntry;
 }
 
-string StringCapitalize(string entry)
-{
-	for (int x = 0; x < entry.length(); x++)
-	{
-		entry[x] = toupper(entry[x]);
-	}
-	return entry;
-}
-
 //returns length of string excluding trailing spaces
 int StringFindLastCharacter(string entry)
 {
