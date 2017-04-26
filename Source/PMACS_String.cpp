@@ -9,6 +9,7 @@
 #include "PMACS_Logger.h"
 #include "PMACS_Globals.h"
 #include "PMACS_Defines.h"
+#include "PMACS_Utility.h"
 
 /*
 TEST_CASE("IntZeroFillTest")
@@ -151,7 +152,7 @@ bool validateAllNumbers(std::string in_string)
 bool validateDoubleAsString(std::string in_string)
 {
 	// For making sure doubles have at least one number
-		
+
 	// For making sure doubles have at least one period and at least one number
 	int numPeriods = 0;
 	int numDigits = 0;
@@ -189,11 +190,11 @@ bool validateStringConversion(std::string in_string, int expected_type)
 	double testDouble;
 
 	std::string convertString;
-	
-	switch(expected_type)
+
+	switch (expected_type)
 	{
-	case g_type_int:		
-		testInt = StringToInt(in_string);		
+	case g_type_int:
+		testInt = StringToInt(in_string);
 		convertString = std::to_string(testInt);
 		if (in_string != convertString)
 		{
@@ -223,7 +224,7 @@ bool validateStringConversion(std::string in_string, int expected_type)
 		return true;
 		break;
 	}
-	
+
 	Plog.logError("validateStringConversion", "Invalid expected type: [" + std::to_string(expected_type) + "], returning false");
 	return false;
 
@@ -247,12 +248,12 @@ std::string trimZeroes(std::string in_string, int expected_type)
 
 	// Check to see if this is all zeroes and periods
 	bool allZeroes = true;
-	
+
 	for (int i = 0; i < in_string.size(); i++)
 	{
 		if (in_string[i] != '.' && in_string[i] != '0')
-		allZeroes = false;
-	}	
+			allZeroes = false;
+	}
 
 	if (allZeroes)
 		return "0";
@@ -303,3 +304,51 @@ std::string trimZeroes(std::string in_string, int expected_type)
 
 	return trimmedAll;
 }
+
+//can be used to cut off input strings to the correct size
+string StringTrimToSize(int length, string entry)
+{
+	if (entry.length() > length)
+	{
+		string cutString = entry.erase(length, entry.length());
+		//cout << "Warning. Entry too long. Will be cut at character limit" << endl;
+		//cout << "Saved entry: " << cutString << endl;
+		return cutString;
+	}
+	return entry;
+}
+
+string StringSpaceTrim(string entry)
+{
+	string trimmedEntry = entry.erase(StringFindLastCharacter(entry), entry.length());
+	return trimmedEntry;
+}
+
+//returns length of string excluding trailing spaces
+int StringFindLastCharacter(string entry)
+{
+	int end = entry.length();
+	for (int x = entry.length(); x > 0; x--)
+	{
+		if (entry[x - 1] == ' ')
+		{
+			end = x - 1;
+		}
+		else
+		{
+			break;
+		}
+	}
+	return end;
+}
+
+//------Check whether or not a character is a number
+bool DigitCheck(char test)
+{
+	if ((test >= 48) && (test <= 57))					 //If the character is within the range of numbers
+	{
+		return true;										//it is a number -> digit
+	}
+	return false;											//else it is not accepted as a digit
+}
+
