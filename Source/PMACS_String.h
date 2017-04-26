@@ -18,5 +18,18 @@ bool validateStringConversion(std::string in_string, int expected_type);
 std::string trimZeroes(std::string in_string, int expected_type);
 //bool validateOnePeriod(std::string in_string);
 bool validateDoubleAsString(std::string in_string);
+string StringTrimToSize(int length, string entry);
+
+int StringFindLastCharacter(string entry);
+string StringSpaceTrim(string entry);
+string StringCapitalize(string entry);
+//bool DigitCheck(char test);
+bool StringComparison(string input, string database);
+bool StringIsNumber(string number);
+
+
+
+
+
 
 #endif
