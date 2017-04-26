@@ -6,4 +6,6 @@ int getRecordLength(int rec_index);
 int findStore(int store_number);
 int findWarehouseItem(int item_number);
 int findStoreItem(int item_number);
+int findCustomer(int account_number);
+bool setCurrentCustomer(int account_number);
 #endif

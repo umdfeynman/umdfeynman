@@ -19,8 +19,6 @@ std::vector<Transaction> transaction_table;
 Logger Plog("PMACS_Log.txt");
 int sequenceNumber[12];
 int recordLength[12] = { 59, 27, 33, 23, 194, 9, 23, 27, 27, 27, 23, 27 };
-string fileName[12] = { "adddeletestore.txt", "storeupdate.txt", "itemreceived.txt", "vendororder.txt", "items.txt", "reports.txt",
-"returnitems.txt",	"addstoreitems.txt", "batchreplenish.txt", "onlineinvrequest.txt", "vendorrequest.txt", "leftovers.txt" };
 // AddDeleteStore = 1 + 5 + 20 + 20 + 2 + 9 + 2 = 59
 // StoreUpdate = 1 + 5 + 2 + 9 + 10 = 27
 // ItemReceived = 4 + 9 + 10 + 10 = 33
@@ -33,4 +31,11 @@ string fileName[12] = { "adddeletestore.txt", "storeupdate.txt", "itemreceived.t
 // OnlineInvRequest = Same as StoreUpdate = 27
 // VendorRequest = Same as VendorOrder = 23
 // LeftOvers = Same as StoreUpdate = 27
+string fileName[12] = { "adddeletestore.txt", "storeupdate.txt", "itemreceived.txt", "vendororder.txt", "items.txt", "reports.txt",
+"returnitems.txt",	"addstoreitems.txt", "batchreplenish.txt", "onlineinvrequest.txt", "vendorrequest.txt", "leftovers.txt" };
+int currentCustomerNumber = -1;
+int currentStoreNumber = -1;
+int currentCashierNumber = -1;
+int currentCustomerIndex = -1;
+int currentStoreIndex = -1;
 Date systemDate;

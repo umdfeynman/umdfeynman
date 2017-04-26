@@ -22,11 +22,11 @@ int findStore(int store_number)
 	return -1;
 }
 
-int findStoreItem(int item_number)
+int findStoreItem(int item_number, int store_number)
 {
 	for (int i = 0; i < store_inventory_table.size(); i++)
 	{
-		if (store_inventory_table[i].item_number == item_number)
+		if (store_inventory_table[i].item_number == item_number && store_inventory_table[i].store_number == store_number)
 			return i;
 	}
 
@@ -42,4 +42,30 @@ int findWarehouseItem(int item_number)
 	}
 
 	return -1;
+}
+
+int findCustomer(int account_number)
+{
+	for (int i = 0; i < customer_table.size(); i++)
+	{
+		if (customer_table[i].account_number == account_number)
+			return i;
+	}
+
+	return -1;
+}
+
+bool setCurrentCustomer(int account_number)
+{
+	int findResult = findCustomer(account_number);
+	if (findResult == -1)
+	{
+		Plog.logError("setCurrentCustomer", "Failed to set currentCustomerAccount, account not found");
+		return false;
+	}
+
+	currentCustomerNumber = account_number;
+	currentCustomerIndex = findResult;
+
+	return true;
 }

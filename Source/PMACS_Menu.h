@@ -11,25 +11,23 @@ void displayInventoryMenu();
 void displaySalesMenu();
 void displayBatchMenu();
 
-
 class Menu
 {
 public:
-	std::vector<std::string> menuItems;
-	void displayMenu();
-	void setCustomerAccount(int account_num);
-	void setStoreNumber(int store_num);
-	void setCashierNumber(int cashier_num);
 	void setMessage(std::string in_string);
 	void setMenuName(std::string in_string);
-private:
 	void displayHeader();
 	void displayFooter();
-	std::string errorMessage;
-	std::string menuName;
-	int account_number = -1;
-	int store_number;
-	int cashier_number;
+	void displayMenuNoReturn();
+	int displayMenuGetSelection();
+	void displayDialogNoReturn(std::string in_string);	
+	int displayDialogGetEntryInt(std::string in_string);
+	long long displayDialogGetEntryLongLong(std::string in_string);
+	std::string displayDialogGetEntryString(std::string in_string);
+	void addMenuItem(int selectNumber, std::string menuText);
+private:
+	std::string errorMessage = "NO ERROR";
+	std::string menuName;	
 	int console_width = 80;
 };
 

@@ -15,5 +15,10 @@ extern int sequenceNumber[12];
 extern int recordLength[12];
 extern string fileName[12];
 extern Date systemDate;
+extern int currentCustomerNumber;
+extern int currentCustomerIndex;
+extern int currentStoreNumber;
+extern int currentStoreIndex;
+extern int currentCashierNumber;
 
 #endif
