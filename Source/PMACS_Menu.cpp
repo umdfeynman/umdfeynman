@@ -1,7 +1,10 @@
 #include "PMACS_Menu.h"
 #include "PMACS_Utility.h"
+#include "PMACS_Defines.h"
 #include "PMACS_Globals.h"
 #include "PMACS_Logger.h"
+#include "PMACS_String.h"
+#include "PMACS_Input.h"
 #include <iostream>
 #include <iomanip>
 
@@ -41,39 +44,7 @@ void displayBatchMenu()
 
 void Menu::displayHeader()
 {
-	system("clear");
-	
-	/*std::cout << "/=================================================================================\ ";
-	
-	std::string menuMarquee = "PMACS - " + menuName;
-	int textPosition = (80 - menuMarquee.size()) / 2;
-
-	std::cout << "|";
-	for (int i = 0; i < textPosition; i++)
-		std::cout << " ";
-	
-	std::cout << menuMarquee;
-
-	for (int i = textPosition + menuMarquee.size(); i < 80; i++)
-		std::cout << " ";
-	
-	std::cout << "|" << std::endl;
-
-	std::cout << "\=================================================================================/ ";*/
-
-	//  /====================================================\
-	//	|                                                    |
-	//  \====================================================/
-			
-	//Take 80 - string length + "PMACS - ", cut that in half, display at that place
-	
-	/*
-	std::string menuName;
-	int account_number = -1;
-	int store_number = -1;
-	int cashier_number = -1;
-	int console_width = 80;
-*/
+	system("cls");
 
 	std::cout << "==";
 
@@ -84,6 +55,22 @@ void Menu::displayHeader()
 		std::cout << menuName;
 
 	std::cout << "==" << std::endl;
+
+	std::cout << "Store Number: ";
+	if (currentStoreNumber == -1)
+		std::cout << "NO STORE SET";
+	else
+		std::cout << currentStoreNumber;
+	
+	std::cout << std::endl;
+
+	std::cout << "Cashier Number: ";
+	if (currentCashierNumber == -1)
+		std::cout << "NO STORE SET";
+	else
+		std::cout << currentCashierNumber;
+
+	std::cout << std::endl;
 
 	std::cout << "Customer Number: ";
 	if (currentCustomerNumber == -1)
@@ -101,18 +88,19 @@ void Menu::displayHeader()
 
 	std::cout << std::endl;
 
-	std::cout << "Customer Address: ";
-	if (currentCustomerNumber == -1)
-		std::cout << "NO CUSTOMER SET";
-	else
-		std::cout << customer_table[currentCustomerIndex].address;
-
-	std::cout << std::endl;
+	std::cout << std::endl << std::endl;
+	
 }
 
 void Menu::displayFooter()
 {
+	std::cout << std::endl << std::endl;
 
+	std::cout << "==";
+
+	std::cout << errorMessage;
+
+	std::cout << "==" << std::endl;
 }
 
 void Menu::setMessage(std::string in_string)
@@ -125,39 +113,180 @@ void Menu::setMenuName(std::string in_string)
 	menuName = in_string;
 }
 
-void Menu::addMenuItem(int selectNumber, std::string menuText)
+void Menu::setErrorMessage(std::string in_string)
 {
+	errorMessage = in_string;
+}
 
+void Menu::addMenuItem(char selectKey, std::string menuText)
+{
+	menuItemKey.push_back(selectKey);
+	menuItemText.push_back(menuText);
+}
+
+void Menu::resetErrorMessage()
+{
+	errorMessage = "Welcome to PMACS - Errors displayed down here";
 }
 
 void Menu::displayMenuNoReturn()
 {
-
-}
-
-int Menu::displayMenuGetSelection()
-{
-
-	return -1;
-}
-
-void Menu::displayDialogNoReturn(std::string in_string)
-{
+	displayHeader();
 	
+	std::cout << "== Please select from one of the following options: == \n";
+	
+	for (int i = 0; i < menuItemKey.size(); i++)
+	{
+		std::cout << "[" << menuItemKey[i] << "]   " << menuItemText[i] << std::endl;
+	}
+
+	displayFooter();
+}
+
+char Menu::displayMenuGetSelection()
+{
+	displayMenuNoReturn();
+
+	bool validateResult = false;
+	bool foundKey = false;
+
+	std::string getInput;
+
+	while (!validateResult || !foundKey)
+	{
+		
+		std::getline(cin, getInput);
+		validateResult = validateInput(getInput, g_type_char_any, 1, 1);
+		foundKey = findMenuItemKey(getInput[0]);
+		if (!validateResult || !foundKey)
+		{
+			setErrorMessage("Error:  You did not enter a valid option.  Please try again.");
+			displayMenuNoReturn();
+		}		
+
+	}
+	
+	resetErrorMessage();
+	return getInput[0];
+}
+
+void Menu::displayDialogNoReturn(std::string in_string, int expected_type)
+{
+	displayHeader();
+
+	std::cout << " ============== Message ============== \n";
+	std::cout << in_string << std::endl;
+	if (expected_type == -1)
+		std::cout << " ============ Press Enter ============ \n";
+	else
+		std::cout << " ===================================== \n";
+	
+	displayFooter();
+
+	std::string dummy;
+	if (expected_type == -1)
+		std::getline(cin, dummy);
 }
 
 int Menu::displayDialogGetEntryInt(std::string in_string)
 {
-	return -1;
+	displayDialogNoReturn(in_string, g_type_int);
+
+	bool validateResult = false;
+	
+	std::string getInput;
+
+	while (!validateResult)
+	{
+		std::getline(cin, getInput);
+		validateResult = validateInput(getInput, g_type_int, 10, 0);
+		if (!validateResult)
+		{
+			setErrorMessage("Error:  Your input could not be validated.  Please try again.");
+			displayDialogNoReturn(in_string, g_type_int);
+		}
+	}	
+
+	resetErrorMessage();
+	return StringToInt(getInput);
 }
 
 long long Menu::displayDialogGetEntryLongLong(std::string in_string)
 {
-	return -1;
+	displayDialogNoReturn(in_string, g_type_longlong);
+
+	bool validateResult = false;
+
+	std::string getInput;
+
+	while (!validateResult)
+	{
+		std::getline(cin, getInput);
+		validateResult = validateInput(getInput, g_type_longlong, 19, 0);
+		if (!validateResult)
+		{
+			setErrorMessage("Error:  Your input could not be validated.  Please try again.");
+			displayDialogNoReturn(in_string, g_type_longlong);
+		}
+	}
+
+	resetErrorMessage();
+	return StringToLongLong(getInput);
 }
 
 std::string Menu::displayDialogGetEntryString(std::string in_string)
 {
-	return "";
+	displayDialogNoReturn(in_string, g_type_string_any);
+
+	bool validateResult = false;
+
+	std::string getInput;
+
+	while (!validateResult)
+	{
+		std::getline(cin, getInput);
+		validateResult = validateInput(getInput, g_type_string_any, 200, 0);
+		if (!validateResult)
+		{
+			setErrorMessage("Error:  Your input could not be validated.  Please try again.");
+			displayDialogNoReturn(in_string, g_type_string_any);
+		}
+	}
+
+	resetErrorMessage();
+	return getInput;
 }
 
+char Menu::displayDialogGetEntryChar(std::string in_string)
+{
+	displayDialogNoReturn(in_string, g_type_char_any);
+
+	bool validateResult = false;
+
+	std::string getInput;
+
+	while (!validateResult)
+	{
+		std::getline(cin, getInput);
+		validateResult = validateInput(getInput, g_type_char_any, 1, 0);
+		if (!validateResult)
+		{
+			setErrorMessage("Error:  Your input could not be validated.  Please try again.");
+			displayDialogNoReturn(in_string, g_type_char_any);
+		}
+	}
+
+	resetErrorMessage();
+	return getInput[0];
+}
+
+bool Menu::findMenuItemKey(char in_key)
+{
+	for (int i = 0; i < menuItemKey.size(); i++)
+	{
+		if (menuItemKey[i] == in_key)
+			return true;
+	}
+
+	return false;
+}

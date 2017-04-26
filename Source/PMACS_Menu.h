@@ -16,19 +16,25 @@ class Menu
 public:
 	void setMessage(std::string in_string);
 	void setMenuName(std::string in_string);
+	void setErrorMessage(std::string in_string);
 	void displayHeader();
 	void displayFooter();
 	void displayMenuNoReturn();
-	int displayMenuGetSelection();
-	void displayDialogNoReturn(std::string in_string);	
+	char displayMenuGetSelection();
+	void displayDialogNoReturn(std::string in_string, int expected_type = -1);	
 	int displayDialogGetEntryInt(std::string in_string);
+	char displayDialogGetEntryChar(std::string in_string);
 	long long displayDialogGetEntryLongLong(std::string in_string);
 	std::string displayDialogGetEntryString(std::string in_string);
-	void addMenuItem(int selectNumber, std::string menuText);
+	void addMenuItem(char selectKey, std::string menuText);
 private:
-	std::string errorMessage = "NO ERROR";
+	void resetErrorMessage();
+	bool findMenuItemKey(char in_key);
+	std::string errorMessage = "Welcome to PMACS - Errors displayed down here";
 	std::string menuName;	
 	int console_width = 80;
+	std::vector<std::string> menuItemText;
+	std::vector<char> menuItemKey;
 };
 
 #endif

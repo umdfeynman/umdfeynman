@@ -8,5 +8,7 @@ int findWarehouseItem(int item_number);
 int findStoreItem(int item_number, int store_number);
 int findCustomer(int account_number);
 bool setCurrentCustomer(int account_number);
+bool setCurrentCashier(int cashier_number);
+bool setCurrentStore(int store_number);
 std::vector<int> getStoreItemList(int item_number);
 #endif

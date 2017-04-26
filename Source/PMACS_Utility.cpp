@@ -71,6 +71,29 @@ bool setCurrentCustomer(int account_number)
 	return true;
 }
 
+bool setCurrentStore(int store_number)
+{
+	int findResult = findStore(store_number);
+	if (findResult == -1)
+	{
+		Plog.logError("setCurrentStore", "Failed to set currentCustomerAccount, store not found");
+		return false;
+	}
+
+	currentStoreNumber = store_number;
+	currentStoreIndex = findResult;
+
+	return true;
+}
+
+bool setCurrentCashier(int cashier_number)
+{
+	currentCashierNumber = cashier_number;	
+
+	return true;
+}
+
+
 //give itemnumber and character to get list of all containing the item
 vector<int> getStoreItemList(int item_number)
 {
