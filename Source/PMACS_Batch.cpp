@@ -25,6 +25,17 @@ bool runOfflineBatchProcess()
 	return true;
 }
 
+bool checkAllStoresClosed()
+{
+	for (int i = 0; i < store_data_table.size(); i++)
+	{
+		if (store_data_table[i].store_status == 'O')
+			return false;
+	}
+
+	return true;
+}
+
 // TODO:  PUT IN HEADER LENGTH (TOO SHORT / TOO LONG) CHECKS
 bool addDeleteStore()
 {

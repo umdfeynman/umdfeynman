@@ -5,18 +5,12 @@
 #include "PMACS_Logger.h"
 #include "PMACS_String.h"
 #include "PMACS_Input.h"
+#include "PMACS_Batch.h"
 #include <iostream>
 #include <iomanip>
 
-void displayMainMenu()
-{
-	
-}
-
 void displayPOSMenu()
 {
-
-
 	// Reset currentAccountNumber because we're leaving
 	currentCustomerNumber = -1;
 	currentCustomerIndex = -1;
@@ -24,23 +18,187 @@ void displayPOSMenu()
 
 void displayStoreMenu()
 {
+	Menu storeMenu;
+	storeMenu.setMenuName("Store Management Menu");
+	storeMenu.addMenuItem('1', "Finalize Store Sales for Store");
+	storeMenu.addMenuItem('2', "Request Inventory for Store");
+	storeMenu.addMenuItem('0', "Exit Store Management Menu");
+	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
+	while (selection != '0')
+	{
+		selection = storeMenu.displayMenuGetSelection();
+
+		switch (selection)
+		{
+		case '1':
+			// finalizeStoreSales;
+			break;
+		case '2':
+			// requestStoreInventory;
+			break;		
+		case '0':
+			return;
+		default:
+			break;
+		}
+	}
 }
 
 void displayInventoryMenu()
 {
+	Menu storeMenu;
+	storeMenu.setMenuName("Store Management Menu");
+	storeMenu.addMenuItem('1', "Finalize Store Sales for Store");
+	storeMenu.addMenuItem('2', "Request Inventory for Store");
+	storeMenu.addMenuItem('0', "Exit Store Management Menu");
+	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
+	while (selection != '0')
+	{
+		selection = storeMenu.displayMenuGetSelection();
+
+		switch (selection)
+		{
+		case '1':
+			// finalizeStoreSales;
+			break;
+		case '2':
+			// requestStoreInventory;
+			break;
+		case '0':
+			return;
+		default:
+			break;
+		}
+	}
 }
 
 void displaySalesMenu()
 {
+	Menu salesMenu;
+	salesMenu.setMenuName("Sales Management Menu");
+	salesMenu.addMenuItem('1', "Sales Report by Store");
+	salesMenu.addMenuItem('2', "Sales Report by Item");
+	salesMenu.addMenuItem('3', "Couple Items");
+	salesMenu.addMenuItem('4', "Uncouple Items");
+	salesMenu.addMenuItem('5', "Add Coupon");
+	salesMenu.addMenuItem('6', "Delete Coupon");
+	salesMenu.addMenuItem('7', "Update Item Discount");
+	salesMenu.addMenuItem('0', "Exit Sales Management Menu");
+	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
+	while (selection != '0')
+	{
+		selection = salesMenu.displayMenuGetSelection();
+
+		switch (selection)
+		{
+		case '1':
+			// salesReportByStore
+			break;
+		case '2':
+			// salesReportByItem
+			break;
+		case '3':
+			// coupleItem
+			break;
+		case '4':
+			// uncoupleItem
+			break;
+		case '5':
+			// addCoupon
+			break;
+		case '6':
+			// deleteCoupon
+			break;
+		case '7':
+			// updateItemDiscount
+			break;
+		case '0':
+			return;
+		default:
+			break;
+		}
+	}
 }
 
 void displayBatchMenu()
 {
+	Menu batchMenu;
+	batchMenu.setMenuName("Offline Batch Menu");
+	batchMenu.addMenuItem('1', "Run Offline Batch Process");
+	batchMenu.addMenuItem('0', "Exit Sales Management Menu");
+	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
+	bool batchResult;
+
+	while (selection != '0')
+	{
+		selection = batchMenu.displayMenuGetSelection();
+
+		switch (selection)
+		{
+		case '1':
+			batchResult = runOfflineBatchProcess();
+			if (!batchResult)
+				batchMenu.displayDialogNoReturn("Offline batch process failed!  Please check PMACS_Log.txt");
+			break;
+		case '0':
+			return;
+		default:
+			break;
+		}
+	}
 }
+
+void displayMainMenu()
+{
+	Menu mainMenu;
+	mainMenu.setMenuName("Main Menu");
+	mainMenu.addMenuItem('1', "Point of Sale Menu");
+	mainMenu.addMenuItem('2', "Store Management Menu");
+	mainMenu.addMenuItem('3', "Inventory Management Menu");
+	mainMenu.addMenuItem('4', "Sales Management Menu");
+	mainMenu.addMenuItem('5', "Offline Batch Menu");
+	mainMenu.addMenuItem('6', "Change System Date");
+	mainMenu.addMenuItem('0', "Exit PMACS");
+	char selection = 0; // 0 as in NULL not '0' as in ascii zero
+
+	while (selection != '0')
+	{
+		selection = mainMenu.displayMenuGetSelection();
+
+		switch (selection)
+		{
+		case '1':
+			displayPOSMenu();
+			break;
+		case '2':
+			displayStoreMenu();
+			break;
+		case '3':
+			displayInventoryMenu();
+			break;
+		case '4':
+			displaySalesMenu();
+			break;
+		case '5':
+			displayBatchMenu();
+			break;
+		case '6':
+			// changeSystemDate();
+			break;
+		case '0':
+			return;
+		default:
+			break;
+
+
+		}
+	}
+}
+
 
 void Menu::displayHeader()
 {
