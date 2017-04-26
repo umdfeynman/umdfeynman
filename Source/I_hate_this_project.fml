@@ -1,3 +1,169 @@
+GetActiveCashierNumber			
+			- AccountExistsByNameAddress
+			- AccountExistsByNumber
+			- CreateAccount
+			- DisplayOrderEntry
+AddItemToOrder
+			- DeleteItemFromOrder
+			- GetVerifyingCashierNumber
+			- ApplyCoupon
+
+			
+			
+			
+			
+			
+			// Include section
+#include "PMACS_Globals.h"
+#include "PMACS_Logger.h"
+#include "PMACS_Defines.h"
+#include "PMACS_Data_Structures.h"
+#include "PMACS_Database.h"
+#include "PMACS_File.h"
+#include "PMACS_Display.h"
+#include "PMACS_Batch.h"
+#include "PMACS_Utility.h"
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <cmath>
+using namespace std;
+
+#define ACCOUNT_NUMBER_LEN 7
+#define CASHIER_NUMBER_LEN 5
+
+Transaction pendingTransaction;
+int storeNumber = 0;
+
+
+int getActiveCashierNumber();
+int accountExistsByName(string, string);
+int accountExistsByNumber(int);
+int createAccount();
+bool addItemToOrderByName();
+bool addItemToOrderByNumber(int);
+bool deleteItemFromOrderbyName();
+bool deleteItemFromOrderbyNumber(int itemNumber);
+int getVerifyingCashierNumber();
+void applyCoupon();
+long long getID(string IDtype, int IDlength);
+int findWarehouseItem(string itemName);
+
+
+
+
+
+
+
+
+int main()
+{
+	
+	//string trim test
+	string test = "don     uts                    ";
+	int num = -3;
+
+	int numb = StringFindLastCharacter(test);
+
+	string test2 = StringSpaceTrim(test);
+
+	string test3 = test;
+	test3.erase(5, test.length());
+	test3 = StringSpaceTrim(test3);
+	test += "$";
+	test2 += "$";
+	test3 += "$";
+	string test4 = "fhgadfSHDTRSHdhDFh dhD rHSDRF hSdhjsdF T h S";
+	test4 = upperCase(test4);
+	cout << test << endl << test2 << endl << test3 << endl << numb << endl << test4 << endl;
+
+	double hold = 12345678901;
+	long long hold2 = 999999999;
+	int hold3 = hold2;
+
+	cout << hold2 << endl << hold3 << endl;
+
+	string test6 = "I WANT a hambUrgarrr           ";
+	string test9 = "I want a hAmbUrgarrr   ";
+
+	if (StringComparison(test6, test9))
+	{
+		cout << "yay" << endl;
+	}
+	else
+	{
+		cout << "you suck" << endl;
+	}
+
+
+	vector<int> map;
+
+	for (int x = 0; x < 10; x++)
+	{
+		map.push_back(x+1);
+	}
+
+	vector<int> map2 = map;
+
+
+	for (int x = 0; x < 10; x++)
+	{
+		cout << map2[x];
+	}
+
+
+
+	cout << endl;
+
+
+	string tomato;
+
+	cout << "enter: ";
+	cin >> tomato;
+
+	cout << "enter: ";
+	cin >> tomato;
+	cin.ignore();
+
+
+	cout << "enter: ";
+	cin >> tomato;
+	cin.ignore();
+
+	cout << "enter: ";
+	getline(cin, tomato);
+
+	cout << "enter: ";
+	getline(cin, tomato);
+ 
+	cout << "enter: ";
+	cin >> tomato;
+	cin.ignore();
+
+	cout << "enter: ";
+	getline(cin, tomato);
+
+
+
+
+
+
+
+
+
+
+
+
+	system("pause");
+	return 0;
+}
+
+
+
+
 //if -1, return to previous menu selected
 int getActiveCashierNumber() 
 {
@@ -107,21 +273,19 @@ bool addItemToOrderByName()
 	getline(cin, itemName);
 
 	int itemNumber;
-	int storeItemIndex;
 
 	//find item at warehouse to get details
-	for (int x = 0; x < warehouse_table.size(); x++)
+	int ind = findWarehouseItem(itemName);
+	if (ind != -1 && warehouse_table[ind].item_status == 'A')			//found and active
 	{
-		if (StringComparison(itemName, warehouse_table[x].item_name) && (warehouse_table[x].item_status == 'A'))			//match && active
-		{
-			itemNumber = warehouse_table[x].item_number;				//get number
-		}
-		else
-		{
-			cout << "Cannot add item. Does not exist within the company." << endl;
-			return false;
-		}
+		itemNumber = warehouse_table[ind].item_number;				//get number
 	}
+	else
+	{
+		cout << "Cannot add item. Does not exist within the company." << endl;
+		return false;
+	}
+
 
 	//look for item number at store
 	if (addItemToOrderByNumber(itemNumber))
@@ -131,6 +295,8 @@ bool addItemToOrderByName()
 
 	return false;
 };
+
+//number must be validated before passing
 bool addItemToOrderByNumber(int itemNumber) 
 {
 	int storeIndex = findStoreItem(itemNumber, storeNumber);
@@ -162,9 +328,9 @@ bool addItemToOrderByNumber(int itemNumber)
 		{
 			//add item number
 			pendingTransaction.transaction_item_number.push_back(itemNumber);
-			store_inventory_table[storeIndex].quantity -= numQuantity;			//remove quantity from inventory
 
 			//add quantity
+			store_inventory_table[storeIndex].quantity -= numQuantity;			//remove quantity from inventory
 			pendingTransaction.transaction_item_quantity.push_back(numQuantity);
 
 			//add price
@@ -179,6 +345,66 @@ bool addItemToOrderByNumber(int itemNumber)
 	}
 };
 
+
+bool deleteItemFromOrderbyName() 
+{
+	//get item name
+	string itemName;
+	cout << "Enter the name of the item you wish to add, or q to return to previous menu: ";
+	getline(cin, itemName);
+
+
+
+	int itemNumber;
+
+	//search for item number
+
+	//find item at warehouse to get details
+	int ind = findWarehouseItem(itemName);
+	if (ind != -1 && warehouse_table[ind].item_status == 'A')			//found and active
+	{
+		itemNumber = warehouse_table[ind].item_number;				//get number
+	}
+	else
+	{
+		cout << "Cannot add item. Does not exist within the company." << endl;
+		return false;
+	}
+
+	//look for item number at store
+	if (deleteItemFromOrderbyNumber(itemNumber))
+	{
+		return true;
+	}
+	return false;
+};
+
+
+//assumes number has been validated before passing inside
+bool deleteItemFromOrderbyNumber(int itemNumber)
+{
+	for (int x = 0; x < pendingTransaction.transaction_item_number.size(); x++)
+	{
+		if (pendingTransaction.transaction_item_number[x] == itemNumber)
+		{
+			pendingTransaction.transaction_item_number.erase(pendingTransaction.transaction_item_number.begin() + (x - 1));			//hopefully works
+			pendingTransaction.transaction_item_price.erase(pendingTransaction.transaction_item_price.begin() + (x - 1));			//hopefully works
+			pendingTransaction.transaction_item_quantity.erase(pendingTransaction.transaction_item_quantity.begin() + (x - 1));		//hopefully works
+			return true;
+		}
+	}
+	return false;
+};
+
+
+int getVerifyingCashierNumber() 
+{
+	return getActiveCashierNumber();
+};
+void applyCoupon() 
+{
+
+};
 
 //get an ID number
 long long getID(string IDtype, int IDlength)
@@ -210,6 +436,18 @@ long long getID(string IDtype, int IDlength)
 
 
 
+//find item at warehouse by name
+int findWarehouseItem(string itemName)
+{
+	for (int x = 0; x < warehouse_table.size(); x++)
+	{
+		if (StringComparison(itemName, warehouse_table[x].item_name))			//match && active
+		{
+			return x;
+		}
+	}
+	return -1;
+}
 
 
 
