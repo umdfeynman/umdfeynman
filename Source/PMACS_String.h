@@ -3,13 +3,20 @@
 
 using namespace std;
 
-string StringIntZeroFill(int required_field_length, int number);
-string StringLongLongZeroFill(int required_field_length, long long number);
-string StringSpaceFill(int length, string fillMe);
+std::string StringIntZeroFill(int required_field_length, int number);
+std::string StringLongLongZeroFill(int required_field_length, long long number);
+std::string StringSpaceFill(int length, string fillMe);
 int StringToInt(std::string in_string);
 long long StringToLongLong(std::string in_string);
 double StringToDouble(std::string in_string);
 std::string upperCase(std::string in_string);
 bool validateAllLetters(std::string in_string);
 bool StringAllSpaceCheck(string in_string);
+bool validateAllNumbers(std::string in_string);
+//bool validateOnlyDoubleChars(std::string in_string);
+bool validateStringConversion(std::string in_string, int expected_type);
+std::string trimZeroes(std::string in_string, int expected_type);
+//bool validateOnePeriod(std::string in_string);
+bool validateDoubleAsString(std::string in_string);
+
 #endif

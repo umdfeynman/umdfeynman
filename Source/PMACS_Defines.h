@@ -24,6 +24,15 @@
 #define g_coupon_file "coupon.db"
 #define g_sequence_file "sequence.db"
 
+// Expected types for input validation
+#define g_type_int 1
+#define g_type_longlong 2
+#define g_type_char_any 3
+#define g_type_char_letter 4
+#define g_type_string_any 5
+#define g_type_string_letter 6
+#define g_type_double 7
+
 // storeupdate.txt source codes wannabe enum
 #define g_source_code_batch 3
 #define g_source_code_online 2
