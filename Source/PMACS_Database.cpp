@@ -793,7 +793,10 @@ bool saveWarehouseItemData()
 		warehouseFile << warehouse_table[x].price;
 		warehouseFile << endl;
 		warehouseFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-		warehouseFile << endl;
+		if (x != warehouse_table.size() - 1)
+		{
+			warehouseFile << endl;
+		}
 	}
 	return true;
 };
@@ -834,7 +837,10 @@ bool saveStoreInventory()
 		storeInvFile << store_inventory_table[x].accustock_direction;
 		storeInvFile << endl;
 		storeInvFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-		storeInvFile << endl;
+		if (x != store_data_table.size() - 1)
+		{
+			storeInvFile << endl;
+		}
 	}
 	return true;
 };
@@ -868,8 +874,10 @@ bool saveStoreData()
 			storeDataFile << store_data_table[x].zip_code;
 			storeDataFile << endl;
 			storeDataFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-			storeDataFile << endl;
-
+			if (x != store_data_table.size() - 1)
+			{
+				storeDataFile << endl;
+			}
 		}
 		return true;
 };
@@ -915,7 +923,10 @@ bool saveCustomer()
 		customerFile << "E";
 		customerFile << endl;
 		customerFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-		customerFile << endl;
+		if (x != customer_table.size() - 1)
+		{
+			customerFile << endl;
+		}
 	}
 	customerFile.close();
 	return true;
@@ -940,7 +951,10 @@ bool saveCoupon()
 			couponFile << coupon_table[x].discount_pct;
 			couponFile << endl;
 			couponFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-			couponFile << endl;
+			if (x != coupon_table.size() - 1)
+			{
+				couponFile << endl;
+			}
 		}
 
 		couponFile.close();
@@ -1011,7 +1025,11 @@ bool saveTransaction()
 		transactionFile << "E";
 		transactionFile << endl;
 		transactionFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-		transactionFile << endl;
+
+		if (x != transaction_table.size() - 1)
+		{
+			transactionFile << endl;
+		}
 	}
 	transactionFile.close();
 	return true;
