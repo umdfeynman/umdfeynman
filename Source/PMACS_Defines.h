@@ -153,11 +153,11 @@
 #define g_reports_txt_item_number_len 9
 
 // returnitems.txt			
-#define	g_returnitems_txt_vendor_number_pos 1
+#define	g_returnitems_txt_vendor_number_pos 0
 #define	g_returnitems_txt_vendor_number_len 4
-#define	g_returnitems_txt_item_number_pos 5
+#define	g_returnitems_txt_item_number_pos 4
 #define	g_returnitems_txt_item_number_len 9
-#define	g_returnitems_txt_incoming_quantity_pos 14
+#define	g_returnitems_txt_incoming_quantity_pos 13
 #define	g_returnitems_txt_incoming_quantity_len 10
 
 // addstoreitems.txt			

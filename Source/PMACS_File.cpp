@@ -99,7 +99,7 @@ int trailerCheck(ifstream& input_file, bool count_c_records)
 			(readLine[0] != 'C' || (readLine[0] == 'C' && count_c_records == true)) &&
 			readLine[0] != 'N')
 			rowCount++;
-		std::cout << input_file.tellg() << std::endl;
+		//std::cout << input_file.tellg() << std::endl;
 	}
 
 	if (readLine[0] != 'T' || readLine[1] != ' ')

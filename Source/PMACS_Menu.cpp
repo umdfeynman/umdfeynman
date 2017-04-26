@@ -128,7 +128,7 @@ void displayBatchMenu()
 	Menu batchMenu;
 	batchMenu.setMenuName("Offline Batch Menu");
 	batchMenu.addMenuItem('1', "Run Offline Batch Process");
-	batchMenu.addMenuItem('0', "Exit Sales Management Menu");
+	batchMenu.addMenuItem('0', "Exit Offline Batch Menu");
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
 	bool batchResult;
