@@ -1,4 +1,13 @@
 #include "PMACS_Date.h"
+#include "PMACS_Menu.h"
+#include "PMACS_Globals.h"
+
+void setSystemDate()
+{
+	Menu systemDateChange;
+	std::string newDate = systemDateChange.displayDialogGetEntryString("Enter date as <day><day> <weekday> <week><week> <month><month> <year><year><year><year>");
+	systemDate.NewDate(newDate);
+}
 
 Date::Date()
 {

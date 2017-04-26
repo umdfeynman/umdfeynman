@@ -7,6 +7,7 @@
 #include "PMACS_Globals.h"
 #include "PMACS_Input.h"
 #include "PMACS_String.h"
+#include "PMACS_Date.h"
 
 bool readSequenceNumbers()
 {
@@ -91,6 +92,105 @@ bool loadDatabaseIntoMemory()
 		return false;
 	}
 
+	lastResult = readConfig();
+	if (!lastResult)
+	{
+		Plog.logError("loadDatabaseIntoMemory", "Unable to load config database.  Bailing.");
+		return false;
+	}
+
+	return true;
+}
+
+bool saveDatabaseToDisk()
+{
+
+	bool lastResult = saveTransaction();
+	if (!lastResult)
+	{
+		Plog.logError("saveDatabaseToDisk", "Unable to save transaction database.  Bailing.");
+		return false;
+	}
+
+	lastResult = saveCustomer();
+	if (!lastResult)
+	{
+		Plog.logError("saveDatabaseToDisk", "Unable to save customer database.  Bailing.");
+		return false;
+	}
+
+	lastResult = saveWarehouseItemData();
+	if (!lastResult)
+	{
+		Plog.logError("saveDatabaseToDisk", "Unable to save warehouse database.  Bailing.");
+		return false;
+	}
+
+	lastResult = saveStoreInventory();
+	if (!lastResult)
+	{
+		Plog.logError("saveDatabaseToDisk", "Unable to save store inventory database.  Bailing.");
+		return false;
+	}
+
+	lastResult = saveStoreData();
+	if (!lastResult)
+	{
+		Plog.logError("saveDatabaseToDisk", "Unable to save store data database.  Bailing.");
+		return false;
+	}
+
+	lastResult = saveCoupon();
+	if (!lastResult)
+	{
+		Plog.logError("saveDatabaseToDisk", "Unable to save coupon database.  Bailing.");
+		return false;
+	}
+
+	lastResult = saveConfig();
+	if (!lastResult)
+	{
+		Plog.logError("saveDatabaseToDisk", "Unable to save config database.  Bailing.");
+		return false;
+	}
+
+	return true;
+}
+
+bool readConfig()
+{
+	std::ifstream configFile;
+	configFile.open(g_config_file);
+
+	if (!configFile || !configFile.good())
+	{
+		Plog.logError("readConfig", "Failed to read database file.  Bailing.");
+		return false;
+	}
+
+	std::string readLine;
+	std::getline(configFile, readLine);
+
+	if (readLine.substr(0, 7) != "HCONFIG")
+	{
+		Plog.logError("readConfig", "Failed to find header in file.  Bailing.");
+		return false;
+	}
+
+	std::cout << configFile.tellg() << std::endl;
+
+	if (configFile.eof())
+	{
+		Plog.logWarn("readConfig", "Empty database file.  Continuing.");
+		return true;
+	}
+
+	std::string s_systemDate;
+	
+	std::getline(configFile, s_systemDate);
+	systemDate.NewDate(s_systemDate);
+	
+	configFile.close();
 	return true;
 }
 
@@ -745,6 +845,24 @@ bool readCoupon()
 // Convert string to proper type for table and store in instance
 // Push instance to empty table
 
+bool saveConfig()
+{
+	std::ofstream configFile;
+	configFile.open(g_config_file, ios::out);
+
+	if (!configFile || !configFile.good())
+	{
+		Plog.logError("writeConfig", "Failed to write database file.  Bailing.");
+		return false;
+	}
+
+	configFile << "HCONFIG" << endl;
+
+	configFile << systemDate.GetDateStream();
+
+	configFile.close();
+	return true;
+};
 
 bool saveWarehouseItemData()
 {
@@ -755,20 +873,22 @@ bool saveWarehouseItemData()
 	//check to make sure file opens properly
 	if (!warehouseFile || !warehouseFile.good())
 	{
-		Plog.logError("writeWarehouseItemData", "Failed to read database file.  Bailing.");
+		Plog.logError("writeWarehouseItemData", "Failed to write database file.  Bailing.");
 		return false;
 	}
 
 	//header
-	warehouseFile << "HWAREHOUSE" << endl;
+	warehouseFile << "HWAREHOUSE";
 
+	if (warehouse_table.size() > 0)
+		warehouseFile << endl;
 
 
 	for (int x = 0; x < warehouse_table.size(); x++)
 	{
 		warehouseFile << warehouse_table[x].item_status;
 		warehouseFile << endl;
-		warehouseFile << warehouse_table[x].coupled_item_number;
+		warehouseFile << warehouse_table[x].item_number;
 		warehouseFile << endl;
 		warehouseFile << warehouse_table[x].vendor_number;
 		warehouseFile << endl;
@@ -808,12 +928,15 @@ bool saveStoreInventory()
 	//check file opened properly
 	if (!storeInvFile || !storeInvFile.good())
 	{
-		Plog.logError("writeStoreInventory", "Failed to read database file.  Bailing.");
+		Plog.logError("writeStoreInventory", "Failed to write database file.  Bailing.");
 		return false;
 	}
 
 	//write header
-	storeInvFile << "HSTOREINV" << endl;
+	storeInvFile << "HSTOREINV";
+
+	if (store_inventory_table.size() > 0)
+		storeInvFile << endl;
 
 	//for each store inv entry, write to file
 	for (int x = 0; x < store_inventory_table.size(); x++)
@@ -851,11 +974,14 @@ bool saveStoreData()
 
 		if (!storeDataFile || !storeDataFile.good())
 		{
-			Plog.logError("writestoreData", "Failed to read database file.  Bailing.");
+			Plog.logError("writestoreData", "Failed to write database file.  Bailing.");
 			return false;
 		}
 
-		storeDataFile << "HSTOREDATA" << endl;
+		storeDataFile << "HSTOREDATA";
+
+		if (store_data_table.size() > 0)
+			storeDataFile << endl;
 
 		for (int x = 0; x < store_data_table.size(); x++)
 		{
@@ -888,11 +1014,14 @@ bool saveCustomer()
 
 	if (!customerFile || !customerFile.good())
 	{
-		Plog.logError("writeCustomer", "Failed to read database file.  Bailing.");
+		Plog.logError("writeCustomer", "Failed to write database file.  Bailing.");
 		return false;
 	}
 
-	customerFile << "HCUST" << endl;
+	customerFile << "HCUST";
+
+	if (customer_table.size() > 0)
+		customerFile << endl;
 
 	for (int x = 0; x < customer_table.size(); x++)
 	{
@@ -938,11 +1067,14 @@ bool saveCoupon()
 
 		if (!couponFile || !couponFile.good())
 		{
-			Plog.logError("writeCoupon", "Failed to read database file.  Bailing.");
+			Plog.logError("writeCoupon", "Failed to write database file.  Bailing.");
 			return false;
 		}
 		//coupon_table
-		couponFile << "HCOUPON" << endl;
+		couponFile << "HCOUPON";
+
+		if (coupon_table.size() > 0)
+			couponFile << endl;
 
 		for (int x = 0; x < coupon_table.size(); x++)
 		{
@@ -967,14 +1099,16 @@ bool saveTransaction()
 
 	if (!transactionFile || !transactionFile.good())
 	{
-		Plog.logError("writeTransaction", "Failed to read database file.  Bailing.");
+		Plog.logError("writeTransaction", "Failed to write database file.  Bailing.");
 		return false;
 	}
 
 	//transaction_table
 
+	transactionFile << "HTRANS";
 
-	transactionFile << "HTRANS" << endl;
+	if (transaction_table.size() > 0)
+		transactionFile << endl;
 
 	for (int x = 0; x < transaction_table.size(); x++)
 	{

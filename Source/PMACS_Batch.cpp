@@ -4,18 +4,18 @@
 #include "PMACS_String.h"
 #include "PMACS_File.h"
 #include "PMACS_Utility.h"
-#include "PMACS_WHInvGenTemp.h"
 #include <algorithm>
 
 bool runOfflineBatchProcess()
 {
 	
-	bool lastResult = massInventoryUpdates();
+	bool lastResult;
+	/*lastResult = massInventoryUpdates();
 	if (!lastResult)
 	{
 		Plog.logError("runOfflineBatchProcess", "massInventoryUpdates failed.  Bailing.");
 		return false;
-	}
+	}*/
 
 	lastResult = addDeleteStore();
 	if (!lastResult)
@@ -30,8 +30,7 @@ bool runOfflineBatchProcess()
 	Plog.logError("runOfflineBatchProcess", "warehouseInventoryGeneration failed.  Bailing.");
 	return false;
 	}
-
-
+	
 	lastResult = storeInventoryGeneration();
 	if (!lastResult)
 	{
@@ -39,6 +38,9 @@ bool runOfflineBatchProcess()
 		return false;
 	}
 
+	// Increment system date by 1
+	systemDate.ChangeDay(1);
+	
 	return true;
 }
 

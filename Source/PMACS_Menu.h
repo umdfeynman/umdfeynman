@@ -10,6 +10,7 @@ void displayStoreMenu();
 void displayInventoryMenu();
 void displaySalesMenu();
 void displayBatchMenu();
+void displayUtilityMenu();
 
 class Menu
 {

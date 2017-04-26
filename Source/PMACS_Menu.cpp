@@ -6,8 +6,38 @@
 #include "PMACS_String.h"
 #include "PMACS_Input.h"
 #include "PMACS_Batch.h"
+#include "PMACS_Date.h"
 #include <iostream>
 #include <iomanip>
+
+void displayUtilityMenu()
+{
+	Menu utilityMenu;
+	utilityMenu.setMenuName("PMACS Utilities Menu");
+	utilityMenu.addMenuItem('1', "Change System Date");
+	utilityMenu.addMenuItem('2', "Set Sequence Number");
+	utilityMenu.addMenuItem('0', "Exit PMACS Utilities Menu");
+	char selection = 0; // 0 as in NULL not '0' as in ascii zero
+
+	while (selection != '0')
+	{
+		selection = utilityMenu.displayMenuGetSelection();
+
+		switch (selection)
+		{
+		case '1':
+			setSystemDate();
+			break;
+		case '2':
+			// setSequenceNumber;
+			break;
+		case '0':
+			return;
+		default:
+			break;
+		}
+	}
+}
 
 void displayPOSMenu()
 {
@@ -161,7 +191,7 @@ void displayMainMenu()
 	mainMenu.addMenuItem('3', "Inventory Management Menu");
 	mainMenu.addMenuItem('4', "Sales Management Menu");
 	mainMenu.addMenuItem('5', "Offline Batch Menu");
-	mainMenu.addMenuItem('6', "Change System Date");
+	mainMenu.addMenuItem('6', "PMACS Utility Menu");
 	mainMenu.addMenuItem('0', "Exit PMACS");
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
@@ -187,14 +217,12 @@ void displayMainMenu()
 			displayBatchMenu();
 			break;
 		case '6':
-			// changeSystemDate();
+			displayUtilityMenu();
 			break;
 		case '0':
 			return;
 		default:
 			break;
-
-
 		}
 	}
 }
@@ -204,8 +232,7 @@ void Menu::displayHeader()
 {
 	system("cls");
 
-	std::cout << "==";
-
+	std::cout << "==";	
 
 	if (menuName == "")
 		std::cout << "NO MENU NAME SET";
@@ -213,6 +240,10 @@ void Menu::displayHeader()
 		std::cout << menuName;
 
 	std::cout << "==" << std::endl;
+
+	std::cout << "System Date: " << systemDate.GetDate() << std::endl;
+	
+
 
 	std::cout << "Store Number: ";
 	if (currentStoreNumber == -1)

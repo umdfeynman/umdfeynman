@@ -23,6 +23,7 @@
 #define g_customer_file "customer.db"
 #define g_coupon_file "coupon.db"
 #define g_sequence_file "sequence.db"
+#define g_config_file "config.db"
 
 // Expected types for input validation
 #define g_type_int 1

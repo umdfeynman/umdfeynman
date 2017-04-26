@@ -5,7 +5,7 @@
 
 using namespace std;
 
-
+void setSystemDate();
 
 /*
 //start 01/01/2017

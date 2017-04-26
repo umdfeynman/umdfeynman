@@ -11,4 +11,6 @@ bool setCurrentCustomer(int account_number);
 bool setCurrentCashier(int cashier_number);
 bool setCurrentStore(int store_number);
 std::vector<int> getStoreItemList(int item_number);
+void setSystemDate(std::string in_string);
+
 #endif
