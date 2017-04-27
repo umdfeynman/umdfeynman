@@ -20,5 +20,7 @@ extern int currentCustomerIndex;
 extern int currentStoreNumber;
 extern int currentStoreIndex;
 extern int currentCashierNumber;
+extern int currentItemNumber;
+extern int currentItemIndex;
 
 #endif

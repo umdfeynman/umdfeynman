@@ -38,4 +38,6 @@ int currentStoreNumber = -1;
 int currentCashierNumber = -1;
 int currentCustomerIndex = -1;
 int currentStoreIndex = -1;
+int currentItemNumber = -1;
+int currentItemIndex = -1;
 Date systemDate;

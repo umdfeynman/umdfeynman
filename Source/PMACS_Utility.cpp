@@ -1,4 +1,6 @@
 #include "PMACS_Globals.h"
+#include "PMACS_Menu.h"
+#include "PMACS_String.h"
 
 int getSequenceNumber(int seq_index)
 {
@@ -56,12 +58,17 @@ int findCustomer(int account_number)
 	return -1;
 }
 
-bool setCurrentCustomer(int account_number)
+bool setCurrentCustomerNumber(int account_number)
 {
+	Menu temp;
+	
 	int findResult = findCustomer(account_number);
 	if (findResult == -1)
 	{
-		Plog.logError("setCurrentCustomer", "Failed to set currentCustomerAccount, account not found");
+		
+		
+		
+		temp.displayDialogNoReturn("Failed to select customer, account not found");
 		return false;
 	}
 
@@ -73,10 +80,12 @@ bool setCurrentCustomer(int account_number)
 
 bool setCurrentStore(int store_number)
 {
+	Menu temp;
+	
 	int findResult = findStore(store_number);
 	if (findResult == -1)
 	{
-		Plog.logError("setCurrentStore", "Failed to set currentCustomerAccount, store not found");
+		temp.displayDialogNoReturn("Failed to select store, store not found");
 		return false;
 	}
 
@@ -107,4 +116,12 @@ vector<int> getStoreItemList(int item_number)
 		}
 	}
 	return list;
+}
+
+int findCustomerByName(std::string customer_name)
+{
+	//std::string cleanString = upperCase(trimSp);
+
+	return 0;
+
 }

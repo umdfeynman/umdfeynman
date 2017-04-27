@@ -920,6 +920,9 @@ bool saveWarehouseItemData()
 	}
 	return true;
 };
+
+
+// TODO:  POSSIBLY ADDING NEWLINE AT EOF
 bool saveStoreInventory()
 {
 	std::ofstream storeInvFile;

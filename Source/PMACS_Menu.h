@@ -23,10 +23,10 @@ public:
 	void displayMenuNoReturn();
 	char displayMenuGetSelection();
 	void displayDialogNoReturn(std::string in_string, int expected_type = -1);	
-	int displayDialogGetEntryInt(std::string in_string);
+	int displayDialogGetEntryInt(std::string in_string, int max_length = 10);
 	char displayDialogGetEntryChar(std::string in_string);
-	long long displayDialogGetEntryLongLong(std::string in_string);
-	std::string displayDialogGetEntryString(std::string in_string);
+	long long displayDialogGetEntryLongLong(std::string in_string, int max_length = 19);
+	std::string displayDialogGetEntryString(std::string in_string, int max_length = 200);
 	void addMenuItem(char selectKey, std::string menuText);
 private:
 	void resetErrorMessage();

@@ -19,6 +19,7 @@ bool validateDoubleAsString(std::string in_string);
 string StringTrimToSize(int length, string entry);
 int StringFindLastCharacter(string entry);
 string StringSpaceTrim(string entry);
+std::string trimTrailingLeadingSpaces(std::string in_string);
 bool DigitCheck(char test);
 
 #endif

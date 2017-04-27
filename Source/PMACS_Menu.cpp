@@ -78,9 +78,14 @@ void displayStoreMenu()
 void displayInventoryMenu()
 {
 	Menu storeMenu;
-	storeMenu.setMenuName("Store Management Menu");
-	storeMenu.addMenuItem('1', "Finalize Store Sales for Store");
-	storeMenu.addMenuItem('2', "Request Inventory for Store");
+	storeMenu.setMenuName("Inventory Management Menu");
+	storeMenu.addMenuItem('1', "Select an Item");
+	storeMenu.addMenuItem('2', "Display Item Info");
+	storeMenu.addMenuItem('3', "Update Item Menu");
+	storeMenu.addMenuItem('4', "Assign Item to One Store");
+	storeMenu.addMenuItem('5', "Remove Item from One Store");
+	storeMenu.addMenuItem('6', "Assign Item to All Stores");
+	storeMenu.addMenuItem('7', "Remove Item from All Stores");
 	storeMenu.addMenuItem('0', "Exit Store Management Menu");
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
@@ -91,10 +96,25 @@ void displayInventoryMenu()
 		switch (selection)
 		{
 		case '1':
-			// finalizeStoreSales;
+			// selectItem();
 			break;
 		case '2':
-			// requestStoreInventory;
+			// displayItemInfo;
+			break;
+		case '3':
+			// displayUpdateItemMenu();
+			break;
+		case '4':
+			// assignItemOneStore();
+			break;
+		case '5':
+			// removeItemOneStore();
+			break;
+		case '6':
+			// assignItemAllStores();
+			break;
+		case '7':
+			// removeItemAllStores();
 			break;
 		case '0':
 			return;
@@ -285,6 +305,14 @@ void Menu::displayHeader()
 
 	std::cout << std::endl;
 
+	std::cout << "Item Number: ";
+	if (currentItemNumber == -1)
+		std::cout << "NOT SET";
+	else
+		std::cout << customer_table[currentItemIndex].address;
+
+	std::cout << std::endl;
+
 	std::cout << std::endl << std::endl;
 	
 }
@@ -385,7 +413,7 @@ void Menu::displayDialogNoReturn(std::string in_string, int expected_type)
 		std::getline(cin, dummy);
 }
 
-int Menu::displayDialogGetEntryInt(std::string in_string)
+int Menu::displayDialogGetEntryInt(std::string in_string, int max_length)
 {
 	displayDialogNoReturn(in_string, g_type_int);
 
@@ -396,7 +424,7 @@ int Menu::displayDialogGetEntryInt(std::string in_string)
 	while (!validateResult)
 	{
 		std::getline(cin, getInput);
-		validateResult = validateInput(getInput, g_type_int, 10, 0);
+		validateResult = validateInput(getInput, g_type_int, max_length, 0);
 		if (!validateResult)
 		{
 			setErrorMessage("Error:  Your input could not be validated.  Please try again.");
@@ -408,7 +436,7 @@ int Menu::displayDialogGetEntryInt(std::string in_string)
 	return StringToInt(getInput);
 }
 
-long long Menu::displayDialogGetEntryLongLong(std::string in_string)
+long long Menu::displayDialogGetEntryLongLong(std::string in_string, int max_length)
 {
 	displayDialogNoReturn(in_string, g_type_longlong);
 
@@ -419,7 +447,7 @@ long long Menu::displayDialogGetEntryLongLong(std::string in_string)
 	while (!validateResult)
 	{
 		std::getline(cin, getInput);
-		validateResult = validateInput(getInput, g_type_longlong, 19, 0);
+		validateResult = validateInput(getInput, g_type_longlong, max_length, 0);
 		if (!validateResult)
 		{
 			setErrorMessage("Error:  Your input could not be validated.  Please try again.");
@@ -431,7 +459,7 @@ long long Menu::displayDialogGetEntryLongLong(std::string in_string)
 	return StringToLongLong(getInput);
 }
 
-std::string Menu::displayDialogGetEntryString(std::string in_string)
+std::string Menu::displayDialogGetEntryString(std::string in_string, int max_length)
 {
 	displayDialogNoReturn(in_string, g_type_string_any);
 
@@ -442,7 +470,7 @@ std::string Menu::displayDialogGetEntryString(std::string in_string)
 	while (!validateResult)
 	{
 		std::getline(cin, getInput);
-		validateResult = validateInput(getInput, g_type_string_any, 200, 0);
+		validateResult = validateInput(getInput, g_type_string_any, max_length, 0);
 		if (!validateResult)
 		{
 			setErrorMessage("Error:  Your input could not be validated.  Please try again.");

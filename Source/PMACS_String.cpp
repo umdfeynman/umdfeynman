@@ -318,7 +318,7 @@ string StringTrimToSize(int length, string entry)
 	return entry;
 }
 
-string StringSpaceTrim(string entry)
+string StringTrailingSpaceTrim(string entry)
 {
 	string trimmedEntry = entry.erase(StringFindLastCharacter(entry), entry.length());
 	return trimmedEntry;
@@ -341,6 +341,35 @@ int StringFindLastCharacter(string entry)
 	}
 	return end;
 }
+
+std::string trimTrailingLeadingSpaces(std::string in_string)
+{
+	int nonSpaceStart = 0;
+	int nonSpaceEnd = in_string.size();
+
+	for (int i = 0; i < in_string.size(); i++)
+	{
+		if (in_string[i] == ' ')
+			nonSpaceStart++;
+		else
+			break;
+	}
+
+	for (int i = in_string.size() - 1; i >= 0; i--)
+	{
+		if (in_string[i] == ' ')
+			nonSpaceEnd--;
+		else
+			break;
+	}
+
+	int offset = in_string.size() - nonSpaceEnd;
+
+	return in_string.substr(nonSpaceStart, offset);
+}
+
+
+
 
 //------Check whether or not a character is a number
 bool DigitCheck(char test)
