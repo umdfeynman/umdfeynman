@@ -8,5 +8,9 @@ bool massInventoryUpdates();
 bool checkAllStoresClosed();
 bool warehouseInventoryGeneration();
 
+/////////////////////////////
+void openAllStores();
+
+
 
 #endif

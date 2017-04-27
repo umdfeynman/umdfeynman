@@ -7,13 +7,13 @@
 #include <algorithm>
 
 bool runOfflineBatchProcess()
-{	
+{
 	bool lastResult;
 	/*lastResult = massInventoryUpdates();
 	if (!lastResult)
 	{
-		Plog.logError("runOfflineBatchProcess", "massInventoryUpdates failed.  Bailing.");
-		return false;
+	Plog.logError("runOfflineBatchProcess", "massInventoryUpdates failed.  Bailing.");
+	return false;
 	}*/
 
 	lastResult = addDeleteStore();
@@ -26,17 +26,17 @@ bool runOfflineBatchProcess()
 	/*lastResult = calculateAccuStock();
 	if (!lastResult)
 	{
-		Plog.logError("runOfflineBatchProcess", "calculateAccuStock failed.  Bailing.");
-		return false;
+	Plog.logError("runOfflineBatchProcess", "calculateAccuStock failed.  Bailing.");
+	return false;
 	}*/
 
 	lastResult = warehouseInventoryGeneration();
 	if (!lastResult)
 	{
-	Plog.logError("runOfflineBatchProcess", "warehouseInventoryGeneration failed.  Bailing.");
-	return false;
+		Plog.logError("runOfflineBatchProcess", "warehouseInventoryGeneration failed.  Bailing.");
+		return false;
 	}
-	
+
 	lastResult = storeInventoryGeneration();
 	if (!lastResult)
 	{
@@ -46,7 +46,7 @@ bool runOfflineBatchProcess()
 
 	// Increment system date by 1
 	systemDate.ChangeDay(1);
-	
+
 	return true;
 }
 
@@ -59,6 +59,17 @@ bool checkAllStoresClosed()
 	}
 
 	return true;
+}
+
+void openAllStores()
+{
+	for (int i = 0; i < store_data_table.size(); i++)
+	{
+		if (store_data_table[i].store_status == 'C')
+		{
+			store_data_table[i].store_status = 'O';
+		}
+	}
 }
 
 // TODO:  PUT IN HEADER LENGTH (TOO SHORT / TOO LONG) CHECKS

@@ -61,10 +61,10 @@ int findCustomer(int account_number)
 bool setCurrentCustomerNumber(int account_number)
 {
 	Menu temp;
-	
+
 	int findResult = findCustomer(account_number);
 	if (findResult == -1)
-	{		
+	{
 		temp.displayDialogNoReturn("Failed to select customer, account not found");
 		return false;
 	}
@@ -78,7 +78,7 @@ bool setCurrentCustomerNumber(int account_number)
 bool setCurrentStore(int store_number)
 {
 	Menu temp;
-	
+
 	int findResult = findStore(store_number);
 	if (findResult == -1)
 	{
@@ -113,7 +113,7 @@ int findWarehouseItemByItemName(std::string item_name)
 {
 	for (int i = 0; i < warehouse_table.size(); i++)
 	{
-		
+
 		std::string trimmedWarehouseItem = trimTrailingLeadingSpaces(warehouse_table[i].item_name);
 		std::string trimmedInputItem = trimTrailingLeadingSpaces(item_name);
 		std::string cleanWarehouseItem = upperCase(trimmedWarehouseItem);
@@ -147,7 +147,7 @@ bool setCurrentItemByName(std::string item_name)
 
 bool setCurrentCashier(int cashier_number)
 {
-	currentCashierNumber = cashier_number;	
+	currentCashierNumber = cashier_number;
 
 	return true;
 }
@@ -155,7 +155,7 @@ bool setCurrentCashier(int cashier_number)
 //give itemnumber and character to get list of all containing the item
 vector<int> getStoreItemList(int item_number)
 {
-	vector<int> list; 
+	vector<int> list;
 
 	for (int i = 0; i < store_inventory_table.size(); i++)						//for all the store items
 	{
@@ -183,4 +183,79 @@ int findCustomerByNameAddress(std::string customer_name, std::string customer_ad
 	}
 	return -1;
 }
+
+void closeAllStores()
+{
+	for (int i = 0; i < store_data_table.size(); i++)
+	{
+		if (store_data_table[i].store_status == 'O')
+		{
+			store_data_table[i].store_status = 'C';
+		}
+	}
+}
+void closeStore()
+{
+	store_data_table[currentStoreIndex].store_status = 'C';
+}
+
+//check coupon
+//return index
+//if -1, no coupon for that number
+int CouponCheck(int couponID)
+{
+	if (coupon_table.size() == 0)			//no coupons
+	{
+		return -1;
+	}
+	else
+	{
+		for (int x = 0; x < coupon_table.size(); x++)
+		{
+			if (couponID == coupon_table[x].coupon_number)		//found ID
+			{
+				return x;
+			}
+			else			//no match
+			{
+				return -1;
+			}
+		}
+	}
+}
+
+bool deleteCoupon(int couponID)
+{
+	int couponIndex = CouponCheck(couponID);
+
+	if (couponIndex == -1)			//coupon doesnt exist, cant delete
+	{
+		return false;
+	}
+	else							// found. delete coupon
+	{
+		coupon_table.erase(coupon_table.begin() + couponIndex);
+		return true;
+	}
+}
+
+bool addCoupon(int couponID, int couponDiscount)
+{
+	if (CouponCheck(couponID) == -1) //no coupon for that ID coupon
+	{
+		Coupon newCoupon;
+
+		//assign values
+		newCoupon.coupon_number = couponID;
+		newCoupon.discount_pct = couponDiscount;
+
+		//add to table
+		coupon_table.push_back(newCoupon);
+
+		return true;
+	}
+	return false;  //else failed to make coupon
+}
+
+
 

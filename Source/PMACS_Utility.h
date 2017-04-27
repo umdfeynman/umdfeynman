@@ -16,5 +16,11 @@ std::vector<int> getStoreItemList(int item_number);
 void setSystemDate(std::string in_string);
 int findCustomerByNameAddress(std::string customer_name, std::string customer_address);
 int findWarehouseItemByItemName(std::string item_name);
+////////////////////////
+void closeAllStores();
+int CouponCheck(int couponID);
+bool deleteCoupon(int couponID);
+void closeStore();
+bool addCoupon(int couponID, int couponDiscount);
 
 #endif
