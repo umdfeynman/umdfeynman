@@ -186,10 +186,10 @@ bool readConfig()
 	}
 
 	std::string s_systemDate;
-	
+
 	std::getline(configFile, s_systemDate);
 	systemDate.NewDate(s_systemDate);
-	
+
 	configFile.close();
 	return true;
 }
@@ -880,12 +880,9 @@ bool saveWarehouseItemData()
 	//header
 	warehouseFile << "HWAREHOUSE";
 
-	if (warehouse_table.size() > 0)
-		warehouseFile << endl;
-
-
 	for (int x = 0; x < warehouse_table.size(); x++)
 	{
+		warehouseFile << endl;
 		warehouseFile << warehouse_table[x].item_status;
 		warehouseFile << endl;
 		warehouseFile << warehouse_table[x].item_number;
@@ -913,10 +910,6 @@ bool saveWarehouseItemData()
 		warehouseFile << warehouse_table[x].price;
 		warehouseFile << endl;
 		warehouseFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-		if (x != warehouse_table.size() - 1)
-		{
-			warehouseFile << endl;
-		}
 	}
 	return true;
 };
@@ -938,12 +931,10 @@ bool saveStoreInventory()
 	//write header
 	storeInvFile << "HSTOREINV";
 
-	if (store_inventory_table.size() > 0)
-		storeInvFile << endl;
-
 	//for each store inv entry, write to file
 	for (int x = 0; x < store_inventory_table.size(); x++)
 	{
+		storeInvFile << endl;
 		storeInvFile << store_inventory_table[x].item_status;
 		storeInvFile << endl;
 		storeInvFile << store_inventory_table[x].item_number;
@@ -963,52 +954,44 @@ bool saveStoreInventory()
 		storeInvFile << store_inventory_table[x].accustock_direction;
 		storeInvFile << endl;
 		storeInvFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-		if (x != store_data_table.size() - 1)
-		{
-			storeInvFile << endl;
-		}
+
 	}
 	return true;
 };
 bool saveStoreData()
 {
-		std::ofstream storeDataFile;
-		storeDataFile.open(g_storedata_file, ios::out);
+	std::ofstream storeDataFile;
+	storeDataFile.open(g_storedata_file, ios::out);
 
-		if (!storeDataFile || !storeDataFile.good())
-		{
-			Plog.logError("writestoreData", "Failed to write database file.  Bailing.");
-			return false;
-		}
+	if (!storeDataFile || !storeDataFile.good())
+	{
+		Plog.logError("writestoreData", "Failed to write database file.  Bailing.");
+		return false;
+	}
 
-		storeDataFile << "HSTOREDATA";
+	storeDataFile << "HSTOREDATA";
 
-		if (store_data_table.size() > 0)
-			storeDataFile << endl;
 
-		for (int x = 0; x < store_data_table.size(); x++)
-		{
-			storeDataFile << store_data_table[x].store_status;
-			storeDataFile << endl;
-			storeDataFile << store_data_table[x].store_priority;
-			storeDataFile << endl;
-			storeDataFile << store_data_table[x].store_number;
-			storeDataFile << endl;
-			storeDataFile << store_data_table[x].address;
-			storeDataFile << endl;
-			storeDataFile << store_data_table[x].city_name;
-			storeDataFile << endl;
-			storeDataFile << store_data_table[x].state_name;
-			storeDataFile << endl;
-			storeDataFile << store_data_table[x].zip_code;
-			storeDataFile << endl;
-			storeDataFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-			if (x != store_data_table.size() - 1)
-			{
-				storeDataFile << endl;
-			}
-		}
-		return true;
+	for (int x = 0; x < store_data_table.size(); x++)
+	{
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].store_status;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].store_priority;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].store_number;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].address;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].city_name;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].state_name;
+		storeDataFile << endl;
+		storeDataFile << store_data_table[x].zip_code;
+		storeDataFile << endl;
+		storeDataFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
+	}
+	return true;
 };
 bool saveCustomer()
 {
@@ -1023,11 +1006,9 @@ bool saveCustomer()
 
 	customerFile << "HCUST";
 
-	if (customer_table.size() > 0)
-		customerFile << endl;
-
 	for (int x = 0; x < customer_table.size(); x++)
 	{
+		customerFile << endl;
 		customerFile << customer_table[x].account_number;
 		customerFile << endl;
 		customerFile << customer_table[x].address;
@@ -1065,35 +1046,30 @@ bool saveCustomer()
 };
 bool saveCoupon()
 {
-		std::ofstream couponFile;
-		couponFile.open(g_coupon_file, ios::out);
+	std::ofstream couponFile;
+	couponFile.open(g_coupon_file, ios::out);
 
-		if (!couponFile || !couponFile.good())
-		{
-			Plog.logError("writeCoupon", "Failed to write database file.  Bailing.");
-			return false;
-		}
-		//coupon_table
-		couponFile << "HCOUPON";
+	if (!couponFile || !couponFile.good())
+	{
+		Plog.logError("writeCoupon", "Failed to write database file.  Bailing.");
+		return false;
+	}
 
-		if (coupon_table.size() > 0)
-			couponFile << endl;
+	//coupon_table
+	couponFile << "HCOUPON";
 
-		for (int x = 0; x < coupon_table.size(); x++)
-		{
-			couponFile << coupon_table[x].coupon_number;
-			couponFile << endl;
-			couponFile << coupon_table[x].discount_pct;
-			couponFile << endl;
-			couponFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-			if (x != coupon_table.size() - 1)
-			{
-				couponFile << endl;
-			}
-		}
+	for (int x = 0; x < coupon_table.size(); x++)
+	{
+		couponFile << endl;
+		couponFile << coupon_table[x].coupon_number;
+		couponFile << endl;
+		couponFile << coupon_table[x].discount_pct;
+		couponFile << endl;
+		couponFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
+	}
 
-		couponFile.close();
-		return true;
+	couponFile.close();
+	return true;
 };
 bool saveTransaction()
 {
@@ -1110,11 +1086,9 @@ bool saveTransaction()
 
 	transactionFile << "HTRANS";
 
-	if (transaction_table.size() > 0)
-		transactionFile << endl;
-
 	for (int x = 0; x < transaction_table.size(); x++)
 	{
+		transactionFile << endl;
 		transactionFile << transaction_table[x].order_number;
 		transactionFile << endl;
 		transactionFile << transaction_table[x].originating_cashier_number;
@@ -1162,11 +1136,6 @@ bool saveTransaction()
 		transactionFile << "E";
 		transactionFile << endl;
 		transactionFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-
-		if (x != transaction_table.size() - 1)
-		{
-			transactionFile << endl;
-		}
 	}
 	transactionFile.close();
 	return true;
