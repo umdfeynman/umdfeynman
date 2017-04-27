@@ -96,7 +96,7 @@ void displayInventoryMenu()
 		switch (selection)
 		{
 		case '1':
-			// selectItem();
+			selectItem();
 			break;
 		case '2':
 			// displayItemInfo;
@@ -122,6 +122,42 @@ void displayInventoryMenu()
 			break;
 		}
 	}
+}
+
+void selectItem()
+{
+	Menu selectItemMenu;
+	selectItemMenu.setMenuName("Select Item Menu");
+	selectItemMenu.addMenuItem('1', "Select Item by Number");
+	selectItemMenu.addMenuItem('2', "Select Item by Name");
+	selectItemMenu.addMenuItem('0', "Exit Sales Management Menu");
+
+	char selection = 0; // 0 as in NULL not '0' as in ascii zero
+
+	int itemNumber = -1;
+	std::string itemName = "";
+
+	while (selection != '0')
+	{
+		selection = selectItemMenu.displayMenuGetSelection();
+
+		switch (selection)
+		{
+		case '1':
+			itemNumber = selectItemMenu.displayDialogGetEntryInt("Please enter the item number: ");
+			setCurrentItemByNumber(itemNumber);
+			break;
+		case '2':
+			itemName = selectItemMenu.displayDialogGetEntryString("Please enter the item name: ");
+			setCurrentItemByName(itemName);
+			break;
+		case '0':
+			return;
+		default:
+			break;
+		}
+	}
+
 }
 
 void displaySalesMenu()
@@ -309,7 +345,7 @@ void Menu::displayHeader()
 	if (currentItemNumber == -1)
 		std::cout << "NOT SET";
 	else
-		std::cout << customer_table[currentItemIndex].address;
+		std::cout << warehouse_table[currentItemIndex].item_number;
 
 	std::cout << std::endl;
 

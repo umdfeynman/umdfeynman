@@ -11,6 +11,7 @@ void displayInventoryMenu();
 void displaySalesMenu();
 void displayBatchMenu();
 void displayUtilityMenu();
+void selectItem();
 
 class Menu
 {

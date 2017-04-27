@@ -363,7 +363,10 @@ std::string trimTrailingLeadingSpaces(std::string in_string)
 			break;
 	}
 
-	int offset = in_string.size() - nonSpaceEnd;
+	int offset = nonSpaceEnd - nonSpaceStart;
+
+	if (nonSpaceStart == 0 && nonSpaceEnd == in_string.size())
+		return in_string;
 
 	return in_string.substr(nonSpaceStart, offset);
 }
