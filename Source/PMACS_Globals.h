@@ -20,7 +20,8 @@ extern int currentCustomerIndex;
 extern int currentStoreNumber;
 extern int currentStoreIndex;
 extern int currentCashierNumber;
-extern int currentItemNumber;
-extern int currentItemIndex;
+extern std::vector<int> currentItemList; // Item indices in warehouse_table
+extern int currentItemListSize; // Size of currentItemList
+
 
 #endif

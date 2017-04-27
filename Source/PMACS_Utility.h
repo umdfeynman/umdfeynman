@@ -16,7 +16,7 @@ std::vector<int> getStoreItemList(int item_number);
 void setSystemDate(std::string in_string);
 int findCustomerByNameAddress(std::string customer_name, std::string customer_address);
 int findWarehouseItemByItemName(std::string item_name);
-bool checkIfCoupled(int item_one_index, int item_two_index);
+bool checkCoupled(int item_one_index, int item_two_index);
 bool uncoupleItems(int item_one, int item_two);
 bool coupleItems(int item_one, int item_two);
 ////////////////////////
@@ -25,5 +25,19 @@ int CouponCheck(int couponID);
 bool deleteCoupon(int couponID);
 void closeStore();
 bool addCoupon(int couponID, int couponDiscount);
+void clearItemSelections();
+void assignItemsToStore();
+void removeItemsFromStore();
+void changeItemStatus();
+void changeVendorNumber();
+void changeItemDosage();
+void changeItemName();
+void changeItemDescription();
+void changeWarehouseReorderQuantity();
+void changeWarehouseReorderLevel();
+void changeBasePrice();
+int findWarehouseItemByItemName(std::string item_name);
+void displayItemInfo();
+void displayCurrentList();
 
 #endif

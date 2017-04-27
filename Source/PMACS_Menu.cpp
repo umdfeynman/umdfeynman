@@ -79,13 +79,12 @@ void displayInventoryMenu()
 {
 	Menu storeMenu;
 	storeMenu.setMenuName("Inventory Management Menu");
-	storeMenu.addMenuItem('1', "Select an Item");
-	storeMenu.addMenuItem('2', "Display Item Info");
-	storeMenu.addMenuItem('3', "Update Item Menu");
-	storeMenu.addMenuItem('4', "Assign Item to One Store");
-	storeMenu.addMenuItem('5', "Remove Item from One Store");
-	storeMenu.addMenuItem('6', "Assign Item to All Stores");
-	storeMenu.addMenuItem('7', "Remove Item from All Stores");
+	storeMenu.addMenuItem('1', "Add Item to Item Selections");
+	storeMenu.addMenuItem('2', "Clear Item Selections");
+	storeMenu.addMenuItem('3', "Display Item Info");
+	storeMenu.addMenuItem('4', "Update Item Menu");
+	storeMenu.addMenuItem('5', "Assign Selected Item(s) to Store");
+	storeMenu.addMenuItem('6', "Remove Selected Item(s) from Store");
 	storeMenu.addMenuItem('0', "Exit Store Management Menu");
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
@@ -99,7 +98,7 @@ void displayInventoryMenu()
 			selectItem();
 			break;
 		case '2':
-			// displayItemInfo;
+			clearItemSelections();
 			break;
 		case '3':
 			// displayUpdateItemMenu();
@@ -144,12 +143,12 @@ void selectItem()
 		switch (selection)
 		{
 		case '1':
-			itemNumber = selectItemMenu.displayDialogGetEntryInt("Please enter the item number: ");
+			itemNumber = selectItemMenu.displayDialogGetEntryInt("Please enter the item number to add to selected items: ");
 			if (itemNumber != -1)
 				setCurrentItemByNumber(itemNumber);
 			break;
 		case '2':
-			itemName = selectItemMenu.displayDialogGetEntryString("Please enter the item name: ");
+			itemName = selectItemMenu.displayDialogGetEntryString("Please enter the item name to add to selected items: ");
 			if (itemName != "")
 				setCurrentItemByName(itemName);
 			break;
@@ -341,13 +340,13 @@ void Menu::displayHeader()
 	else
 		std::cout << customer_table[currentCustomerIndex].address;
 
-	std::cout << std::endl;
+	/*std::cout << std::endl;
 
 	std::cout << "Item Number: ";
-	if (currentItemNumber == -1)
+	if (currentItemListSize == 0)
 		std::cout << "NOT SET";
 	else
-		std::cout << warehouse_table[currentItemIndex].item_number;
+		std::cout << warehouse_table[currentItemIndex].item_number;*/
 
 	std::cout << std::endl;
 
@@ -571,4 +570,57 @@ bool Menu::findMenuItemKey(char in_key)
 	}
 
 	return false;
+}
+
+void displayUpdateInventoryMenu()
+{
+	Menu updateItemMenu;
+	updateItemMenu.setMenuName("Update Item Menu");
+	updateItemMenu.addMenuItem('1', "Change Item Status");
+	updateItemMenu.addMenuItem('2', "Change Vendor Number");
+	updateItemMenu.addMenuItem('3', "Change Item Dosage");
+	updateItemMenu.addMenuItem('4', "Change Item Name");
+	updateItemMenu.addMenuItem('5', "Change Item Description");
+	updateItemMenu.addMenuItem('6', "Change Warehouse Reorder Quantity");
+	updateItemMenu.addMenuItem('7', "Change Warehouse Reorder Level");
+	updateItemMenu.addMenuItem('8', "Change Base Price");
+	updateItemMenu.addMenuItem('0', "Exit Sales Management Menu");
+	char selection = 0; // 0 as in NULL not '0' as in ascii zero
+
+	while (selection != '0')
+	{
+		selection = updateItemMenu.displayMenuGetSelection();
+
+		switch (selection)
+		{
+		case '1':
+			changeItemStatus();
+			break;
+		case '2':
+			changeVendorNumber();
+			break;
+		case '3':
+			changeItemDosage();
+			break;
+		case '4':
+			changeItemName();
+			break;
+		case '5':
+			changeItemDescription();
+			break;
+		case '6':
+			changeWarehouseReorderQuantity();
+			break;
+		case '7':
+			changeWarehouseReorderLevel();
+			break;
+		case '8':
+			changeBasePrice();
+			break;
+		case '0':
+			return;
+		default:
+			break;
+		}
+	}
 }
