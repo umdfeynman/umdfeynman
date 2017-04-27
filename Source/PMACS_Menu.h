@@ -24,7 +24,8 @@ public:
 	void displayFooter();
 	void displayMenuNoReturn();
 	char displayMenuGetSelection();
-	void displayDialogNoReturn(std::string in_string, int expected_type = -1);	
+	void displayDialogNoReturn(std::string in_string, int expected_type = -1);
+	double displayDialogGetEntryDouble(std::string in_string, int max_length);
 	int displayDialogGetEntryInt(std::string in_string, int max_length = 10);
 	char displayDialogGetEntryChar(std::string in_string);
 	long long displayDialogGetEntryLongLong(std::string in_string, int max_length = 19);

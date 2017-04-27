@@ -104,6 +104,15 @@ bool setCurrentItemByNumber(int item_number)
 		return false;
 	}
 
+	for (int i = 0; i < currentItemList.size(); i++)
+	{
+		if (warehouse_table[findResult].item_number == warehouse_table[currentItemList[i]].item_number)
+		{
+			temp.displayDialogNoReturn("Failed to add item to item selection, item already exists in list");
+			return false;
+		}
+	}
+
 	currentItemList.push_back(findResult);
 	currentItemListSize--;
 
@@ -141,6 +150,15 @@ bool setCurrentItemByName(std::string item_name)
 		return false;
 	}
 
+	for (int i = 0; i < currentItemList.size(); i++)
+	{
+		if (warehouse_table[findResult].item_number == warehouse_table[currentItemList[i]].item_number)
+		{
+			temp.displayDialogNoReturn("Failed to add item to item selection, item already exists in list");
+			return false;
+		}
+	}
+
 	currentItemList.push_back(findResult);
 	currentItemListSize--;
 
@@ -159,10 +177,6 @@ void clearItemSelections()
 
 	return;
 }
-
-
-
-
 bool setCurrentCashier(int cashier_number)
 {
 	currentCashierNumber = cashier_number;
@@ -201,7 +215,7 @@ int findCustomerByNameAddress(std::string customer_name, std::string customer_ad
 	}
 	return -1;
 }
-
+//TEST
 void closeAllStores()
 {
 	for (int i = 0; i < store_data_table.size(); i++)
@@ -212,11 +226,13 @@ void closeAllStores()
 		}
 	}
 }
+//TEST
 void closeStore()
 {
 	store_data_table[currentStoreIndex].store_status = 'C';
 }
 
+//TEST
 //check coupon
 //return index
 //if -1, no coupon for that number
@@ -234,14 +250,11 @@ int CouponCheck(int couponID)
 			{
 				return x;
 			}
-			else			//no match
-			{
-				return -1;
-			}
 		}
+		return -1;
 	}
 }
-
+//TEST
 bool deleteCoupon(int couponID)
 {
 	int couponIndex = CouponCheck(couponID);
@@ -256,7 +269,7 @@ bool deleteCoupon(int couponID)
 		return true;
 	}
 }
-
+//TEST
 bool addCoupon(int couponID, int couponDiscount)
 {
 	if (CouponCheck(couponID) == -1) //no coupon for that ID coupon
@@ -303,6 +316,7 @@ int checkCoupled(int item_one_index, int item_two_index)
 	return -1;
 }
 
+//TEST
 int getCoupledItemIndex(int in_item_number)
 {
 	
@@ -328,11 +342,12 @@ int getCoupledItemIndex(int in_item_number)
 	return -1;
 }
 
+//TEST
 bool coupleItems(int item_one, int item_two)
 {
 	int itemOneIndex = findWarehouseItem(item_one);
 	int itemTwoIndex = findWarehouseItem(item_two);
-	bool isCoupled;
+	int isCoupled;
 
 	if (itemOneIndex == -1 || itemTwoIndex == -1)
 	{
@@ -356,11 +371,12 @@ bool coupleItems(int item_one, int item_two)
 	return true;
 }
 
+//TEST
 bool uncoupleItems(int item_one, int item_two)
 {
 	int itemOneIndex = findWarehouseItem(item_one);
 	int itemTwoIndex = findWarehouseItem(item_two);
-	bool isCoupled;
+	int isCoupled;
 
 	if (itemOneIndex == -1 == itemTwoIndex == 1)
 	{
@@ -385,6 +401,72 @@ bool uncoupleItems(int item_one, int item_two)
 	return true;
 }
 
+// TEST
+void assignItemsToAllStores()
+{
+	Menu temp;
+	if (currentItemListSize == 0)
+	{
+		temp.displayDialogNoReturn("Error - no items selected");
+		return;
+	}
+
+	long long setReorderLevel = temp.displayDialogGetEntryLongLong("Please enter the reorder level to assign to the items (10 digits): ", 10);
+
+	if (setReorderLevel == -1)
+		return;
+
+	long long setReorderQuantity = temp.displayDialogGetEntryLongLong("Please enter the reorder quantity to assign to the items (10 digits): ", 10);
+
+	if (setReorderQuantity == -1)
+		return;
+
+	// For each item in list
+	// If item already assigned to store but active, skip
+	// If item already assigned to store but inactive, overwrite
+	// If item not assigned to store, add to store
+	for (int i = 0; i < currentItemList.size(); i++)
+	{
+		for (int j = 0; j < store_data_table.size(); j++)
+		{
+			int findStoreItemResult = findStoreItem(warehouse_table[currentItemList[i]].item_number, store_data_table[i].store_number);
+			if (findStoreItemResult == -1)
+			{
+				StoreInventory storeInventoryInstance;
+				storeInventoryInstance.item_status = 'A';
+				storeInventoryInstance.item_number = warehouse_table[currentItemList[i]].item_number;
+				storeInventoryInstance.quantity = 0;
+				storeInventoryInstance.store_number = store_data_table[i].store_number;
+				storeInventoryInstance.reorder_level = setReorderLevel;
+				storeInventoryInstance.reorder_quantity = setReorderQuantity;
+				storeInventoryInstance.high_threshold = 1.15f * (float)setReorderLevel;
+				storeInventoryInstance.low_threshold = 0.85f * (float)setReorderLevel;
+				store_inventory_table.push_back(storeInventoryInstance);
+
+				Plog.logInfo("assignItemsToStore", "Item <ITEM> assigned to store <STORE>");
+			}
+			else if (store_inventory_table[findStoreItemResult].item_status = 'A')
+			{
+				Plog.logInfo("assignItemsToStore", "Item <ITEM> already assigned to store <STORE> and active, skipping");
+				continue;
+			}
+			else if (store_inventory_table[findStoreItemResult].item_status = 'D')
+			{
+				// Directly in store_inventory_table
+				store_inventory_table[findStoreItemResult].item_status = 'A';
+				store_inventory_table[findStoreItemResult].item_number = warehouse_table[currentItemList[i]].item_number;
+				store_inventory_table[findStoreItemResult].quantity = 0;
+				store_inventory_table[findStoreItemResult].store_number = store_data_table[i].store_number;
+				store_inventory_table[findStoreItemResult].reorder_level = setReorderLevel;
+				store_inventory_table[findStoreItemResult].reorder_quantity = setReorderQuantity;
+				store_inventory_table[findStoreItemResult].high_threshold = 1.15f * (float)setReorderLevel;
+				store_inventory_table[findStoreItemResult].low_threshold = 0.85f * (float)setReorderLevel;
+			}
+		}
+	}
+}
+
+// Test
 // Assign/Remove from store
 void assignItemsToStore()
 {
@@ -409,19 +491,18 @@ void assignItemsToStore()
 
 	long long setReorderLevel = temp.displayDialogGetEntryLongLong("Please enter the reorder level to assign to the items (10 digits): ", 10);
 
-	if (assignStoreNumber == -1)
+	if (setReorderLevel == -1)
 		return;
 
 	long long setReorderQuantity = temp.displayDialogGetEntryLongLong("Please enter the reorder quantity to assign to the items (10 digits): ", 10);
 
-	if (assignStoreNumber == -1)
+	if (setReorderQuantity == -1)
 		return;
 
 	// For each item in list
 	// If item already assigned to store but active, skip
 	// If item already assigned to store but inactive, overwrite
 	// If item not assigned to store, add to store
-
 	for (int i = 0; i < currentItemList.size(); i++)
 	{
 		int findStoreItemResult = findStoreItem(warehouse_table[currentItemList[i]].item_number, assignStoreNumber);
@@ -460,6 +541,7 @@ void assignItemsToStore()
 	}
 }
 
+// Test
 void removeItemsFromStore()
 {
 	Menu temp;
@@ -468,7 +550,7 @@ void removeItemsFromStore()
 		temp.displayDialogNoReturn("Error - no items selected");
 		return;
 	}
-	
+
 	int removeStoreNumber = temp.displayDialogGetEntryInt("Please enter the store number to remove the items from (5 digits): ", 5);
 
 	if (removeStoreNumber == -1)
@@ -489,6 +571,7 @@ void removeItemsFromStore()
 
 	for (int i = 0; i < currentItemList.size(); i++)
 	{
+
 		int findStoreItemResult = findStoreItem(warehouse_table[currentItemList[i]].item_number, removeStoreNumber);
 		if (findStoreItemResult == -1)
 		{
@@ -513,6 +596,53 @@ void removeItemsFromStore()
 	}
 }
 
+// TEST
+void removeItemsFromAllStores()
+{
+	Menu temp;
+	if (currentItemListSize == 0)
+	{
+		temp.displayDialogNoReturn("Error - no items selected");
+		return;
+	}
+
+	// For each item in list
+	// If item already assigned to store and active but no inventory, remove
+	// If item already assigned to store and active but has inventory, skip
+	// If item already assigned to store but inactive, skip
+	// If item not assigned to store, skip
+
+	for (int i = 0; i < currentItemList.size(); i++)
+	{
+		for (int j = 0; j < store_data_table.size(); j++)
+		{
+			int findStoreItemResult = findStoreItem(warehouse_table[currentItemList[i]].item_number, store_data_table[i].store_number);
+		
+			if (findStoreItemResult == -1)
+			{
+				Plog.logInfo("removeItemsFromStore", "Item <ITEM> not found at store <STORE>");
+				continue;
+			}
+			else if (store_inventory_table[findStoreItemResult].item_status = 'A' && store_inventory_table[findStoreItemResult].quantity != 0)
+			{
+				Plog.logInfo("removeItemsFromStore", "Item <ITEM> assigned to store <STORE> but quantity is >0, skipping");
+				continue;
+			}
+			else if (store_inventory_table[findStoreItemResult].item_status = 'A' && store_inventory_table[findStoreItemResult].quantity == 0)
+			{
+				store_inventory_table[findStoreItemResult].item_status = 'D';
+				Plog.logInfo("removeItemsFromStore", "Item <ITEM> assigned to store <STORE> and quantity is 0, deactivating");
+			}
+			else if (store_inventory_table[findStoreItemResult].item_status = 'D')
+			{
+				Plog.logInfo("removeItemsFromStore", "Item <ITEM> exists for store <STORE> but is already deactivated, skipping");
+				continue;
+			}
+		}
+	}
+}
+
+// Test
 void changeItemStatus()
 {
 	Menu temp;
@@ -541,6 +671,7 @@ void changeItemStatus()
 	}
 }
 
+// Test
 void changeVendorNumber()
 {
 
@@ -564,6 +695,7 @@ void changeVendorNumber()
 	}
 }
 
+// Test
 void changeItemDosage()
 {
 	Menu temp;
@@ -585,6 +717,7 @@ void changeItemDosage()
 	}
 }
 
+// Test
 void changeItemName()
 {
 
@@ -607,6 +740,7 @@ void changeItemName()
 	}
 }
 
+// Test
 void changeItemDescription()
 {
 	Menu temp;
@@ -628,6 +762,7 @@ void changeItemDescription()
 	}
 }
 
+// Test
 void changeWarehouseReorderQuantity()
 {
 	Menu temp;
@@ -649,6 +784,7 @@ void changeWarehouseReorderQuantity()
 	}
 }
 
+// Test
 void changeWarehouseReorderLevel()
 {
 	Menu temp;
@@ -670,7 +806,7 @@ void changeWarehouseReorderLevel()
 	}
 }
 
-// TODO: MAKE DOUBLE VERSION OF DIALOGGETENTRY
+// Test
 void changeBasePrice()
 {
 	Menu temp;
@@ -680,7 +816,7 @@ void changeBasePrice()
 		return;
 	}
 
-	int newBasePrice = temp.displayDialogGetEntryDouble("Please enter the new base price ($$$$$.$$): ", 8);
+	double newBasePrice = temp.displayDialogGetEntryDouble("Please enter the new base price ($$$$$.$$): ", 8);
 
 	if (newBasePrice == -1.0)
 		return;
@@ -692,22 +828,7 @@ void changeBasePrice()
 	}
 }
 
-int findWarehouseItemByItemName(string item_name)
-{
-	for (int i = 0; i< warehouse_table.size(); i++)
-	{
-		std::string cleanWarehouseItem = upperCase(trimTrailingLeadingSpaces(warehouse_table[i].item_name));
-		std::string cleanInputItem = upperCase(trimTrailingLeadingSpaces(item_name));
-
-
-		if (cleanInputItem == cleanWarehouseItem)
-		{
-			return i;
-		}
-	}
-	return -1;
-}
-
+// Test
 void displayItemInfo()
 {
 	Menu temp;
@@ -722,18 +843,20 @@ void displayItemInfo()
 	bool createResult = createFile("iteminfo.txt", itemInfo_File);
 
 	// For each item in currentItemList:
+	itemInfo_File << "== WAREHOUSE ==" << endl << "Item#\t" << "Item Status\t" << "Item Name\t" << "Vendor#\t" << "Qty.\t"
+		<< "Dosage\t" << "Coupled\t" << "Discount%\t" << "ReorderQty\t" << "RestockDelay" << endl;
 	for (int i = 0; i < currentItemList.size(); i++)
 	{
-		itemInfo_File << "== WAREHOUSE ==" << endl << "Item#\t" << "Item Status\t" << "Item Name\t" << "Vendor#\t" << "Qty.\t"
-			<< "Dosage\t" << "Coupled\t" << "Discount%\t" << "ReorderQty\t" << "RestockDelay" << endl;
 
 		itemInfo_File << warehouse_table[currentItemList[i]].item_number << "\t" << warehouse_table[currentItemList[i]].item_status << "\t" <<
 			warehouse_table[currentItemList[i]].item_name << "\t" << warehouse_table[currentItemList[i]].vendor_number << "\t" <<
 			warehouse_table[currentItemList[i]].quantity << "\t" << warehouse_table[currentItemList[i]].item_dosage << "\t" << warehouse_table[currentItemList[i]].item_discount_percent
-			<< "\t" << warehouse_table[currentItemList[i]].reorder_quantity << "\t" << warehouse_table[currentItemList[i]].expected_delivery_time << endl;
-				
+			<< "\t" << warehouse_table[currentItemList[i]].reorder_quantity << "\t" << warehouse_table[currentItemList[i]].expected_delivery_time << std::endl;
+	}
 
-		itemInfo_File << "== STORE ==" << endl << "Item#\t" << "Item Name\t" << "Store#\t" << "Stauts\t" << "Qty." << endl;
+	itemInfo_File << std::endl;
+
+	itemInfo_File << "== STORE ==" << endl << "Item#\t" << "Item Name\t" << "Store#\t" << "Stauts\t" << "Qty." << std::endl;
 
 		/*
 		For each store_data item <store> in store_data table
@@ -741,7 +864,10 @@ void displayItemInfo()
 				If findItem == item_number
 					totalQuantity += <item>.quantity
 					Output appropriate fields from <item>*/
+	long long overallItemQuantity = 0;
 
+	for (int i = 0; i < currentItemList.size(); i++)
+	{
 		for (int j = 0; j < store_data_table.size(); j++)
 		{
 			for (int k = 0; k < store_inventory_table.size(); k++)
@@ -750,31 +876,58 @@ void displayItemInfo()
 					store_inventory_table[k].store_number == store_data_table[j].store_number
 					)
 				{
+					overallItemQuantity += store_inventory_table[k].quantity;
 					itemInfo_File << store_inventory_table[k].item_number << "\t" << warehouse_table[currentItemList[i]].item_name << "\t" << store_inventory_table[k].store_number << "\t" <<
-						store_inventory_table[currentItemList[i]].item_status << "\t" << store_inventory_table[currentItemList[i]].quantity;
-				
-				}
+						store_inventory_table[currentItemList[i]].item_status << "\t" << store_inventory_table[currentItemList[i]].quantity << std::endl;				
+				}				
+			}
+		}
+	}
 
-				
+	itemInfo_File << "======= OVERALL ITEM QUANTITY ========" << std::endl;
+
+	for (int i = 0; i < currentItemList.size(); i++)
+	{
+		for (int j = 0; j < store_data_table.size(); j++)
+		{
+			for (int k = 0; k < store_inventory_table.size(); k++)
+			{
+				if (store_inventory_table[k].item_number == warehouse_table[currentItemList[i]].item_number &&
+					store_inventory_table[k].store_number == store_data_table[j].store_number
+					)
+				{
+					overallItemQuantity += store_inventory_table[k].quantity;
+				}
 			}
 
 		}
-
+		itemInfo_File << warehouse_table[currentItemList[i]].item_number << "\t\t" << overallItemQuantity << std::endl;
+		overallItemQuantity = 0;
 	}
 
 	itemInfo_File.close();
 }
 
+// Test
 void displayCurrentList()
 {
+	Menu temp;
+
+	if (currentItemListSize == 0)
+	{
+		temp.displayDialogNoReturn("Error - no items selected");
+		return;
+	}
+
 	ofstream currentItemList_File;
 	createFile("currentItemList.txt", currentItemList_File);
 
-	currentItemList_File << "== Items ==" << endl << "Item#\t" << "Item Name\t" << <"Item Description" << endl;
-	for (int i = 0; i<currentItemList.size(); i++)
+	currentItemList_File << "== Items ==" << endl << "Item#\t" << "Item Name\t" << "Item Description" << endl;
+	for (int i = 0; i < currentItemList.size(); i++)
 	{
 
-		currentItemList_File << currentItemList[i].item_number << "\t" << currentItemList[i].item_name << "\t" << [currentItemList[i].item_description;
+		currentItemList_File << warehouse_table[currentItemList[i]].item_number << "\t" << warehouse_table[currentItemList[i]].item_name <<
+			"\t" << warehouse_table[currentItemList[i]].item_description << std::endl;
 
 	}
 	currentItemList_File.close();

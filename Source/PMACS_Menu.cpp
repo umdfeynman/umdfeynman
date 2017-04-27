@@ -81,11 +81,12 @@ void displayInventoryMenu()
 	storeMenu.setMenuName("Inventory Management Menu");
 	storeMenu.addMenuItem('1', "Add Item to Item Selections");
 	storeMenu.addMenuItem('2', "Clear Item Selections");
-	storeMenu.addMenuItem('3', "Display Item Info");
-	storeMenu.addMenuItem('4', "Update Item Menu");
-	storeMenu.addMenuItem('5', "Assign Selected Item(s) to Store");
-	storeMenu.addMenuItem('6', "Remove Selected Item(s) from Store");
-	storeMenu.addMenuItem('0', "Exit Store Management Menu");
+	storeMenu.addMenuItem('3', "Display Item Selections - Simple");
+	storeMenu.addMenuItem('4', "Display Item Selections - Full");
+	storeMenu.addMenuItem('5', "Update Inventory Menu");
+	storeMenu.addMenuItem('6', "Assign Selected Item(s) to Store");
+	storeMenu.addMenuItem('7', "Remove Selected Item(s) from Store");
+	storeMenu.addMenuItem('0', "Exit Inventory Management Menu");
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
 	while (selection != '0')
@@ -101,19 +102,19 @@ void displayInventoryMenu()
 			clearItemSelections();
 			break;
 		case '3':
-			// displayUpdateItemMenu();
+			displayCurrentList();
 			break;
 		case '4':
-			// assignItemOneStore();
+			displayItemInfo();
 			break;
 		case '5':
-			// removeItemOneStore();
+			displayUpdateInventoryMenu();
 			break;
 		case '6':
-			// assignItemAllStores();
+			assignItemsToStore();
 			break;
 		case '7':
-			// removeItemAllStores();
+			removeItemsFromStore();
 			break;
 		case '0':
 			return;
@@ -129,7 +130,7 @@ void selectItem()
 	selectItemMenu.setMenuName("Select Item Menu");
 	selectItemMenu.addMenuItem('1', "Select Item by Number");
 	selectItemMenu.addMenuItem('2', "Select Item by Name");
-	selectItemMenu.addMenuItem('0', "Exit Sales Management Menu");
+	selectItemMenu.addMenuItem('0', "Exit Select Item Menu");
 
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
@@ -477,6 +478,35 @@ int Menu::displayDialogGetEntryInt(std::string in_string, int max_length)
 	resetErrorMessage();
 	return StringToInt(getInput);
 }
+
+double Menu::displayDialogGetEntryDouble(std::string in_string, int max_length)
+{
+	displayDialogNoReturn(in_string, g_type_double);
+
+	bool validateResult = false;
+
+
+	std::string getInput;
+
+	while (!validateResult)
+	{
+		std::getline(cin, getInput);
+
+		if (getInput == "")
+			return -1;
+
+		validateResult = validateInput(getInput, g_type_double, max_length, 0);
+		if (!validateResult)
+		{
+			setErrorMessage("Error:  Your input could not be validated.  Please try again.");
+			displayDialogNoReturn(in_string, g_type_double);
+		}
+	}
+
+	resetErrorMessage();
+	return StringToDouble(getInput);
+}
+
 
 long long Menu::displayDialogGetEntryLongLong(std::string in_string, int max_length)
 {
