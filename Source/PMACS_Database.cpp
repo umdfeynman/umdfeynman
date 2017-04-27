@@ -1036,10 +1036,6 @@ bool saveCustomer()
 		customerFile << "E";
 		customerFile << endl;
 		customerFile << "///////////////////////////////////////////////////////////////////////////////////////////////////////////";
-		if (x != customer_table.size() - 1)
-		{
-			customerFile << endl;
-		}
 	}
 	customerFile.close();
 	return true;
