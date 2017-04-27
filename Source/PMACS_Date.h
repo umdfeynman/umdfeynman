@@ -36,7 +36,7 @@ public:
 	Date(string);
 	Date();
 	~Date();
-	void ChangeDay(unsigned int);							//change day
+	void ChangeDay(unsigned int);					//change day
 	void ChangeMonth();								//change month
 	void WeekDay();									//week day
 	void WeekNumber();								//week counter
@@ -66,7 +66,7 @@ public:
 	string GetDate();						 		//get date in YYYY-MM-DD
 	int DateCompareValue();							//returns int representation of the date-state
 
-	string StringZeroFill(int, int);				//returns a string representing a zero filled int
+	string StringZeroFill(int, long long);				//returns a string representing a zero filled int
 	string StringSpaceFill(int, string);			//returns string with spaces filled to right
 };
 

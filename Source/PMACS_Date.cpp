@@ -285,7 +285,7 @@ string Date::sGetYear()
 //takes a length and a numnber
 //doesnt check if length is longer than digits. so dont be stupid.
 //number given is preceeded by zeros to make length given
-string Date::StringZeroFill(int length, int number)
+string Date::StringZeroFill(int length, long long number)
 {
 	int fill = length - 1;
 	string a = "0";
