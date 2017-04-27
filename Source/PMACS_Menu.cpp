@@ -145,11 +145,13 @@ void selectItem()
 		{
 		case '1':
 			itemNumber = selectItemMenu.displayDialogGetEntryInt("Please enter the item number: ");
-			setCurrentItemByNumber(itemNumber);
+			if (itemNumber != -1)
+				setCurrentItemByNumber(itemNumber);
 			break;
 		case '2':
 			itemName = selectItemMenu.displayDialogGetEntryString("Please enter the item name: ");
-			setCurrentItemByName(itemName);
+			if (itemName != "")
+				setCurrentItemByName(itemName);
 			break;
 		case '0':
 			return;
@@ -283,7 +285,6 @@ void displayMainMenu()
 	}
 }
 
-
 void Menu::displayHeader()
 {
 	system("cls");
@@ -291,14 +292,15 @@ void Menu::displayHeader()
 	std::cout << "==";	
 
 	if (menuName == "")
-		std::cout << "NO MENU NAME SET";
+		std::cout << "";
 	else
 		std::cout << menuName;
 
 	std::cout << "==" << std::endl;
 
+	std::cout << "** Please press enter to cancel any prompt **" << std::endl;
+
 	std::cout << "System Date: " << systemDate.GetDate() << std::endl;
-	
 
 
 	std::cout << "Store Number: ";
@@ -455,11 +457,16 @@ int Menu::displayDialogGetEntryInt(std::string in_string, int max_length)
 
 	bool validateResult = false;
 	
+
 	std::string getInput;
 
 	while (!validateResult)
 	{
 		std::getline(cin, getInput);
+
+		if (getInput == "")
+			return -1;
+
 		validateResult = validateInput(getInput, g_type_int, max_length, 0);
 		if (!validateResult)
 		{
@@ -479,10 +486,16 @@ long long Menu::displayDialogGetEntryLongLong(std::string in_string, int max_len
 	bool validateResult = false;
 
 	std::string getInput;
+	
+	
 
 	while (!validateResult)
 	{
 		std::getline(cin, getInput);
+
+		if (getInput == "")
+			return -1;
+
 		validateResult = validateInput(getInput, g_type_longlong, max_length, 0);
 		if (!validateResult)
 		{
@@ -502,10 +515,14 @@ std::string Menu::displayDialogGetEntryString(std::string in_string, int max_len
 	bool validateResult = false;
 
 	std::string getInput;
-
+	
 	while (!validateResult)
 	{
 		std::getline(cin, getInput);
+
+		if (getInput == "")
+			return "";
+
 		validateResult = validateInput(getInput, g_type_string_any, max_length, 0);
 		if (!validateResult)
 		{
@@ -530,6 +547,10 @@ char Menu::displayDialogGetEntryChar(std::string in_string)
 	{
 		std::getline(cin, getInput);
 		validateResult = validateInput(getInput, g_type_char_any, 1, 0);
+
+		if (in_string == "")
+			return 0;
+		
 		if (!validateResult)
 		{
 			setErrorMessage("Error:  Your input could not be validated.  Please try again.");
