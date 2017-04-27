@@ -259,3 +259,80 @@ bool addCoupon(int couponID, int couponDiscount)
 
 
 
+
+// *********************untested******************************
+// caution: use with the assumption that an item existence check has
+// already been done
+bool checkIfCoupled(int item_one_index, int item_two_index)
+{
+	if (warehouse_table[item_one_index].coupled_item_number == warehouse_table[item_two_index].item_number
+		&& warehouse_table[item_two_index].coupled_item_number == warehouse_table[item_one_index].item_number)
+	{
+		Plog.logInfo("checkCoupledItems", "Items are coupled");
+		return true;
+	}
+	return false; 
+}
+
+bool coupleItems(int item_one, int item_two)
+{
+	int itemOneIndex = findWarehouseItem(item_one);
+	int itemTwoIndex = findWarehouseItem(item_two);
+	bool isCoupled;
+
+	if (itemOneIndex == -1 || itemTwoIndex == -1)
+	{
+		Plog.logError("coupleItems", "Failed to find item at warehouse");
+		return false;
+	}
+
+	isCoupled = checkIfCoupled(itemOneIndex, itemTwoIndex); // check if items are coupled
+
+	if (isCoupled) // if items are already coupled together
+	{
+		Plog.logWarn("coupleItems", "Items are already coupled together"); 
+		return true;
+	}
+	else if (!isCoupled) // if items are not coupled together
+	{
+		// potential problem would be having multiple items coupled to one....over come this by requiering to uncouple first
+		if (warehouse_table[itemOneIndex].coupled_item_number == -1 && warehouse_table[itemTwoIndex].coupled_item_number == -1)  // if either item has a diff coupled item, disallow coupling together
+		{
+			warehouse_table[itemOneIndex].coupled_item_number = warehouse_table[itemTwoIndex].item_number;
+			warehouse_table[itemTwoIndex].coupled_item_number = warehouse_table[itemOneIndex].item_number;
+			Plog.logInfo("coupleItems", "Item have been coupled");
+		}
+		else
+		{
+			Plog.logWarn("coupleItems", "An item already coupled with something else: item one uncouple and try again." );
+		}
+	}
+	return true;
+}
+
+bool uncoupleItems(int item_one, int item_two)
+{
+	int itemOneIndex = findWarehouseItem(item_one);
+	int itemTwoIndex = findWarehouseItem(item_two);
+	bool isCoupled;
+
+	if (itemOneIndex == -1 == itemTwoIndex == 1)
+	{
+		Plog.logError("coupleItems", "Failed to find at warehouse");
+		return false;
+	}
+
+	isCoupled = checkIfCoupled(itemOneIndex, itemTwoIndex); // check if items are coupled
+
+	if (!isCoupled) // if items are not already coupled together
+	{
+		Plog.logWarn("coupleItems", "Items are not coupled together"); 
+	}
+	else if (isCoupled) // if items are coupled together
+	{
+		warehouse_table[itemOneIndex].coupled_item_number = -1; // set back to default
+		warehouse_table[itemTwoIndex].coupled_item_number = -1; // set back to default
+		Plog.logInfo("coupledItems", "Item have been uncoupled");
+	}
+	return true;
+}
