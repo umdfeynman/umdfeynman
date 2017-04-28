@@ -84,6 +84,7 @@ public:
 	std::vector<int> transaction_item_number;
 	std::vector<long long> transaction_item_quantity;
 	std::vector<double> transaction_item_price;  // Item price after individual item discount 
+	std::vector<int> transaction_item_refill_date; // Date on/after which refills are available
 };
 
 class Add_Delete_Store_Event

@@ -24,5 +24,6 @@ extern int currentCouponIndex;
 extern std::vector<int> currentItemList; // Item indices in warehouse_table
 extern int currentItemListSize; // Size of currentItemList
 extern Transaction pendingTransaction;
+extern double grandTotal;
 
 #endif

@@ -8,6 +8,7 @@ int findWarehouseItem(int item_number);
 int findStoreItem(int item_number, int store_number);
 int findCustomer(int account_number);
 bool setCurrentCustomerNumber(int account_number);
+bool setCurrentCoupon(int coupon_number);
 bool setCurrentCashier(int cashier_number);
 bool setCurrentStore(int store_number);
 bool setCurrentItemByNumber(int item_number);
@@ -44,4 +45,9 @@ int generateAccountNumber();
 void createAccount();
 void lookupAccountByNameAddress();
 void deleteItemFromOrder();
+void addCoupledItem(int item_number);
+void checkRefills();
+bool submitOrder();
+void printPrescriptionLabels();
+int generateOrderNumber();
 #endif

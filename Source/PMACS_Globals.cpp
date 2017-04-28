@@ -45,3 +45,4 @@ Date systemDate;
 std::vector<int> currentItemList; // Item indices in warehouse_table
 int currentItemListSize = 0; // Size of currentItemList
 Transaction pendingTransaction;
+extern double grandTotal = 0.0;

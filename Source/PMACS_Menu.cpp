@@ -524,7 +524,7 @@ void Menu::displayMenuNoReturn(bool useOrderEntryMenu)
 				"TotalDisc $" << std::setprecision(2) << couponDiscount << "\n";
 		}
 
-		double grandTotal = subTotal - couponDiscount;
+		grandTotal = subTotal - couponDiscount;
 
 		std::cout << std::right << std::setw(80) << "GRAND TOTAL $" << std::setprecision(2) << grandTotal << "\n";
 
@@ -885,6 +885,10 @@ void displayTransactionMenu()
 	transactionMenu.addMenuItem('S', "Submit");
 	transactionMenu.addMenuItem('s', "Submit");
 
+	checkRefills();
+
+
+	
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
 	while (selection != 'X')
@@ -906,10 +910,10 @@ void displayTransactionMenu()
 			deleteItemFromOrder();
 			break;
 		case 'S':
-			//submitOrder();
+			submitOrder();
 			break;
 		case 's':
-			//submitOrder();
+			submitOrder();
 			break;
 		case 'X':
 			return;

@@ -60,6 +60,16 @@ int findCustomer(int account_number)
 	return -1;
 }
 
+int findCoupon(int coupon_number)
+{
+	for (int i = 0; i < coupon_table.size(); i++)
+	{
+		if (coupon_table[i].coupon_number == coupon_number)
+			return i;
+	}
+	return -1;
+}
+
 bool setCurrentCustomerNumber(int account_number)
 {
 	Menu temp;
@@ -68,7 +78,6 @@ bool setCurrentCustomerNumber(int account_number)
 	int findResult = findCustomer(account_number);
 	if (findResult == -1)
 	{
-		temp.displayDialogNoReturn("Failed to select customer, account not found");
 		return false;
 	}
 
@@ -77,6 +86,23 @@ bool setCurrentCustomerNumber(int account_number)
 
 	return true;
 }
+
+bool setCurrentCoupon(int coupon_number)
+{
+	Menu temp;
+	temp.setMenuName("setCurrentCoupon");
+
+	int findResult = findCoupon(coupon_number);
+	if (findResult == -1)
+	{
+		return false;
+	}
+
+	currentCouponIndex = findResult;
+
+	return true;
+}
+
 
 bool setCurrentStore(int store_number)
 {
@@ -327,16 +353,15 @@ int getCoupledItemIndex(int in_item_number)
 {
 	
 	int itemIndex = findWarehouseItem(in_item_number);
-	
-	if (warehouse_table[itemIndex].coupled_item_number == -1)
-		return -1;
-	
 	if (itemIndex == -1)
 	{
 		Plog.logError("getCoupledItem", "Failed to find item at warehouse");
 		return -1;
-	}
-
+	}	
+	
+	if (warehouse_table[itemIndex].coupled_item_number == -1)
+		return -1;	
+	
 	for (int i = 0; i < warehouse_table.size(); i++)
 	{
 		if (warehouse_table[i].coupled_item_number == in_item_number)
@@ -1076,7 +1101,17 @@ void lookupAccountByNameAddress()
 void addItemToOrder()
 {
 	Menu temp;
-	temp.setMenuName("addItemToOrderByNumber");
+	temp.setMenuName("addItemToOrder");
+
+	int numOrderItems = 0;
+	for (int i = 0; i < pendingTransaction.transaction_item_number.size(); i++)
+		numOrderItems++;
+
+	if (numOrderItems >= 5)
+	{
+		temp.displayDialogNoReturn("Error - order already has 5 items");
+		return;
+	}
 
 	int itemNumber = temp.displayDialogGetEntryInt("Please enter the item number to add (9 digits):", 9);
 	if (itemNumber == -1)
@@ -1111,6 +1146,9 @@ void addItemToOrder()
 			pendingTransaction.transaction_item_quantity.push_back(desiredQuantity);
 			//add price
 			pendingTransaction.transaction_item_price.push_back(warehouse_table[warehouseIndex].price);
+						
+			addCoupledItem(itemNumber);
+
 			return;
 		}
 		else
@@ -1120,6 +1158,205 @@ void addItemToOrder()
 		}
 	}
 }
+
+void addCoupledItem(int item_number)
+{
+	Menu temp;
+	temp.setMenuName("addCoupledItem");
+
+	// Check to see if coupled item exists
+	int coupledResult = getCoupledItemIndex(item_number);
+	if (coupledResult == -1)
+		return;
+		
+	char addCoupledResponse = temp.displayDialogGetEntryChar("Coupled item [" + std::to_string(warehouse_table[coupledResult].item_number) + "] + NAME [" + warehouse_table[coupledResult].item_name + "] DOSAGE [" + warehouse_table[coupledResult].item_dosage + "] exists, add to order (Y/N)?");
+	if (addCoupledResponse != 'Y' || addCoupledResponse != 'y')
+		return;
+
+	int numOrderItems = 0;
+	for (int i = 0; i < pendingTransaction.transaction_item_number.size(); i++)
+		numOrderItems++;
+
+	if (numOrderItems >= 5)
+	{
+		temp.displayDialogNoReturn("Error - order already has 5 items");
+		return;
+	}
+
+	int itemNumber = warehouse_table[coupledResult].item_number;
+	if (itemNumber == -1)
+		return;
+
+	int warehouseIndex = findWarehouseItem(itemNumber);
+	if (warehouseIndex == -1)
+	{
+		temp.displayDialogNoReturn("Error - no item with number " + std::to_string(itemNumber) + " exists");
+		return;
+	}
+
+	int storeIndex = findStoreItem(itemNumber, currentStoreNumber);
+	if (storeIndex == -1 || store_inventory_table[storeIndex].item_status == 'D')           //item not found or inactive
+	{
+		temp.displayDialogNoReturn("Error - no item with number " + std::to_string(itemNumber) + " exists at store " + std::to_string(currentStoreNumber));
+		return;
+	}
+	else if (store_inventory_table[storeIndex].item_status == 'A')          //item found at store && active
+	{
+		long long desiredQuantity = 0;
+		desiredQuantity = temp.displayDialogGetEntryLongLong("Please enter the quantity to add (10 digits):");
+		if (desiredQuantity == -1)
+			return;
+
+		if (desiredQuantity <= store_inventory_table[storeIndex].quantity)           //sufficient stock| add to transaction
+		{
+			//add item number
+			pendingTransaction.transaction_item_number.push_back(itemNumber);
+			//add quantity
+			store_inventory_table[storeIndex].quantity -= desiredQuantity;          //remove quantity from inventory
+			pendingTransaction.transaction_item_quantity.push_back(desiredQuantity);
+			//add price
+			pendingTransaction.transaction_item_price.push_back(warehouse_table[warehouseIndex].price);
+
+			return;
+		}
+		else
+		{
+			temp.displayDialogNoReturn("Error - insufficient stock of " + std::to_string(itemNumber) + " exists at store " + std::to_string(currentStoreNumber));
+			return;
+		}
+	}
+}
+
+void checkRefills()
+{
+	Menu temp;
+	temp.setMenuName("addCoupledItem");
+	
+	std::string refillItems;
+
+	for (int i = 0; i < customer_table[currentCustomerIndex].item_dates.size(); i++)
+	{
+		if (customer_table[currentCustomerIndex].item_dates[i] >= systemDate.DateCompareValue())
+		{
+			std::string temp_string = std::to_string(customer_table[currentCustomerIndex].cust_items[i]);
+			temp_string += '\n';
+			refillItems += temp_string;
+		}
+	}
+
+	temp.displayDialogNoReturn("The following items are eligible for refill:\n" + refillItems);	
+}
+
+bool submitOrder()
+{
+
+	Menu temp;
+	temp.setMenuName("submitOrder");
+
+	int numOrderItems = 0;
+	for (int i = 0; i < pendingTransaction.transaction_item_number.size(); i++)
+		numOrderItems++;
+
+	if (numOrderItems < 1)
+	{
+		temp.displayDialogNoReturn("Error - no items on order to submit");
+		return false;
+	}
+
+	int couponNumber = temp.displayDialogGetEntryInt("Please enter a coupon number (if customer has any, press Enter to skip) number to add (3 digits):", 3);
+	if (couponNumber != -1)
+	{
+		int couponIndex = findCoupon(couponNumber);
+		if (couponIndex == -1)
+		{
+			temp.displayDialogNoReturn("Error - no coupon with number " + std::to_string(couponNumber) + " exists");
+			return false;
+		}
+
+		setCurrentCoupon(couponNumber);
+	}
+
+	// Display whole thing, ask if they want to proceed
+
+	int verifyingCashier = temp.displayDialogGetEntryInt("Please have another cashier enter their cashier number to verify (4 digits):", 4);
+	if (verifyingCashier == currentCashierNumber)
+	{
+		temp.displayDialogNoReturn("Error - verifying cashier and originating cashier cannot be the same");
+		return false;
+	}
+
+	printPrescriptionLabels();
+
+	// Commit transactions
+	
+	// Check items exist at store
+	for (int i = 0; i < pendingTransaction.transaction_item_number.size(); i++)
+	{
+		int storeIndex = findStoreItem(pendingTransaction.transaction_item_number[i], currentStoreNumber);
+		if (storeIndex == -1)
+		{
+			temp.displayDialogNoReturn("Error - unable to find one of the items on the order at the store, bailing");
+			return false;
+		}
+	}
+
+	
+	for (int i = 0; i < pendingTransaction.transaction_item_number.size(); i++)
+	{
+		int storeIndex = findStoreItem(pendingTransaction.transaction_item_number[i], currentStoreNumber);
+	
+		// subtract store inventory
+		store_inventory_table[storeIndex].quantity -= pendingTransaction.transaction_item_quantity[i];
+
+		// Add item to customer's history
+		customer_table[currentCustomerIndex].cust_items.push_back(pendingTransaction.transaction_item_number[i]);  // store item number
+		customer_table[currentCustomerIndex].item_dates.push_back(systemDate.ProjectDate(30)); // store today's date + 30 as int
+	}
+
+	pendingTransaction.originating_cashier_number = currentCashierNumber;
+	pendingTransaction.approving_cashier_number = verifyingCashier;
+	pendingTransaction.order_number = generateOrderNumber();
+	pendingTransaction.store_number = currentStoreNumber;
+	pendingTransaction.transaction_date = systemDate.GetDate();
+	pendingTransaction.account_number = customer_table[currentCustomerIndex].account_number;
+	pendingTransaction.discount_pct = coupon_table[currentCouponIndex].discount_pct;
+	pendingTransaction.grand_total = grandTotal;
+
+	transaction_table.push_back(pendingTransaction);
+
+	// Clear out pending transaction
+	Transaction emptyTransaction;
+	pendingTransaction = emptyTransaction;
+		
+	// Make sure all curr stuff cleared
+
+	return true;
+}
+
+// Assumes at least 1 item in pendingTransaction
+// Assumes all items added are valid
+void printPrescriptionLabels()
+{	
+	Menu temp;
+	temp.setMenuName("printPrescriptionLabels");	
+	
+	for (int i = 0; i < pendingTransaction.transaction_item_number.size(); i++)
+	{
+		int warehouseIndex = findWarehouseItem(pendingTransaction.transaction_item_number[i]);
+			
+		std::string temp_string = "Store#: " + std::to_string(currentStoreNumber) + "\n";
+		temp_string += "Item#: " + std::to_string(pendingTransaction.transaction_item_number[i]) + "\n";
+		temp_string += "Item Name: " + warehouse_table[warehouseIndex].item_name + "\n";
+		temp_string += "Item Dosage: " + warehouse_table[warehouseIndex].item_name + "\n";
+		temp_string += "Customer Account#: " + std::to_string(customer_table[currentCustomerIndex].account_number) + "\n";
+		temp_string += "Customer Name: " + customer_table[currentCustomerIndex].name + "\n";
+		temp_string += "Customer Address: " + customer_table[currentCustomerIndex].address + "\n";
+		temp_string += "Quantity" + std::to_string(pendingTransaction.transaction_item_quantity[i]) + "\n";
+
+		temp.displayDialogNoReturn("Prescription label:\n" + temp_string + "Press enter to continue\n");
+	}
+}
+
 
 //TEST
 void deleteItemFromOrder()
@@ -1143,7 +1380,7 @@ void deleteItemFromOrder()
 		
 	if (lineNumber < 1 || lineNumber > numItems)
 	{
-		temp.displayDialogNoReturn("Error - no item with number " + std::to_string(lineNumber) + " exists");
+		temp.displayDialogNoReturn("Error - no line number " + std::to_string(lineNumber) + " exists");
 		return;
 	}
 
@@ -1179,6 +1416,31 @@ int generateAccountNumber()
 
 	return newAccount;
 }
+
+int generateOrderNumber()
+{
+	int orderBase = 10000;
+
+	int highestOrder = 0;
+
+	for (int i = 0; i < transaction_table.size(); i++)
+	{
+		if (transaction_table[i].order_number > highestOrder)
+			highestOrder = transaction_table[i].order_number;
+	}
+
+	int newOrder = 0;
+	// All accounts use 10000000 as a base (10000000, 10000001, 10000002, etc)
+
+	// In case this is the first account
+	if (highestOrder < 10000)
+		newOrder = 10000;
+	else
+		newOrder = highestOrder + 1;
+
+	return newOrder;
+}
+
 //
 //void displayOrderEntry()
 //{
