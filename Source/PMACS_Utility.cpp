@@ -311,20 +311,20 @@ int checkCoupled(int item_one_index, int item_two_index)
 		Plog.logInfo("checkCoupledItems", "Both items already have coupling");
 		return 3;
 	}
-	
-	
+
+
 	return -1;
 }
 
 //TEST
 int getCoupledItemIndex(int in_item_number)
 {
-	
+
 	int itemIndex = findWarehouseItem(in_item_number);
-	
+
 	if (warehouse_table[itemIndex].coupled_item_number == -1)
 		return -1;
-	
+
 	if (itemIndex == -1)
 	{
 		Plog.logError("getCoupledItem", "Failed to find item at warehouse");
@@ -359,7 +359,7 @@ bool coupleItems(int item_one, int item_two)
 
 	if (isCoupled != -1) // if items are already coupled together
 	{
-		Plog.logWarn("coupleItems", "One or both items are already coupled"); 
+		Plog.logWarn("coupleItems", "One or both items are already coupled");
 		return false;
 	}
 	else if (isCoupled == -1) // if items are not coupled together
@@ -388,11 +388,11 @@ bool uncoupleItems(int item_one, int item_two)
 
 	if (isCoupled == -1) // if items are not already coupled together
 	{
-		Plog.logWarn("coupleItems", "Items are not coupled together"); 
+		Plog.logWarn("coupleItems", "Items are not coupled together");
 	}
 	// if items are coupled together
 	else if (warehouse_table[itemOneIndex].coupled_item_number == warehouse_table[itemTwoIndex].item_number &&
-		     warehouse_table[itemTwoIndex].coupled_item_number == warehouse_table[itemOneIndex].item_number)		
+		warehouse_table[itemTwoIndex].coupled_item_number == warehouse_table[itemOneIndex].item_number)
 	{
 		warehouse_table[itemOneIndex].coupled_item_number = -1; // set back to default
 		warehouse_table[itemTwoIndex].coupled_item_number = -1; // set back to default
@@ -475,12 +475,12 @@ void assignItemsToStore()
 	{
 		temp.displayDialogNoReturn("Error - no items selected");
 		return;
-	}	
+	}
 
 	int assignStoreNumber = temp.displayDialogGetEntryInt("Please enter the store number to assign the items to (5 digits): ", 5);
 
-		if (assignStoreNumber == -1)
-			return;
+	if (assignStoreNumber == -1)
+		return;
 
 	int findResult = findStore(assignStoreNumber);
 	if (findResult == -1)
@@ -617,7 +617,7 @@ void removeItemsFromAllStores()
 		for (int j = 0; j < store_data_table.size(); j++)
 		{
 			int findStoreItemResult = findStoreItem(warehouse_table[currentItemList[i]].item_number, store_data_table[i].store_number);
-		
+
 			if (findStoreItemResult == -1)
 			{
 				Plog.logInfo("removeItemsFromStore", "Item <ITEM> not found at store <STORE>");
@@ -727,7 +727,7 @@ void changeItemName()
 		temp.displayDialogNoReturn("Error - no item selected");
 		return;
 	}
-	
+
 	std::string newName = temp.displayDialogGetEntryString("Please enter the new name (20 chars): ", 20);
 
 	if (newName == "")
@@ -749,7 +749,7 @@ void changeItemDescription()
 		temp.displayDialogNoReturn("Error - no item selected");
 		return;
 	}
-	
+
 	std::string newDescription = temp.displayDialogGetEntryString("Please enter the new description (100 chars): ", 100);
 
 	if (newDescription == "")
@@ -858,12 +858,12 @@ void displayItemInfo()
 
 	itemInfo_File << "== STORE ==" << endl << "Item#\t" << "Item Name\t" << "Store#\t" << "Stauts\t" << "Qty." << std::endl;
 
-		/*
-		For each store_data item <store> in store_data table
-			For each store_inventory item <item> in <store>
-				If findItem == item_number
-					totalQuantity += <item>.quantity
-					Output appropriate fields from <item>*/
+	/*
+	For each store_data item <store> in store_data table
+	For each store_inventory item <item> in <store>
+	If findItem == item_number
+	totalQuantity += <item>.quantity
+	Output appropriate fields from <item>*/
 	long long overallItemQuantity = 0;
 
 	for (int i = 0; i < currentItemList.size(); i++)
@@ -878,8 +878,8 @@ void displayItemInfo()
 				{
 					overallItemQuantity += store_inventory_table[k].quantity;
 					itemInfo_File << store_inventory_table[k].item_number << "\t" << warehouse_table[currentItemList[i]].item_name << "\t" << store_inventory_table[k].store_number << "\t" <<
-						store_inventory_table[currentItemList[i]].item_status << "\t" << store_inventory_table[currentItemList[i]].quantity << std::endl;				
-				}				
+						store_inventory_table[currentItemList[i]].item_status << "\t" << store_inventory_table[currentItemList[i]].quantity << std::endl;
+				}
 			}
 		}
 	}
@@ -936,7 +936,7 @@ void displayCurrentList()
 void updateItemDiscount()
 {
 	Menu temp;
-	
+
 	int itemNumber = temp.displayDialogGetEntryInt("Please enter the item number (9 digits): ", 9);
 
 	if (itemNumber == -1)
@@ -1132,7 +1132,7 @@ int generateAccountNumber()
 
 	int newAccount = 0;
 	// All accounts use 10000000 as a base (10000000, 10000001, 10000002, etc)
-	
+
 	// In case this is the first account
 	if (highestAccount < 10000000)
 		newAccount = 10000000;

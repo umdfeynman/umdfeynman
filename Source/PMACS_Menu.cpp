@@ -9,6 +9,7 @@
 #include "PMACS_Date.h"
 #include <iostream>
 #include <iomanip>
+#include "PMACS_Sales_Reports.h"
 
 void displayUtilityMenu()
 {
@@ -66,7 +67,7 @@ void displayStoreMenu()
 			break;
 		case '2':
 			// requestStoreInventory;
-			break;		
+			break;
 		case '0':
 			return;
 		default:
@@ -183,11 +184,31 @@ void displaySalesMenu()
 		switch (selection)
 		{
 		case '1':
-			// salesReportByStore
+		{
+			int store = RunReportByStoreCheck();
+			if (store != -1)
+			{
+				RunReportByStore(store_data_table[store].store_number);
+			}
+			else
+			{
+				salesMenu.displayDialogNoReturn("Store does not exist.");
+			}
 			break;
+		}
 		case '2':
-			// salesReportByItem
+		{
+			int item = RunReportByItemCheck();
+			if (item != -1)
+			{
+				RunReportByItem(warehouse_table[item].item_number);
+			}
+			else
+			{
+				salesMenu.displayDialogNoReturn("Item does not exist.");
+			}			
 			break;
+		}
 		case '3':
 			// coupleItem
 			break;
@@ -289,7 +310,7 @@ void Menu::displayHeader()
 {
 	system("cls");
 
-	std::cout << "==";	
+	std::cout << "==";
 
 	if (menuName == "")
 		std::cout << "";
@@ -308,7 +329,7 @@ void Menu::displayHeader()
 		std::cout << "NOT SET";
 	else
 		std::cout << currentStoreNumber;
-	
+
 	std::cout << std::endl;
 
 	std::cout << "Cashier Number: ";
@@ -345,14 +366,14 @@ void Menu::displayHeader()
 
 	std::cout << "Item Number: ";
 	if (currentItemListSize == 0)
-		std::cout << "NOT SET";
+	std::cout << "NOT SET";
 	else
-		std::cout << warehouse_table[currentItemIndex].item_number;*/
+	std::cout << warehouse_table[currentItemIndex].item_number;*/
 
 	std::cout << std::endl;
 
 	std::cout << std::endl << std::endl;
-	
+
 }
 
 void Menu::displayFooter()
@@ -395,9 +416,9 @@ void Menu::resetErrorMessage()
 void Menu::displayMenuNoReturn()
 {
 	displayHeader();
-	
+
 	std::cout << "== Please select from one of the following options: == \n";
-	
+
 	for (int i = 0; i < menuItemKey.size(); i++)
 	{
 		std::cout << "[" << menuItemKey[i] << "]   " << menuItemText[i] << std::endl;
@@ -417,7 +438,7 @@ char Menu::displayMenuGetSelection()
 
 	while (!validateResult || !foundKey)
 	{
-		
+
 		std::getline(cin, getInput);
 		validateResult = validateInput(getInput, g_type_char_any, 1, 1);
 		foundKey = findMenuItemKey(getInput[0]);
@@ -425,10 +446,10 @@ char Menu::displayMenuGetSelection()
 		{
 			setErrorMessage("Error:  You did not enter a valid option.  Please try again.");
 			displayMenuNoReturn();
-		}		
+		}
 
 	}
-	
+
 	resetErrorMessage();
 	return getInput[0];
 }
@@ -443,7 +464,7 @@ void Menu::displayDialogNoReturn(std::string in_string, int expected_type)
 		std::cout << " ============ Press Enter ============ \n";
 	else
 		std::cout << " ===================================== \n";
-	
+
 	displayFooter();
 
 	std::string dummy;
@@ -456,7 +477,7 @@ int Menu::displayDialogGetEntryInt(std::string in_string, int max_length)
 	displayDialogNoReturn(in_string, g_type_int);
 
 	bool validateResult = false;
-	
+
 
 	std::string getInput;
 
@@ -473,11 +494,12 @@ int Menu::displayDialogGetEntryInt(std::string in_string, int max_length)
 			setErrorMessage("Error:  Your input could not be validated.  Please try again.");
 			displayDialogNoReturn(in_string, g_type_int);
 		}
-	}	
+	}
 
 	resetErrorMessage();
 	return StringToInt(getInput);
 }
+
 
 double Menu::displayDialogGetEntryDouble(std::string in_string, int max_length)
 {
@@ -515,8 +537,8 @@ long long Menu::displayDialogGetEntryLongLong(std::string in_string, int max_len
 	bool validateResult = false;
 
 	std::string getInput;
-	
-	
+
+
 
 	while (!validateResult)
 	{
@@ -544,7 +566,7 @@ std::string Menu::displayDialogGetEntryString(std::string in_string, int max_len
 	bool validateResult = false;
 
 	std::string getInput;
-	
+
 	while (!validateResult)
 	{
 		std::getline(cin, getInput);
@@ -579,7 +601,7 @@ char Menu::displayDialogGetEntryChar(std::string in_string)
 
 		if (in_string == "")
 			return 0;
-		
+
 		if (!validateResult)
 		{
 			setErrorMessage("Error:  Your input could not be validated.  Please try again.");
@@ -681,11 +703,11 @@ void displayOrderEntryMenu()
 	// Please enter cashier number dialog
 
 	int cashierNumber = orderEntry.displayDialogGetEntryInt("Please enter your cashier number (4 digits):", 4);
-	
+
 	// Display menu:
-		// 1 - Search for customer account
-		// 2 - Create customer account
-		// 3 - Begin Order Entry
+	// 1 - Search for customer account
+	// 2 - Create customer account
+	// 3 - Begin Order Entry
 
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
@@ -718,41 +740,41 @@ void displayOrderEntryMenu()
 	// Select: A to add, D to delete, X to exit, S to submit
 
 	// Check to see if customer has refills
-		// If yes, does customer want refills added to order?
-			// If yes, add refills to order
+	// If yes, does customer want refills added to order?
+	// If yes, add refills to order
 
 	// A- Attempts to add item to order
-		// Are there already 5 items?
-		// Does item exist
-		// How many?
-		// Is there sufficient stock at store?
-		// Does item have coupled items
-			// If yes, does customer want to add?
-				// If yes
-					// are there already 5 items?					
-					// How many to add?
-					// Is there sufficient stock at store?
-					// Does item have discount
-		// Does item have discount
-		// 
-	
+	// Are there already 5 items?
+	// Does item exist
+	// How many?
+	// Is there sufficient stock at store?
+	// Does item have coupled items
+	// If yes, does customer want to add?
+	// If yes
+	// are there already 5 items?					
+	// How many to add?
+	// Is there sufficient stock at store?
+	// Does item have discount
+	// Does item have discount
+	// 
+
 	// D- Remove item from order
-		// Does line number exist?
+	// Does line number exist?
 	// X Exits
 	// S
-		// Does customer have any coupons?
-			// If coupon exists, apply
-		// Update grand total & display final quantities
-		// Ask if cashier wants to proceed with finalization
-		// If yes, display dialog requiring cashier number different from current cashier#
-		// If number is different, proceed
-		// Display Prescription Labels for each transaction item
-			// Store#, Item#, Item Name, Dosage, Customer Account#, Customer Name, Customer Address, Quantity
-		// For each transaction item
-			// Subtract that many items from that item at that store in inv table
-			// Add the item to the transaction table
+	// Does customer have any coupons?
+	// If coupon exists, apply
+	// Update grand total & display final quantities
+	// Ask if cashier wants to proceed with finalization
+	// If yes, display dialog requiring cashier number different from current cashier#
+	// If number is different, proceed
+	// Display Prescription Labels for each transaction item
+	// Store#, Item#, Item Name, Dosage, Customer Account#, Customer Name, Customer Address, Quantity
+	// For each transaction item
+	// Subtract that many items from that item at that store in inv table
+	// Add the item to the transaction table
 
-			
-		
+
+
 
 }
