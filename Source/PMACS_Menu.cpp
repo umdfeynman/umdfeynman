@@ -7,6 +7,7 @@
 #include "PMACS_Input.h"
 #include "PMACS_Batch.h"
 #include "PMACS_Date.h"
+#include "PMACS_Sales_Reports.h"
 #include <iostream>
 #include <iomanip>
 
@@ -155,6 +156,55 @@ void selectItem()
 
 }
 
+//void displaySalesMenu()
+//{
+//	Menu salesMenu;
+//	salesMenu.setMenuName("Sales Management Menu");
+//	salesMenu.addMenuItem('1', "Sales Report by Store");
+//	salesMenu.addMenuItem('2', "Sales Report by Item");
+//	salesMenu.addMenuItem('3', "Couple Items");
+//	salesMenu.addMenuItem('4', "Uncouple Items");
+//	salesMenu.addMenuItem('5', "Add Coupon");
+//	salesMenu.addMenuItem('6', "Delete Coupon");
+//	salesMenu.addMenuItem('7', "Update Item Discount");
+//	salesMenu.addMenuItem('0', "Exit Sales Management Menu");
+//	char selection = 0; // 0 as in NULL not '0' as in ascii zero
+//
+//	while (selection != '0')
+//	{
+//		selection = salesMenu.displayMenuGetSelection();
+//
+//		switch (selection)
+//		{
+//		case '1':
+//			// salesReportByStore
+//			break;
+//		case '2':
+//			// salesReportByItem
+//			break;
+//		case '3':
+//			// coupleItem
+//			break;
+//		case '4':
+//			// uncoupleItem
+//			break;
+//		case '5':
+//			// addCoupon
+//			break;
+//		case '6':
+//			// deleteCoupon
+//			break;
+//		case '7':
+//			// updateItemDiscount
+//			break;
+//		case '0':
+//			return;
+//		default:
+//			break;
+//		}
+//	}
+//}
+
 void displaySalesMenu()
 {
 	Menu salesMenu;
@@ -176,11 +226,31 @@ void displaySalesMenu()
 		switch (selection)
 		{
 		case '1':
-			// salesReportByStore
+		{
+			int store = RunReportByStoreCheck();
+			if (store != -1)
+			{
+				RunReportByStore(store_data_table[store].store_number);
+			}
+			else
+			{
+				salesMenu.displayDialogNoReturn("Store does not exist.");
+			}
 			break;
+		}
 		case '2':
-			// salesReportByItem
+		{
+			int item = RunReportByItemCheck();
+			if (item != -1)
+			{
+				RunReportByItem(warehouse_table[item].item_number);
+			}
+			else
+			{
+				salesMenu.displayDialogNoReturn("Item does not exist.");
+			}
 			break;
+		}
 		case '3':
 			// coupleItem
 			break;
