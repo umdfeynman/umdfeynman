@@ -16,7 +16,7 @@ std::vector<int> getStoreItemList(int item_number);
 void setSystemDate(std::string in_string);
 int findCustomerByNameAddress(std::string customer_name, std::string customer_address);
 int findWarehouseItemByItemName(std::string item_name);
-bool checkCoupled(int item_one_index, int item_two_index);
+int checkCoupled(int item_one_index, int item_two_index);
 bool uncoupleItems(int item_one, int item_two);
 bool coupleItems(int item_one, int item_two);
 ////////////////////////
@@ -39,5 +39,7 @@ void changeBasePrice();
 int findWarehouseItemByItemName(std::string item_name);
 void displayItemInfo();
 void displayCurrentList();
-
+void updateItemDiscount();
+int generateAccountNumber();
+int createAccount();
 #endif

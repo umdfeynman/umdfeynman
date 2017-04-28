@@ -43,3 +43,4 @@ int currentItemIndex = -1;
 Date systemDate;
 std::vector<int> currentItemList; // Item indices in warehouse_table
 int currentItemListSize = 0; // Size of currentItemList
+Transaction pendingTransaction;

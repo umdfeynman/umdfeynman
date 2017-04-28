@@ -654,3 +654,105 @@ void displayUpdateInventoryMenu()
 		}
 	}
 }
+
+void displayOrderEntryMenu()
+{
+	Menu orderEntry;
+	orderEntry.setMenuName("Order Entry Menu");
+	orderEntry.addMenuItem('1', "Search for Customer Account");
+	orderEntry.addMenuItem('2', "Create Customer Account");
+	orderEntry.addMenuItem('3', "New Transaction");
+	orderEntry.addMenuItem('0', "Exit Order Entry Menu");
+
+	// Please enter store number
+	// Check to see if it exists
+
+	int storeNumber = orderEntry.displayDialogGetEntryInt("Please enter your store number (5 digits): ", 5);
+	if (storeNumber == -1)
+		return;
+
+	int findStoreNumber = findStore(storeNumber);
+	if (findStoreNumber == -1)
+	{
+		orderEntry.displayDialogNoReturn("Error - the entered store was not found");
+		return;
+	}
+
+	// Please enter cashier number dialog
+
+	int cashierNumber = orderEntry.displayDialogGetEntryInt("Please enter your cashier number (4 digits):", 4);
+	
+	// Display menu:
+		// 1 - Search for customer account
+		// 2 - Create customer account
+		// 3 - Begin Order Entry
+
+	char selection = 0; // 0 as in NULL not '0' as in ascii zero
+
+	while (selection != '0')
+	{
+		selection = orderEntry.displayMenuGetSelection();
+
+		switch (selection)
+		{
+		case '1':
+			// Search for customer account
+			break;
+		case '2':
+			createAccount;
+			break;
+		case '3':
+			// New Transaction
+			break;
+		case '0':
+			return;
+		default:
+			break;
+		}
+	}
+
+
+	// New transaction:
+	// Header
+	// (no items) or <1-5> - Item# Qty ItemName ItemDose Qty Price DiscPrice
+	// Select: A to add, D to delete, X to exit, S to submit
+
+	// Check to see if customer has refills
+		// If yes, does customer want refills added to order?
+			// If yes, add refills to order
+
+	// A- Attempts to add item to order
+		// Are there already 5 items?
+		// Does item exist
+		// How many?
+		// Is there sufficient stock at store?
+		// Does item have coupled items
+			// If yes, does customer want to add?
+				// If yes
+					// are there already 5 items?					
+					// How many to add?
+					// Is there sufficient stock at store?
+					// Does item have discount
+		// Does item have discount
+		// 
+	
+	// D- Remove item from order
+		// Does line number exist?
+	// X Exits
+	// S
+		// Does customer have any coupons?
+			// If coupon exists, apply
+		// Update grand total & display final quantities
+		// Ask if cashier wants to proceed with finalization
+		// If yes, display dialog requiring cashier number different from current cashier#
+		// If number is different, proceed
+		// Display Prescription Labels for each transaction item
+			// Store#, Item#, Item Name, Dosage, Customer Account#, Customer Name, Customer Address, Quantity
+		// For each transaction item
+			// Subtract that many items from that item at that store in inv table
+			// Add the item to the transaction table
+
+			
+		
+
+}

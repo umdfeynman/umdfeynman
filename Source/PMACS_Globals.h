@@ -22,6 +22,6 @@ extern int currentStoreIndex;
 extern int currentCashierNumber;
 extern std::vector<int> currentItemList; // Item indices in warehouse_table
 extern int currentItemListSize; // Size of currentItemList
-
+extern Transaction pendingTransaction;
 
 #endif

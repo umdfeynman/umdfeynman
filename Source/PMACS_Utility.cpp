@@ -2,6 +2,7 @@
 #include "PMACS_Menu.h"
 #include "PMACS_String.h"
 #include "PMACS_File.h"
+#include "PMACS_Utility.h"
 
 int getSequenceNumber(int seq_index)
 {
@@ -287,7 +288,6 @@ bool addCoupon(int couponID, int couponDiscount)
 	}
 	return false;  //else failed to make coupon
 }
-
 
 
 
@@ -932,3 +932,219 @@ void displayCurrentList()
 	}
 	currentItemList_File.close();
 }
+
+void updateItemDiscount()
+{
+	Menu temp;
+	
+	int itemNumber = temp.displayDialogGetEntryInt("Please enter the item number (9 digits): ", 9);
+
+	if (itemNumber == -1)
+		return;
+
+	int findResult = findWarehouseItem(itemNumber);
+	if (findResult == -1)
+	{
+		temp.displayDialogNoReturn("Error - no such item exists at the warehouse");
+		return;
+	}
+
+	int newDiscountPct = temp.displayDialogGetEntryInt("Please enter the new percentage (0-100): ", 3);
+	if (newDiscountPct == -1)
+		return;
+
+	if (newDiscountPct > 100 || newDiscountPct < 0)
+	{
+		temp.displayDialogNoReturn("Error - invalid percentage entered");
+		return;
+	}
+
+	warehouse_table[findResult].item_discount_percent = newDiscountPct;
+}
+
+
+//give user entered ID
+//get index of account if exists, 
+int accountExistsByNumber(int accNumber)
+{
+	//Find account
+	for (int x = 0; x < customer_table.size(); x++)
+	{
+		if (customer_table[x].account_number == accNumber)
+		{
+			return x;       //return account index | true
+		}
+	}
+	return -1; // not found
+};
+
+//TEST
+//create account and return index. |-1 return to previous menu| 0 account not created/false
+int createAccount()
+{
+	Menu temp;
+	Customer newCust;
+	string name;
+	string address;
+	int accID = generateAccountNumber();
+	if (accID == -1)
+	{
+		return accID;
+	}
+	else if (accountExistsByNumber(accID) == -1)                     //accid is 0, no account found for that number -- make new
+	{
+		//assign account number
+		newCust.account_number = accID;
+		cout << "Enter customer information; 2 fields, or q to return to previous menu." << endl;
+		//assign name
+		cout << "Name: ";
+		getline(cin, name);
+		newCust.name = name;
+		//assign address
+		cout << "Address: ";
+		getline(cin, address);
+		newCust.address = address;
+		//add to table
+		customer_table.push_back(newCust);
+		return (customer_table.size() - 1);
+	}
+	else                    //account already exists
+	{
+		cout << "Cannot create new account. Account for that number exists." << endl;
+		return 0;
+	}
+};
+
+//TEST
+//returns true when item has been added
+//bool addItemToOrderByName(string itemName)
+//{
+//	int itemNumber;
+//	//find item at warehouse to get details
+//	int ind = findWarehouseItemByItemName(itemName);
+//	if (ind != -1 && warehouse_table[ind].item_status == 'A')       //found and active
+//	{
+//		itemNumber = warehouse_table[ind].item_number;              //get number
+//	}
+//	//look for item number at store
+//	if (addItemToOrderByNumber(itemNumber))
+//	{
+//		return true;
+//	}
+//	return false;
+//};
+
+//TEST
+//number must be validated before passing
+bool addItemToOrderByNumber(int itemNumber)
+{
+	int storeIndex = findStoreItem(itemNumber, currentStoreNumber);
+	if (storeIndex == -1 || store_inventory_table[storeIndex].item_status == 'D')           //item not found or inactive
+	{
+		cout << "Cannot add item. Does not exist within the store." << endl;
+		return false;
+	}
+	else if (store_inventory_table[storeIndex].item_status == 'A')          //item found at store && active
+	{
+		int warehouseIndex = findWarehouseItem(itemNumber);
+		string quantity;
+		long long numQuantity;
+		cout << "Quantity: ";
+		cin.ignore();
+		getline(cin, quantity);
+		if (quantity.length() < g_storeupdate_txt_requested_quantity_len)        //correct length
+		{
+			if (validateAllNumbers)                                             //if all numbers
+			{
+				numQuantity = stoll(quantity);                                  //convert
+			}
+		}
+		if (numQuantity <= store_inventory_table[storeIndex].quantity)           //sufficient stock| add to transaction
+		{
+			//add item number
+			pendingTransaction.transaction_item_number.push_back(itemNumber);
+			//add quantity
+			store_inventory_table[storeIndex].quantity -= numQuantity;          //remove quantity from inventory
+			pendingTransaction.transaction_item_quantity.push_back(numQuantity);
+			//add price
+			pendingTransaction.transaction_item_price.push_back(warehouse_table[warehouseIndex].price);
+			return true;
+		}
+		else
+		{
+			cout << "Insufficient stock to add to order." << endl;
+			return false;
+		}
+	}
+};
+
+//TEST
+//bool deleteItemFromOrderbyName(string itemName)
+//{
+//	int itemNumber;
+//	//search for item number
+//	//find item at warehouse to get details
+//	int ind = findWarehouseItemByItemName(itemName);
+//	if (ind != -1 && warehouse_table[ind].item_status == 'A')           //found and active
+//	{
+//		itemNumber = warehouse_table[ind].item_number;              //get number
+//	}
+//	else
+//	{
+//		return false;
+//	}
+//	//look for item number at store
+//	if (deleteItemFromOrderbyNumber(itemNumber))
+//	{
+//		return true;
+//	}
+//	return false;
+//};
+
+//TEST
+//assumes number has been validated before passing inside
+bool deleteItemFromOrderbyNumber(int itemNumber)
+{
+	for (int x = 0; x < pendingTransaction.transaction_item_number.size(); x++)
+	{
+		if (pendingTransaction.transaction_item_number[x] == itemNumber)
+		{
+			pendingTransaction.transaction_item_number.erase(pendingTransaction.transaction_item_number.begin() + (x));         //hopefully works
+			pendingTransaction.transaction_item_price.erase(pendingTransaction.transaction_item_price.begin() + (x));           //hopefully works
+			pendingTransaction.transaction_item_quantity.erase(pendingTransaction.transaction_item_quantity.begin() + (x));      //hopefully works
+			return true;
+		}
+	}
+	return false;
+};
+
+int generateAccountNumber()
+{
+	int accountBase = 10000000;
+
+	int highestAccount = 0;
+
+	for (int i = 0; i < customer_table.size(); i++)
+	{
+		if (customer_table[i].account_number > highestAccount)
+			highestAccount = customer_table[i].account_number;
+	}
+
+	int newAccount = 0;
+	// All accounts use 10000000 as a base (10000000, 10000001, 10000002, etc)
+	
+	// In case this is the first account
+	if (highestAccount < 10000000)
+		newAccount = 10000000;
+	else
+		newAccount = highestAccount + 1;
+
+	return newAccount;
+}
+//
+//void displayOrderEntry()
+//{
+//	Menu orderEntryMenu;
+//	orderEntryMenu.
+//		"Item# 123456789  "
+//}
