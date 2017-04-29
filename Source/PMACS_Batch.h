@@ -11,7 +11,8 @@ bool calculateAccuStock();
 
 /////////////////////////////
 void openAllStores();
-
-
-
+bool mergeReturnsAndOrders();
+bool vendorOrders();
+bool mergeAddStoreBatchReplenishOnlineInvRequests();
+bool batchReportGeneration();
 #endif

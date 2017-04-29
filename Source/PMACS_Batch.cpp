@@ -5,6 +5,7 @@
 #include "PMACS_File.h"
 #include "PMACS_Utility.h"
 #include <algorithm>
+#include <iomanip>
 
 bool runOfflineBatchProcess()
 {
@@ -24,6 +25,14 @@ bool runOfflineBatchProcess()
 	}
 
 	// Merge delete store and incoming vendor inventory
+	lastResult = mergeReturnsAndOrders();
+	if (!lastResult)
+	{
+		{
+			Plog.logError("runOfflineBatchProcess", "mergeReturnsAndOrders failed.  Bailing.");
+			return false;
+		}
+	}
 
 	lastResult = warehouseInventoryGeneration();
 	if (!lastResult)
@@ -34,7 +43,12 @@ bool runOfflineBatchProcess()
 	
 	// Batch replenishment for stores
 
-	// Merge files for store inventory generation
+	lastResult = mergeAddStoreBatchReplenishOnlineInvRequests();
+	if (!lastResult)
+	{
+		Plog.logError("runOfflineBatchProcess", "mergeAddStoreBatchReplenishOnlineInvRequests failed.  Bailing.");
+		return false;
+	}
 
 	lastResult = storeInventoryGeneration();
 	if (!lastResult)
@@ -43,10 +57,21 @@ bool runOfflineBatchProcess()
 		return false;
 	}
 
-	// Request inventory from vendor
+	lastResult = vendorOrders();
+	if (!lastResult)
+	{
+		Plog.logError("runOfflineBatchProcess", "vendorOrders failed.  Bailing.");
+		return false;
+	}
 
 	// Sales reporting
-	
+	lastResult = batchReportGeneration();
+	if (!lastResult)
+	{
+		Plog.logError("runOfflineBatchProcess", "batchReportGeneration failed.  Bailing.");
+		return false;
+	}
+
 	lastResult = calculateAccuStock();
 	if (!lastResult)
 	{
@@ -1337,5 +1362,764 @@ bool calculateAccuStock()
 
 	return true;
 }
+bool vendorOrders()
+{
+
+	//create file
+	ofstream vendorRequestFile;
+	createFile("vendorrequest.txt", vendorRequestFile);
+
+	//insert header
+	insertHeader(vendorRequestFile, g_vendorrequest);
 
 
+
+	fstream output;
+	output.open("vendororderreport.txt", ios::out);
+
+	struct DeliveryTimes
+	{
+		string date;
+		vector<WarehouseItemData> items;
+	};
+
+	struct Vendor
+	{
+		int vendorNumber;
+		vector<DeliveryTimes> dates;
+	};
+
+	vector<Vendor> vendors;
+	int itemCount = 0;
+	for (int x = 0; x < warehouse_table.size(); x++)															//fo all duh itemz
+	{
+		bool newV = true;
+		bool newD = true;
+		int vendIndex = -1;
+		int dateIndex = -1;
+		if (warehouse_table[x].quantity <= warehouse_table[x].reorder_level)									//needs a reorder
+		{
+			//find vendor
+			for (int v = 0; v < vendors.size(); v++)
+			{
+				if (warehouse_table[x].vendor_number == vendors[v].vendorNumber)								//if found, save index, push into, and set new to false
+				{
+					newV = false;
+					vendIndex = v;
+				}
+			}
+
+			//create new vender if necessary
+			if (newV)
+			{
+				Vendor newVendor;
+				newVendor.vendorNumber = warehouse_table[x].vendor_number;
+				vendors.push_back(newVendor);
+				vendIndex = vendors.size() - 1;
+			}
+
+			//find date
+			for (int d = 0; d < vendors[vendIndex].dates.size(); d++)
+			{
+				if (warehouse_table[x].expected_delivery_time == vendors[vendIndex].dates[d].date)								//if found, save index and set new to false
+				{
+					newD = false;
+					dateIndex = d;
+				}
+			}
+
+			//create new date if necessary
+			if (newD)
+			{
+				DeliveryTimes newDate;
+				newDate.date = warehouse_table[x].expected_delivery_time;
+				vendors[vendIndex].dates.push_back(newDate);
+				dateIndex = vendors[vendIndex].dates.size() - 1;
+			}
+
+			//add item
+			vendors[vendIndex].dates[dateIndex].items.push_back(warehouse_table[x]);
+			itemCount++;
+		}
+	}
+
+	///////////////////////////////////report & order
+	output << "ORDER REPORT:  ITEM NUMBER | ITEM NAME | ORDER QUANTITY" << endl << endl;
+	for (int a = 0; a < vendors.size(); a++)
+	{
+		//vendor
+		output << "Vender number: " << vendors[a].vendorNumber << endl;
+
+		for (int b = 0; b < vendors[a].dates.size(); b++)
+		{
+			//date
+			output << "   Expected delivery date: " << vendors[a].dates[b].date << endl;
+
+			//items
+			for (int c = 0; c < vendors[a].dates[b].items.size(); c++)
+			{
+				//order printing
+				vendorRequestFile << StringIntZeroFill(g_vendororder_txt_vendor_number_len, vendors[a].dates[b].items[c].vendor_number);
+				vendorRequestFile << StringIntZeroFill(g_vendororder_txt_item_number_len, vendors[a].dates[b].items[c].item_number);
+				vendorRequestFile << StringLongLongZeroFill(g_vendororder_txt_incoming_quantity_len, vendors[a].dates[b].items[c].reorder_quantity);
+				vendorRequestFile << endl;
+
+				//report printing
+				output << "		"
+					<< setw(15) << std::left << vendors[a].dates[b].items[c].item_number
+					<< setw(25) << std::left << vendors[a].dates[b].items[c].item_name
+					<< std::left << vendors[a].dates[b].items[c].reorder_quantity << endl;
+			}
+		}
+	}
+
+	//insert trailer
+	insertTrailer(vendorRequestFile, itemCount);
+
+	vendorRequestFile.close();
+	output.close();
+	return true;
+}
+
+//batch sales reports
+bool batchReportGeneration()
+{
+	ifstream reports;
+	//header / trailer checks for addstoreitems
+	if (openFile("reports.txt", reports))
+	{
+		Plog.logInfo("reports.txt", "File opened successfully.");
+	}
+	else
+	{
+		Plog.logWarn("reports.txt", "File does not exist or unable to read.");
+		return true;
+	}
+
+	if (!headerCheck(reports))
+	{
+		Plog.logError("reports.txt", "Header read failed.");
+		return false;
+	}
+
+	if (!sequenceCheck(reports, g_reports))
+	{
+		Plog.logError("reports.txt", "Sequence out of order.");
+		return false;
+	}
+
+	int trailerResult;
+	trailerResult = trailerCheck(reports, false);
+
+	if (trailerResult == -1)
+	{
+		Plog.logError("reports.txt", "Unable to locate trailer or trailer count mismatch");
+	}
+	if (trailerResult == 0)
+	{
+		Plog.logInfo("reports.txt", "Trailer count is 0");
+		return true;
+	}
+
+
+	ofstream report;
+	if (!createFile("reports.txt", report))
+	{
+		return false;
+	}
+	cout << "BATCH MASSE REPORT ON COMPANY INVENTORY" << endl;
+	cout << "DATE: " << systemDate.GetDate() << endl << endl;
+
+	vector<int> report_items;
+	int lineCounter = 1;
+	while (report.good() && !report.eof())
+	{
+		string item;
+		if (correctRecordLength(item, g_reports, lineCounter))
+			if (item[0] == 'I')
+			{
+				item.erase(0);
+				if (validateAllNumbers(item))
+				{
+					report_items.push_back(stoi(item));
+				}
+			}
+
+	}
+
+	Date transDate(transaction_table[0].transaction_date);
+	Date tempDate(transaction_table[transaction_table.size() - 1].transaction_date);
+	int compYear = transDate.GetYear();
+	int yearStop = tempDate.GetYear();
+	int compMonth = transDate.GetMonth();
+	long double subTotalCash = 0.00;
+	unsigned long long subTotalQuantity = 0;
+	long double grandTotalCash = 0.00;
+	unsigned long long grandTotalQuantity = 0;
+	long double massTotalCash = 0.00;
+	unsigned long long massTotalQuantity = 0;
+	bool firstFind = true;
+	bool newYear = false;
+	//for each year after first transaction until the last
+	for (int y = compYear; y <= yearStop; y++)
+	{
+		cout << compYear << endl;
+
+		//for every requested inventory item
+		for (int i = 0; i < report_items.size(); i++)
+		{
+			int wH = findWarehouseItem(report_items[i]);
+			bool printReport = false;
+			//for every transaction
+			for (int t = 0; t < transaction_table.size(); t++)
+			{
+				//for every transaction item
+				for (int ti = 0; ti < transaction_table[t].transaction_item_number.size(); ti++)
+				{
+					//if correct item
+					if (warehouse_table[wH].item_number == transaction_table[t].transaction_item_number[ti])
+					{
+						//and the correct year
+						tempDate.NewDate(transaction_table[t].transaction_date);
+						if (tempDate.GetYear() == compYear)
+						{
+							//if first instance of the item in report year
+							if (firstFind)
+							{
+								firstFind = false;
+								cout << warehouse_table[wH].item_number << " - " << warehouse_table[wH].item_name << endl;			//print item
+								compMonth = tempDate.GetMonth();
+								printReport = true;
+							}
+							if (compMonth != tempDate.GetMonth())		//new month
+							{
+								cout << setw(5) << " " << compMonth << endl;
+								cout << setw(10) << "Subtotals:        " << "Quantity: " << setw(25) << left << subTotalQuantity << "Value: $" << setprecision(2) << subTotalCash << endl;
+								printReport = false;
+								compMonth = tempDate.GetMonth();
+								//cout  <<setw(5) << " " << compMonth << endl;			//print new month
+								//add subtotals to grandtotals
+								grandTotalCash += subTotalCash;
+								grandTotalQuantity += subTotalQuantity;
+								//reset subtotals
+								subTotalCash = 0.00;
+								subTotalQuantity = 0;
+							}
+							else
+							{
+								//add values to subtotals;
+								subTotalCash += transaction_table[t].transaction_item_price[ti];
+								subTotalQuantity += transaction_table[t].transaction_item_quantity[ti];
+							}
+						}
+						else		//new year
+						{
+							break; //next item
+						}
+					}
+				}
+			}
+			if (printReport)
+			{
+				cout << setw(5) << " " << compMonth << endl;
+				cout << setw(10) << "Subtotals:        " << "Quantity: " << setw(25) << left << subTotalQuantity << "Value: $" << setprecision(2) << subTotalCash << endl;
+				//add subtotals to grandtotals
+				grandTotalCash += subTotalCash;
+				grandTotalQuantity += subTotalQuantity;
+				//reset subtotals
+				subTotalCash = 0.00;
+				subTotalQuantity = 0;
+			}
+			firstFind = true;
+		}
+		cout << setw(10) << "Grandtotals:        " << "Quantity: " << setw(25) << left << grandTotalQuantity << "Value: $" << setprecision(2) << grandTotalCash << endl;		//output subtotals
+		massTotalCash += grandTotalCash;
+		massTotalQuantity += grandTotalQuantity;
+		grandTotalCash = 0.00;
+		grandTotalQuantity = 0;
+		compYear++;
+	}
+	cout << setw(10) << "MassTotals:        " << "Quantity: " << setw(25) << left << grandTotalQuantity << "Value: $" << setprecision(2) << grandTotalCash << endl;		//output subtotals
+	return true;
+}
+
+bool mergeReturnsAndOrders()
+{
+	ifstream returnItemsFile;
+	ifstream vendorOrdersFile;
+
+	//header / trailer checks for return items
+	if (openFile("returnitems.txt", returnItemsFile))
+	{
+		Plog.logInfo("returnitems.txt", "File opened successfully.");
+	}
+	else
+	{
+		Plog.logWarn("returnitems.txt", "File does not exist or unable to read.");
+		return true;
+	}
+
+	if (!headerCheck(returnItemsFile))
+	{
+		Plog.logError("returnitems.txt", "Header read failed.");
+		return false;
+	}
+
+	if (!sequenceCheck(returnItemsFile, g_returnitems))
+	{
+		Plog.logError("returnitems.txt", "Sequence out of order.");
+		return false;
+	}
+
+	int trailerResult;
+	trailerResult = trailerCheck(returnItemsFile, false);
+
+	if (trailerResult == -1)
+	{
+		Plog.logError("returnitems.txt", "Unable to locate trailer or trailer count mismatch");
+	}
+	if (trailerResult == 0)
+	{
+		Plog.logInfo("returnitems.txt", "Trailer count is 0");
+		return true;
+	}
+
+
+
+
+	//header / trailer checks for vendor orders
+	if (openFile("vendororder.txt", vendorOrdersFile))
+	{
+		Plog.logInfo("vendororder.txt", "File opened successfully.");
+	}
+	else
+	{
+		Plog.logWarn("vendororder.txt", "File does not exist or unable to read.");
+		return true;
+	}
+
+	if (!headerCheck(vendorOrdersFile))
+	{
+		Plog.logError("vendororder.txt", "Header read failed.");
+		return false;
+	}
+
+	if (!sequenceCheck(vendorOrdersFile, g_vendororder))
+	{
+		Plog.logError("vendororder.txt", "Sequence out of order.");
+		return false;
+	}
+
+
+	trailerResult = trailerCheck(vendorOrdersFile, false);
+
+	if (trailerResult == -1)
+	{
+		Plog.logError("vendororder.txt", "Unable to locate trailer or trailer count mismatch");
+	}
+	if (trailerResult == 0)
+	{
+		Plog.logInfo("vendororder.txt", "Trailer count is 0");
+		return true;
+	}
+
+
+	positionFileForRecords(returnItemsFile);
+	positionFileForRecords(vendorOrdersFile);
+
+	vector<string> fusion;
+	int itemCounter = 0;
+	int lineCount = 1;
+
+
+	//read Return Items
+	while (returnItemsFile.good() && !returnItemsFile.eof())
+	{
+		string record;
+		getline(returnItemsFile, record);
+
+		if (correctRecordLength(record, g_vendororder, lineCount))
+		{
+			fusion.push_back(record);
+			itemCounter++;
+		}
+	}
+
+	//read Vendor shipments
+	while (vendorOrdersFile.good() && !vendorOrdersFile.eof())
+	{
+		string record;
+		getline(vendorOrdersFile, record);
+
+		if (correctRecordLength(record, g_vendororder, lineCount))
+		{
+			fusion.push_back(record);
+			itemCounter++;
+		}
+	}
+
+	//create file for merge
+	ofstream outputFile;
+	createFile("itemreceived.txt", outputFile);
+
+	for (int x = 0; x < fusion.size(); x++)
+	{
+		outputFile << fusion[x] << endl;
+	}
+}
+
+bool mergeAddStoreBatchReplenishOnlineInvRequests()
+{
+	int lineCount = 0;
+	int itemcount = 0;
+
+	ifstream addStoreItemsFile;
+	//header / trailer checks for addstoreitems
+	if (openFile("addstoreitems.txt", addStoreItemsFile))
+	{
+		Plog.logInfo("addstoreitems.txt", "File opened successfully.");
+	}
+	else
+	{
+		Plog.logWarn("addstoreitems.txt", "File does not exist or unable to read.");
+		return true;
+	}
+
+	if (!headerCheck(addStoreItemsFile))
+	{
+		Plog.logError("addstoreitems.txt", "Header read failed.");
+		return false;
+	}
+
+	if (!sequenceCheck(addStoreItemsFile, g_returnitems))
+	{
+		Plog.logError("addstoreitems.txt", "Sequence out of order.");
+		return false;
+	}
+
+	int trailerResult;
+	trailerResult = trailerCheck(addStoreItemsFile, false);
+
+	if (trailerResult == -1)
+	{
+		Plog.logError("addstoreitems.txt", "Unable to locate trailer or trailer count mismatch");
+	}
+	if (trailerResult == 0)
+	{
+		Plog.logInfo("addstoreitems.txt", "Trailer count is 0");
+		return true;
+	}
+
+	ifstream leftoversFile;
+	//header / trailer checks for return items
+	if (openFile("leftovers.txt", leftoversFile))
+	{
+		Plog.logInfo("returnitems.txt", "File opened successfully.");
+	}
+	else
+	{
+		Plog.logWarn("leftovers.txt", "File does not exist or unable to read.");
+		return true;
+	}
+
+	if (!headerCheck(leftoversFile))
+	{
+		Plog.logError("leftovers.txt", "Header read failed.");
+		return false;
+	}
+
+	if (!sequenceCheck(leftoversFile, g_returnitems))
+	{
+		Plog.logError("leftovers.txt", "Sequence out of order.");
+		return false;
+	}
+
+
+	trailerResult = trailerCheck(leftoversFile, false);
+
+	if (trailerResult == -1)
+	{
+		Plog.logError("leftovers.txt", "Unable to locate trailer or trailer count mismatch");
+	}
+	if (trailerResult == 0)
+	{
+		Plog.logInfo("leftovers.txt", "Trailer count is 0");
+		return true;
+	}
+
+
+	ifstream onlineInvRequestFile;
+	//header / trailer checks for return items
+	if (openFile("onlineinvrequest.txt", onlineInvRequestFile))
+	{
+		Plog.logInfo("onlineinvrequest.txt", "File opened successfully.");
+	}
+	else
+	{
+		Plog.logWarn("onlineinvrequest.txt", "File does not exist or unable to read.");
+		return true;
+	}
+
+	if (!headerCheck(onlineInvRequestFile))
+	{
+		Plog.logError("onlineinvrequest.txt", "Header read failed.");
+		return false;
+	}
+
+	if (!sequenceCheck(onlineInvRequestFile, g_returnitems))
+	{
+		Plog.logError("onlineinvrequest.txt", "Sequence out of order.");
+		return false;
+	}
+
+	trailerResult = trailerCheck(onlineInvRequestFile, false);
+
+	if (trailerResult == -1)
+	{
+		Plog.logError("onlineinvrequest.txt", "Unable to locate trailer or trailer count mismatch");
+	}
+	if (trailerResult == 0)
+	{
+		Plog.logInfo("onlineinvrequest.txt", "Trailer count is 0");
+		return true;
+	}
+
+	ifstream batchReplenishFile;
+	//header / trailer checks for return items
+	if (openFile("batchreplenish.txt", batchReplenishFile))
+	{
+		Plog.logInfo("batchreplenish.txt", "File opened successfully.");
+	}
+	else
+	{
+		Plog.logWarn("batchreplenish.txt", "File does not exist or unable to read.");
+		return true;
+	}
+
+	if (!headerCheck(batchReplenishFile))
+	{
+		Plog.logError("batchreplenish.txt", "Header read failed.");
+		return false;
+	}
+
+	if (!sequenceCheck(batchReplenishFile, g_returnitems))
+	{
+		Plog.logError("batchreplenish.txt", "Sequence out of order.");
+		return false;
+	}
+
+
+	trailerResult = trailerCheck(batchReplenishFile, false);
+
+	if (trailerResult == -1)
+	{
+		Plog.logError("batchreplenish.txt", "Unable to locate trailer or trailer count mismatch");
+	}
+	if (trailerResult == 0)
+	{
+		Plog.logInfo("batchreplenish.txt", "Trailer count is 0");
+		return true;
+	}
+
+	//position file for reading
+	positionFileForRecords(batchReplenishFile);
+	positionFileForRecords(addStoreItemsFile);
+	positionFileForRecords(leftoversFile);
+	positionFileForRecords(onlineInvRequestFile);
+
+
+	vector<Merge_Add_Online_Batch_Event> Fusion;
+
+	//batch replenishment
+	while (batchReplenishFile.good() && !batchReplenishFile.eof())
+	{
+		string record;
+		getline(batchReplenishFile, record);
+
+		if (correctRecordLength(record, g_batchreplenish, lineCount))
+		{
+			//store ID check
+			if (0 > stoi(record.substr(g_batchreplenish_txt_store_number_pos, g_batchreplenish_txt_store_number_len)))							//if item number is less than 0
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "store ID is negative.");						//error
+			}
+			//priority check
+			else if (0 > stoi(record.substr(g_batchreplenish_txt_store_priority_pos, g_batchreplenish_txt_store_priority_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "priority check is negative.");						//error
+			}
+			//item number check
+			else if (0 > stoi(record.substr(g_batchreplenish_txt_item_number_pos, g_batchreplenish_txt_item_number_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "Vender number is negative.");						//error
+			}
+			//warehouse reorder quantity check
+			else if (0 > stoll(record.substr(g_batchreplenish_txt_requested_quantity_pos, g_batchreplenish_txt_requested_quantity_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "Order quantity is negative.");						//error
+			}
+			else
+			{
+				Merge_Add_Online_Batch_Event temp;
+				temp.store_priority = record[0];
+				temp.store_number = stoi(record.substr(g_batchreplenish_txt_store_number_pos, g_batchreplenish_txt_store_number_len));
+				temp.store_priority = stoi(record.substr(g_batchreplenish_txt_item_number_pos, g_batchreplenish_txt_item_number_len));
+				temp.item_number = stoi(record.substr(g_batchreplenish_txt_item_number_pos, g_batchreplenish_txt_item_number_len));
+				temp.requested_quantity = stoll(record.substr(g_batchreplenish_txt_requested_quantity_pos, g_batchreplenish_txt_requested_quantity_len));
+				itemcount++;
+				Fusion.push_back(temp);
+			}
+		}
+	}
+
+	lineCount = 1;
+	while (addStoreItemsFile.good() && !addStoreItemsFile.eof())
+	{
+		string record;
+		getline(addStoreItemsFile, record);
+
+		if (correctRecordLength(record, g_addstoreitems, lineCount))
+		{
+			//store ID check
+			if (0 > stoi(record.substr(g_addstoreitems_txt_store_number_pos, g_addstoreitems_txt_store_number_len)))							//if item number is less than 0
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "store ID is negative.");						//error
+			}
+			//priority check
+			else if (0 > stoi(record.substr(g_addstoreitems_txt_store_priority_pos, g_addstoreitems_txt_store_priority_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "priority check is negative.");						//error
+			}
+			//item number check
+			else if (0 > stoi(record.substr(g_addstoreitems_txt_item_number_pos, g_addstoreitems_txt_item_number_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "Vender number is negative.");						//error
+			}
+			//warehouse reorder quantity check
+			else if (0 > stoll(record.substr(g_addstoreitems_txt_requested_quantity_pos, g_addstoreitems_txt_requested_quantity_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "Order quantity is negative.");						//error
+			}
+			else
+			{
+				Merge_Add_Online_Batch_Event temp;
+				temp.store_priority = 'A';
+				temp.store_number = stoi(record.substr(g_addstoreitems_txt_store_number_pos, g_addstoreitems_txt_store_number_len));
+				temp.store_priority = stoi(record.substr(g_addstoreitems_txt_item_number_pos, g_addstoreitems_txt_item_number_len));
+				temp.item_number = stoi(record.substr(g_addstoreitems_txt_item_number_pos, g_addstoreitems_txt_item_number_len));
+				temp.requested_quantity = stoll(record.substr(g_addstoreitems_txt_requested_quantity_pos, g_addstoreitems_txt_requested_quantity_len));
+				itemcount++;
+				Fusion.push_back(temp);
+			}
+
+		}
+	}
+
+	lineCount = 1;
+	while (leftoversFile.good() && !leftoversFile.eof())
+	{
+		string record;
+		getline(batchReplenishFile, record);
+
+		if (correctRecordLength(record, g_batchreplenish, lineCount))
+		{
+			//store ID check
+			if (0 > stoi(record.substr(g_leftovers_txt_store_number_pos, g_leftovers_txt_store_number_len)))							//if item number is less than 0
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "store ID is negative.");						//error
+			}
+			//priority check
+			else if (0 > stoi(record.substr(g_leftovers_txt_store_priority_pos, g_leftovers_txt_store_priority_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "priority check is negative.");						//error
+			}
+			//item number check
+			else if (0 > stoi(record.substr(g_leftovers_txt_item_number_pos, g_leftovers_txt_item_number_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "Vender number is negative.");						//error
+			}
+			//warehouse reorder quantity check
+			else if (0 > stoll(record.substr(g_leftovers_txt_requested_quantity_pos, g_leftovers_txt_requested_quantity_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "Order quantity is negative.");						//error
+			}
+			else
+			{
+				Merge_Add_Online_Batch_Event temp;
+				temp.store_priority =
+					temp.store_number = stoi(record.substr(g_leftovers_txt_store_number_pos, g_leftovers_txt_store_number_len));
+				temp.store_priority = stoi(record.substr(g_leftovers_txt_item_number_pos, g_leftovers_txt_item_number_len));
+				temp.item_number = stoi(record.substr(g_leftovers_txt_item_number_pos, g_leftovers_txt_item_number_len));
+				temp.requested_quantity = stoll(record.substr(g_leftovers_txt_requested_quantity_pos, g_leftovers_txt_requested_quantity_len));
+				itemcount++;
+				Fusion.push_back(temp);
+			}
+
+		}
+	}
+
+	lineCount = 1;
+	while (onlineInvRequestFile.good() && !onlineInvRequestFile.eof())
+	{
+		string record;
+		getline(batchReplenishFile, record);
+
+		if (correctRecordLength(record, g_batchreplenish, lineCount))
+		{
+			//store ID check
+			if (0 > stoi(record.substr(g_onlineinvrequest_txt_store_number_pos, g_onlineinvrequest_txt_store_number_len)))							//if item number is less than 0
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "store ID is negative.");						//error
+			}
+			//priority check
+			else if (0 > stoi(record.substr(g_onlineinvrequest_txt_store_priority_pos, g_onlineinvrequest_txt_store_priority_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "priority check is negative.");						//error
+			}
+			//item number check
+			else if (0 > stoi(record.substr(g_onlineinvrequest_txt_item_number_pos, g_onlineinvrequest_txt_item_number_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "Vender number is negative.");						//error
+			}
+			//warehouse reorder quantity check
+			else if (0 > stoll(record.substr(g_onlineinvrequest_txt_requested_quantity_pos, g_onlineinvrequest_txt_requested_quantity_len)))
+			{
+				Plog.logError("MergeReplenishmentAddItem:ValueRangeCheck:OOPS", "Order quantity is negative.");						//error
+			}
+			else
+			{
+				Merge_Add_Online_Batch_Event temp;
+				temp.store_priority = 'O';
+				temp.store_number = stoi(record.substr(g_onlineinvrequest_txt_store_number_pos, g_onlineinvrequest_txt_store_number_len));
+				temp.store_priority = stoi(record.substr(g_onlineinvrequest_txt_item_number_pos, g_onlineinvrequest_txt_item_number_len));
+				temp.item_number = stoi(record.substr(g_onlineinvrequest_txt_item_number_pos, g_onlineinvrequest_txt_item_number_len));
+				temp.requested_quantity = stoll(record.substr(g_onlineinvrequest_txt_requested_quantity_pos, g_onlineinvrequest_txt_requested_quantity_len));
+				itemcount++;
+				Fusion.push_back(temp);
+			}
+
+		}
+	}
+
+
+	ofstream merged;
+	bool createResult = createFile("storeupdate.txt", merged);
+	if (!createResult)
+	{
+		Plog.logError("storeupdate", "Unable to create or write to storeupdate.txt");
+		return false;
+	}
+	insertHeader(merged, g_storeupdate);
+
+	for (int x = 0; x < Fusion.size(); x++)
+	{
+		merged << Fusion[x].source_code <<
+			StringIntZeroFill(g_leftovers_txt_store_number_len, Fusion[x].store_number) <<
+			StringIntZeroFill(g_leftovers_txt_store_priority_len, Fusion[x].store_priority) <<
+			StringIntZeroFill(g_leftovers_txt_item_number_len, Fusion[x].item_number) <<
+			StringIntZeroFill(g_leftovers_txt_requested_quantity_len, Fusion[x].requested_quantity) << std::endl << std::flush;
+	}
+	insertTrailer(merged, itemcount);
+	leftoversFile.close();
+	return true;
+}
