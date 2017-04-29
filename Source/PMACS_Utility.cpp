@@ -112,7 +112,7 @@ bool setCurrentStore(int store_number)
 	int findResult = findStore(store_number);
 	if (findResult == -1)
 	{
-		temp.displayDialogNoReturn("Failed to select store, store not found");
+		//temp.displayDialogNoReturn("Failed to select store, store not found");
 		return false;
 	}
 
@@ -249,23 +249,6 @@ int findCustomerByNameAddress(std::string customer_name, std::string customer_ad
 }
 
 //TEST
-void closeAllStores()
-{
-	for (int i = 0; i < store_data_table.size(); i++)
-	{
-		if (store_data_table[i].store_status == 'O')
-		{
-			store_data_table[i].store_status = 'C';
-		}
-	}
-}
-//TEST
-void closeStore()
-{
-	store_data_table[currentStoreIndex].store_status = 'C';
-}
-
-//TEST
 //check coupon
 //return index
 //if -1, no coupon for that number
@@ -376,13 +359,16 @@ int getCoupledItemIndex(int in_item_number)
 //TEST
 bool coupleItems(int item_one, int item_two)
 {
+	Menu temp;
+	temp.setMenuName("coupleItems");
+		
 	int itemOneIndex = findWarehouseItem(item_one);
 	int itemTwoIndex = findWarehouseItem(item_two);
 	int isCoupled;
 
 	if (itemOneIndex == -1 || itemTwoIndex == -1)
 	{
-		Plog.logError("coupleItems", "Failed to find item at warehouse");
+		temp.displayDialogNoReturn("Failed to find item at warehouse");
 		return false;
 	}
 
@@ -390,14 +376,13 @@ bool coupleItems(int item_one, int item_two)
 
 	if (isCoupled != -1) // if items are already coupled together
 	{
-		Plog.logWarn("coupleItems", "One or both items are already coupled"); 
+		temp.displayDialogNoReturn("One or both items are already coupled"); 
 		return false;
 	}
 	else if (isCoupled == -1) // if items are not coupled together
 	{
 		warehouse_table[itemOneIndex].coupled_item_number = warehouse_table[itemTwoIndex].item_number;
 		warehouse_table[itemTwoIndex].coupled_item_number = warehouse_table[itemOneIndex].item_number;
-		Plog.logInfo("coupleItems", "Item have been coupled");
 	}
 	return true;
 }
@@ -405,6 +390,9 @@ bool coupleItems(int item_one, int item_two)
 //TEST
 bool uncoupleItems(int item_one, int item_two)
 {
+	Menu temp;
+	temp.setMenuName("assignItemsToAllStores");
+
 	int itemOneIndex = findWarehouseItem(item_one);
 	int itemTwoIndex = findWarehouseItem(item_two);
 	int isCoupled;
@@ -1047,7 +1035,7 @@ void createAccount()
 void lookupAccountByNameAddress()
 {
 	Menu temp;
-	temp.setMenuName("createAccount");
+	temp.setMenuName("lookupAccountByNameAddress");
 
 	std::string name = temp.displayDialogGetEntryString("Please enter the customer name (30 chars):", 30);
 	std::string address = temp.displayDialogGetEntryString("Please enter the customer address (100 chars):", 100);
@@ -1230,9 +1218,11 @@ void addCoupledItem(int item_number)
 void checkRefills()
 {
 	Menu temp;
-	temp.setMenuName("addCoupledItem");
+	temp.setMenuName("checkRefills");
 	
 	std::string refillItems;
+
+	int refillCount = 0;
 
 	for (int i = 0; i < customer_table[currentCustomerIndex].item_dates.size(); i++)
 	{
@@ -1241,10 +1231,12 @@ void checkRefills()
 			std::string temp_string = std::to_string(customer_table[currentCustomerIndex].cust_items[i]);
 			temp_string += '\n';
 			refillItems += temp_string;
-		}
+			refillCount++;
+		}		
 	}
 
-	temp.displayDialogNoReturn("The following items are eligible for refill:\n" + refillItems);	
+	if (refillCount > 0)
+		temp.displayDialogNoReturn("The following items are eligible for refill:\n" + refillItems);	
 }
 
 bool submitOrder()
@@ -1279,6 +1271,14 @@ bool submitOrder()
 	// Display whole thing, ask if they want to proceed
 
 	int verifyingCashier = temp.displayDialogGetEntryInt("Please have another cashier enter their cashier number to verify (4 digits):", 4);
+	if (verifyingCashier == -1)
+	{
+		//Reset coupon in case it got changed
+		currentCouponIndex = -1;
+		return false;
+	}
+
+
 	if (verifyingCashier == currentCashierNumber)
 	{
 		temp.displayDialogNoReturn("Error - verifying cashier and originating cashier cannot be the same");
@@ -1310,7 +1310,8 @@ bool submitOrder()
 
 		// Add item to customer's history
 		customer_table[currentCustomerIndex].cust_items.push_back(pendingTransaction.transaction_item_number[i]);  // store item number
-		customer_table[currentCustomerIndex].item_dates.push_back(systemDate.ProjectDate(30)); // store today's date + 30 as int
+		int storeDate = systemDate.ProjectDate(30);
+		customer_table[currentCustomerIndex].item_dates.push_back(storeDate); // store today's date + 30 as int
 	}
 
 	pendingTransaction.originating_cashier_number = currentCashierNumber;
@@ -1318,8 +1319,9 @@ bool submitOrder()
 	pendingTransaction.order_number = generateOrderNumber();
 	pendingTransaction.store_number = currentStoreNumber;
 	pendingTransaction.transaction_date = systemDate.GetDate();
-	pendingTransaction.account_number = customer_table[currentCustomerIndex].account_number;
-	pendingTransaction.discount_pct = coupon_table[currentCouponIndex].discount_pct;
+	pendingTransaction.account_number = customer_table[currentCustomerIndex].account_number;	
+	if (currentCouponIndex != -1)
+		pendingTransaction.discount_pct = coupon_table[currentCouponIndex].discount_pct;
 	pendingTransaction.grand_total = grandTotal;
 
 	transaction_table.push_back(pendingTransaction);
@@ -1329,6 +1331,12 @@ bool submitOrder()
 	pendingTransaction = emptyTransaction;
 		
 	// Make sure all curr stuff cleared
+	currentCashierNumber = -1;
+	currentCouponIndex = -1;
+	currentCustomerIndex = -1;
+	currentCustomerNumber = -1;
+	currentStoreIndex = -1;
+	currentStoreNumber = -1;
 
 	return true;
 }
@@ -1440,6 +1448,207 @@ int generateOrderNumber()
 
 	return newOrder;
 }
+
+void lookupAccountByNumber()
+{
+	Menu temp;
+	temp.setMenuName("createAccount");
+
+	int accountNumber = temp.displayDialogGetEntryInt("Please enter the customer account number (8 digits):", 8);
+	
+	int findResult = findCustomer(accountNumber);
+	if (findResult == -1)
+	{
+		temp.displayDialogNoReturn("No customer with that name and address was found");
+		return;
+	}
+
+	setCurrentCustomerNumber(customer_table[findResult].account_number);
+}
+
+void setSequenceNumber()
+{
+	Menu temp;
+	temp.setMenuName("setSequenceNumber");
+
+
+	std::string sequenceList = "g_adddeletestore 0\n";
+	sequenceList += "g_storeupdate 1\n";
+	sequenceList += "g_itemreceived 2\n";
+	sequenceList += "g_vendororder 3\n";
+	sequenceList += "g_items 4\n";
+	sequenceList += "g_reports 5\n";
+	sequenceList += "g_returnitems 6\n";
+	sequenceList += "g_addstoreitems 7\n";
+	sequenceList += "g_batchreplenish 8\n";
+	sequenceList += "g_onlineinvrequest 9\n";
+	sequenceList += "g_vendorrequest 10\n";
+	sequenceList += "g_leftovers 11\n";
+
+	int sequenceIndex = temp.displayDialogGetEntryInt("Please enter the sequence number index to alter\n" + sequenceList + ":", 1);
+
+	if (sequenceIndex == -1)
+		return;
+
+	if (sequenceIndex > 11)
+	{
+		temp.displayDialogNoReturn("Invalid sequence number index");
+		return;
+	}
+	
+	int newSequenceNumber = temp.displayDialogGetEntryInt("Please enter the new sequence number " + sequenceList, 4);
+	if (newSequenceNumber == -1)
+		return;
+	if (newSequenceNumber > 9999)
+	{
+		temp.displayDialogNoReturn("Invalid sequence number");
+		return;
+	}		
+}
+
+void coupleItem()
+{
+	Menu temp;
+	temp.setMenuName("coupleItem");
+
+	int coupleFirst = temp.displayDialogGetEntryInt("Please enter the first item number you wish to couple (8 digits):", 8);
+	int coupleSecond = temp.displayDialogGetEntryInt("Please enter the second item number you wish to couple (8 digits):", 8);
+
+	if (coupleFirst == -1 || coupleSecond == -1)
+		return;
+
+	bool coupleResult = coupleItems(coupleFirst, coupleSecond);
+
+	if (coupleResult)
+		temp.displayDialogNoReturn("Items coupled successfully");
+	else
+		temp.displayDialogNoReturn("Item couple failed");
+}
+
+void uncoupleItem()
+{
+	Menu temp;
+	temp.setMenuName("uncoupleItem");
+
+	int uncoupleFirst = temp.displayDialogGetEntryInt("Please enter the first item number you wish to couple (8 digits):", 8);
+	int uncoupleSecond = temp.displayDialogGetEntryInt("Please enter the second item number you wish to couple (8 digits):", 8);
+
+	if (uncoupleFirst == -1 || uncoupleSecond == -1)
+		return;
+
+	bool uncoupleResult = uncoupleItems(uncoupleFirst, uncoupleSecond);
+
+	if (uncoupleResult)
+		temp.displayDialogNoReturn("Items uncoupled successfully");
+	else
+		temp.displayDialogNoReturn("Item uncouple failed");
+}
+
+void addCoupon()
+{
+	Menu temp;
+	temp.setMenuName("addCoupon");
+
+	int couponNumber = temp.displayDialogGetEntryInt("Please enter the coupon number you wish to add (3 digits):", 3);
+	
+	if (couponNumber == -1)
+		return;
+	
+	int findResult = findCoupon(couponNumber);
+	if (findResult != -1)
+	{
+		temp.displayDialogNoReturn("That coupon number already exists, please try again");
+		return;
+	}
+
+	int discountPercent = temp.displayDialogGetEntryInt("Please enter the discount percent you wish to use (3 digits):", 3);
+	if (discountPercent == -1)
+		return;
+
+	if (discountPercent < 1 || discountPercent > 100)
+	{
+		temp.displayDialogNoReturn("Invalid discount percentage, please try again");
+		return;
+	}
+
+	Coupon couponInstance;
+	couponInstance.coupon_number = couponNumber;
+	couponInstance.discount_pct = discountPercent;
+	coupon_table.push_back(couponInstance);
+
+	temp.displayDialogNoReturn("Coupon created successfully");
+}
+// TEST
+void deleteCoupon()
+{
+	Menu temp;
+	temp.setMenuName("deleteCoupon");
+
+	int couponNumber = temp.displayDialogGetEntryInt("Please enter the coupon number you wish to delete (3 digits):", 3);
+
+	if (couponNumber == -1)
+		return;
+
+	int findResult = findCoupon(couponNumber);
+	if (findResult == -1)
+	{
+		temp.displayDialogNoReturn("That coupon number does not exist, please try again");
+		return;
+	}
+
+	coupon_table.erase(coupon_table.begin(), coupon_table.begin() + findResult);
+
+	temp.displayDialogNoReturn("Coupon deleted successfully");
+}
+
+//void updateItemDiscount()
+//{
+//	Menu temp;
+//	temp.setMenuName("updateItemDiscount");
+//
+//	int itemNumber = temp.displayDialogGetEntryInt("Please enter the item number you wish to adjust discount on (8 digits):", 8);
+//	if (itemNumber == -1)
+//		return;
+//
+//	int findResult = findWarehouseItem(itemNumber);
+//	if (findResult == -1)
+//	{
+//		temp.displayDialogNoReturn("That item number does not exist, please try again");
+//		return;
+//	}
+//
+//	int discountPercent = temp.displayDialogGetEntryInt("Please enter the discount percent you wish to use (3 digits):", 3);
+//	if (discountPercent == -1)
+//		return;
+//
+//	if (discountPercent < 1 || discountPercent > 100)
+//	{
+//		temp.displayDialogNoReturn("Invalid discount percentage, please try again");
+//		return;
+//	}
+//	
+//	warehouse_table[itemNumber].item_discount_percent = discountPercent;
+//	temp.displayDialogNoReturn("Discount updated successfully");
+//}
+
+void finalizeStoreSales()
+{
+	store_data_table[currentStoreIndex].store_status = 'C';
+}
+
+void finalizeAllStoreSales()
+{
+	for (int i = 0; i < store_data_table.size(); i++)
+	{
+		if (store_data_table[i].store_status == 'O')
+		{
+			store_data_table[i].store_status = 'C';
+		}
+	}
+}
+
+
+void requestStoreInventory();
 
 //
 //void displayOrderEntry()

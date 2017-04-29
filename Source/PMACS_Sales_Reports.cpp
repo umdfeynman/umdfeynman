@@ -40,9 +40,10 @@ bool RunOnlineSalesReport()
 
 {
 	Menu temp;
-	temp.setMenuName("Sales Reports");
+	temp.setMenuName("Sales Reports Menu");
 	temp.addMenuItem('1', "Report on Store");
 	temp.addMenuItem('2', "Report on Item");
+	temp.addMenuItem('0', "Exit Sales Reports Menu");
 
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
@@ -52,40 +53,40 @@ bool RunOnlineSalesReport()
 
 		switch (selection)
 		{
-		case '1':
-		{
-			int store = RunReportByStoreCheck();
-			if (store != -1)
+			case '1':
 			{
-				RunReportByStore(store_data_table[store].store_number);
+				int store = RunReportByStoreCheck();
+				if (store != -1)
+				{
+					RunReportByStore(store_data_table[store].store_number);
+				}
+				else
+				{
+					temp.displayDialogNoReturn("Store does not exist.");
+				}
+				break;
 			}
-			else
+			case '2':
 			{
-				temp.displayDialogNoReturn("Store does not exist.");
+				int item = RunReportByItemCheck();
+				if (item != -1)
+				{
+					RunReportByItem(warehouse_table[item].item_number);
+				}
+				else
+				{
+					temp.displayDialogNoReturn("Item does not exist.");
+				}
+				break;
 			}
-			break;
-		}
-		case '2':
-		{
-			int item = RunReportByItemCheck();
-			if (item != -1)
+			case '0':
 			{
-				RunReportByItem(warehouse_table[item].item_number);
+				return 0;
 			}
-			else
+			default:
 			{
-				temp.displayDialogNoReturn("Item does not exist.");
+				break;
 			}
-			break;
-		}
-		case '0':
-		{
-			return 0;
-		}
-		default:
-		{
-			break;
-		}
 		}
 	}
 }
@@ -94,10 +95,11 @@ bool RunReportByStore(int storeNum)
 {
 	Menu temp;
 	temp.setMenuName("Sales Reports by Store");
-	temp.addMenuItem('1', "Report by day");
-	temp.addMenuItem('2', "Report by week");
-	temp.addMenuItem('3', "Report by month");
-	temp.addMenuItem('4', "Report by year");
+	temp.addMenuItem('1', "Report by Day");
+	temp.addMenuItem('2', "Report by Week");
+	temp.addMenuItem('3', "Report by Month");
+	temp.addMenuItem('4', "Report by Year");
+	temp.addMenuItem('0', "Exit Sales Reports by Store Menu");
 
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
@@ -189,11 +191,12 @@ bool RunReportByItem(int itemNum)
 	while (selection != '0')
 	{
 		Menu temp;
-		temp.setMenuName("Sales Reports by item");
+		temp.setMenuName("Sales Reports by Item");
 		temp.addMenuItem('1', "Report by day");
 		temp.addMenuItem('2', "Report by week");
 		temp.addMenuItem('3', "Report by month");
 		temp.addMenuItem('4', "Report by year");
+		temp.addMenuItem('0', "Exit Sales Reports by Item Menu");
 
 		selection = temp.displayMenuGetSelection();
 
@@ -258,7 +261,7 @@ bool RunReportByItem(int itemNum)
 				selection = '0';
 				break;
 			}
-			case 'q':
+			case '0':
 			{
 				return 0;
 			}

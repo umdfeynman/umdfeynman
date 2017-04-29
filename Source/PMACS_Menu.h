@@ -14,6 +14,7 @@ void displayUtilityMenu();
 void selectItem();
 void displayUpdateInventoryMenu();
 void displayTransactionMenu();
+void displayCustomerSearchMenu();
 
 class Menu
 {

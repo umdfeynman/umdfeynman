@@ -163,10 +163,10 @@ void Date::ChangeYear()
 //useless trash
 int Date::ProjectDate(int days)
 {
-	Date a(baseDate);
+	Date a(GetDateStream());
 	a.ChangeDay(days);
 	int value = a.DateCompareValue();
-	a.~Date();
+	//a.~Date();
 	return value;
 };
 

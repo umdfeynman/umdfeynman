@@ -17,6 +17,7 @@ void displayUtilityMenu()
 	utilityMenu.setMenuName("PMACS Utilities Menu");
 	utilityMenu.addMenuItem('1', "Change System Date");
 	utilityMenu.addMenuItem('2', "Set Sequence Number");
+	utilityMenu.addMenuItem('3', "Finalize Sales for ALL Stores");
 	utilityMenu.addMenuItem('0', "Exit PMACS Utilities Menu");
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
 
@@ -30,7 +31,10 @@ void displayUtilityMenu()
 			setSystemDate();
 			break;
 		case '2':
-			// setSequenceNumber;
+			setSequenceNumber();
+			break;
+		case '3':
+			finalizeAllStoreSales();
 			break;
 		case '0':
 			return;
@@ -44,10 +48,26 @@ void displayStoreMenu()
 {
 	Menu storeMenu;
 	storeMenu.setMenuName("Store Management Menu");
-	storeMenu.addMenuItem('1', "Finalize Store Sales for Store");
+	storeMenu.addMenuItem('1', "Finalize Store Sales for this Store");
 	storeMenu.addMenuItem('2', "Request Inventory for Store");
 	storeMenu.addMenuItem('0', "Exit Store Management Menu");
 	char selection = 0; // 0 as in NULL not '0' as in ascii zero
+
+	int storeNumber = storeMenu.displayDialogGetEntryInt("Please enter your store number (5 digits): ", 5);
+	if (storeNumber == -1)
+		return;
+
+	setCurrentStore(storeNumber);
+
+	int findStoreNumber = findStore(storeNumber);
+	if (findStoreNumber == -1)
+	{
+		storeMenu.displayDialogNoReturn("Error - the entered store was not found");
+		currentStoreIndex = -1;
+		currentStoreNumber = -1;
+		return;
+	}
+
 
 	while (selection != '0')
 	{
@@ -56,12 +76,14 @@ void displayStoreMenu()
 		switch (selection)
 		{
 		case '1':
-			// finalizeStoreSales;
+			finalizeStoreSales();
 			break;
 		case '2':
 			// requestStoreInventory;
 			break;		
 		case '0':
+			currentStoreIndex = -1;
+			currentStoreNumber = -1;
 			return;
 		default:
 			break;
@@ -156,55 +178,6 @@ void selectItem()
 
 }
 
-//void displaySalesMenu()
-//{
-//	Menu salesMenu;
-//	salesMenu.setMenuName("Sales Management Menu");
-//	salesMenu.addMenuItem('1', "Sales Report by Store");
-//	salesMenu.addMenuItem('2', "Sales Report by Item");
-//	salesMenu.addMenuItem('3', "Couple Items");
-//	salesMenu.addMenuItem('4', "Uncouple Items");
-//	salesMenu.addMenuItem('5', "Add Coupon");
-//	salesMenu.addMenuItem('6', "Delete Coupon");
-//	salesMenu.addMenuItem('7', "Update Item Discount");
-//	salesMenu.addMenuItem('0', "Exit Sales Management Menu");
-//	char selection = 0; // 0 as in NULL not '0' as in ascii zero
-//
-//	while (selection != '0')
-//	{
-//		selection = salesMenu.displayMenuGetSelection();
-//
-//		switch (selection)
-//		{
-//		case '1':
-//			// salesReportByStore
-//			break;
-//		case '2':
-//			// salesReportByItem
-//			break;
-//		case '3':
-//			// coupleItem
-//			break;
-//		case '4':
-//			// uncoupleItem
-//			break;
-//		case '5':
-//			// addCoupon
-//			break;
-//		case '6':
-//			// deleteCoupon
-//			break;
-//		case '7':
-//			// updateItemDiscount
-//			break;
-//		case '0':
-//			return;
-//		default:
-//			break;
-//		}
-//	}
-//}
-
 void displaySalesMenu()
 {
 	Menu salesMenu;
@@ -252,19 +225,19 @@ void displaySalesMenu()
 			break;
 		}
 		case '3':
-			// coupleItem
+			coupleItem();
 			break;
 		case '4':
-			// uncoupleItem
+			uncoupleItem();
 			break;
 		case '5':
-			// addCoupon
+			addCoupon();
 			break;
 		case '6':
-			// deleteCoupon
+			deleteCoupon();
 			break;
 		case '7':
-			// updateItemDiscount
+			updateItemDiscount();
 			break;
 		case '0':
 			return;
@@ -403,14 +376,6 @@ void Menu::displayHeader()
 		std::cout << "NOT SET";
 	else
 		std::cout << customer_table[currentCustomerIndex].address;
-
-	/*std::cout << std::endl;
-
-	std::cout << "Item Number: ";
-	if (currentItemListSize == 0)
-		std::cout << "NOT SET";
-	else
-		std::cout << warehouse_table[currentItemIndex].item_number;*/
 
 	std::cout << std::endl;
 
@@ -844,7 +809,7 @@ void displayPOSMenu()
 		switch (selection)
 		{
 		case '1':
-			lookupAccountByNameAddress();
+			displayCustomerSearchMenu();
 			break;
 		case '2':
 			createAccount();
@@ -870,6 +835,36 @@ void displayPOSMenu()
 			break;
 		}
 	}	
+}
+
+void displayCustomerSearchMenu()
+{
+	Menu custSearch;
+	custSearch.setMenuName("Search for Customer Menu");
+	custSearch.addMenuItem('1', "Search for Customer By Number");
+	custSearch.addMenuItem('2', "Search for Customer By Name+Address");
+	custSearch.addMenuItem('0', "Exit Search for Customer Menu");
+		
+	char selection = 0; // 0 as in NULL not '0' as in ascii zero
+
+	while (selection != '0')
+	{
+		selection = custSearch.displayMenuGetSelection();
+
+		switch (selection)
+		{
+		case '1':
+			lookupAccountByNumber();
+			break;
+		case '2':
+			lookupAccountByNameAddress();
+			break;
+		case '0':
+			return;
+		default:
+			break;
+		}
+	}
 }
 
 void displayTransactionMenu()
@@ -910,10 +905,12 @@ void displayTransactionMenu()
 			deleteItemFromOrder();
 			break;
 		case 'S':
-			submitOrder();
+			if (submitOrder())
+				return;
 			break;
 		case 's':
-			submitOrder();
+			if (submitOrder())
+				return;
 			break;
 		case 'X':
 			return;

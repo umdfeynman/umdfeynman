@@ -36,11 +36,11 @@ bool readSequenceNumbers()
 	}
 
 	int i = 0;
-	while (!sequenceFile.eof() || !sequenceFile || i < 12)
+	while (i < 12 &&(!sequenceFile.eof() || !sequenceFile))
 	{
 		std::getline(sequenceFile, readLine);
 		sequenceNumber[i] = StringToInt(readLine);
-		i++;
+		++i;
 	}
 
 	sequenceFile.close();
@@ -151,6 +151,13 @@ bool saveDatabaseToDisk()
 	if (!lastResult)
 	{
 		Plog.logError("saveDatabaseToDisk", "Unable to save config database.  Bailing.");
+		return false;
+	}
+
+	lastResult = saveSequenceNumbers();
+	if (!lastResult)
+	{
+		Plog.logError("saveDatabaseToDisk", "Unable to save sequence number database.  Bailing.");
 		return false;
 	}
 
@@ -1136,3 +1143,28 @@ bool saveTransaction()
 	transactionFile.close();
 	return true;
 };
+
+bool saveSequenceNumbers()
+{
+	std::ofstream sequenceFile;
+	sequenceFile.open(g_sequence_file, ios::out);
+
+	if (!sequenceFile || !sequenceFile.good())
+	{
+		Plog.logError("writesequence", "Failed to write database file.  Bailing.");
+		return false;
+	}
+
+	//sequence_table
+	sequenceFile << "HSEQUENCE";
+	sequenceFile << endl;
+	
+	for (int x = 0; x < 12; x++)
+	{	
+		sequenceFile << sequenceNumber[x];
+		sequenceFile << endl;		
+	}
+
+	sequenceFile.close();
+	return true;
+}

@@ -18,5 +18,6 @@ bool saveCustomer();
 bool saveCoupon();
 bool saveTransaction();
 bool saveConfig();
+bool saveSequenceNumbers();
 
 #endif 
