@@ -7,6 +7,7 @@ bool storeInventoryGeneration();
 bool massInventoryUpdates();
 bool checkAllStoresClosed();
 bool warehouseInventoryGeneration();
+bool calculateAccuStock()
 
 /////////////////////////////
 void openAllStores();

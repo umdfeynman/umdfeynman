@@ -9,12 +9,12 @@
 bool runOfflineBatchProcess()
 {
 	bool lastResult;
-	/*lastResult = massInventoryUpdates();
+	lastResult = massInventoryUpdates();
 	if (!lastResult)
 	{
 	Plog.logError("runOfflineBatchProcess", "massInventoryUpdates failed.  Bailing.");
 	return false;
-	}*/
+	}
 
 	lastResult = addDeleteStore();
 	if (!lastResult)
@@ -23,12 +23,7 @@ bool runOfflineBatchProcess()
 		return false;
 	}
 
-	/*lastResult = calculateAccuStock();
-	if (!lastResult)
-	{
-	Plog.logError("runOfflineBatchProcess", "calculateAccuStock failed.  Bailing.");
-	return false;
-	}*/
+	// Merge delete store and incoming vendor inventory
 
 	lastResult = warehouseInventoryGeneration();
 	if (!lastResult)
@@ -36,6 +31,10 @@ bool runOfflineBatchProcess()
 		Plog.logError("runOfflineBatchProcess", "warehouseInventoryGeneration failed.  Bailing.");
 		return false;
 	}
+	
+	// Batch replenishment for stores
+
+	// Merge files for store inventory generation
 
 	lastResult = storeInventoryGeneration();
 	if (!lastResult)
@@ -43,6 +42,20 @@ bool runOfflineBatchProcess()
 		Plog.logError("runOfflineBatchProcess", "storeInventoryGeneration failed.  Bailing.");
 		return false;
 	}
+
+	// Request inventory from vendor
+
+	// Sales reporting
+	
+	lastResult = calculateAccuStock();
+	if (!lastResult)
+	{
+		Plog.logError("runOfflineBatchProcess", "calculateAccuStock failed.  Bailing.");
+		return false;
+	}
+	
+
+	
 
 	// Increment system date by 1
 	systemDate.ChangeDay(1);
